@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: nghttp
+# key: nghttp
+# --
+let url = '$1';
+return $http.get(url)
+  .then(res => {
+    return res.data;
+  })
+  .catch(err => {
+    console.log(\`Request to \${url} failed with error`, err);
+    return [];
+  })

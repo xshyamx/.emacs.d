@@ -1,0 +1,25 @@
+# -*- mode: snippet -*-
+# name: cmpsvc
+# key: cmpsvc
+# --
+'use strict';
+
+function $1Svc($http, $sessionStorage, cmpConstants) {
+  return {}
+}
+
+var serviceConfig = [
+  '$http',
+  '$sessionStorage',
+  'cmpConstants',
+  $1Svc
+]
+
+angular.module('cmp')
+  .factory('$1Svc', serviceConfig)
+
+module.exports = {
+  name: '$1Svc',
+  factory: serviceConfig
+}
+

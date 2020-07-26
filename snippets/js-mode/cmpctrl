@@ -1,0 +1,34 @@
+# -*- mode: snippet -*-
+# name: cmpctrl
+# key: cmpctrl
+# --
+'use strict';
+var angular = require('angular');
+
+function $1Ctrl($scope, $sessionStorage, $state, ProgressSvc) {
+  $0
+}
+
+var stateConfig = {
+  name: '$2',
+  url: '/$2',
+  templateUrl: require('./$2.html'),
+  controller: '$1Ctrl'
+};
+
+$1Ctrl.$inject = [
+  '$scope',
+  '$sessionStorage',
+  '$state',
+  'ProgressSvc'
+]
+
+function routeConfig($stateProvider) {
+  $stateProvider.state(stateConfig)
+}
+
+angular.module('cmp')
+  .controller('$1Ctrl', $1Ctrl)
+  .config([ '$stateProvider', routeConfig ])
+
+module.exports = stateConfig;
