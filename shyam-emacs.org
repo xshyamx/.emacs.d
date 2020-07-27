@@ -1,5 +1,10 @@
 #+STARTUP: content
 * Interface Tweaks
+** Allow following of symlinks
+   From [[https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links][Emacs and symbolic links]]
+   #+BEGIN_SRC emacs-lisp
+     (setq vc-follow-symlinks t)
+   #+END_SRC
 ** Remove startup screen
    #+BEGIN_SRC emacs-lisp
      (setq inhibit-startup-message t)
@@ -94,29 +99,50 @@
         (assq 'top frame-params)
         (assq 'left frame-params)
         (cons 'width  (frame-width))
-        (cons 'width  (frame-height))
+        (cons 'height  (frame-height))
         )
        )
    #+END_EXAMPLE
 ** Set the current position
    #+BEGIN_SRC emacs-lisp
      (setq default-frame-alist
-           '((top . 23) (left . 912) (width . 108) (width . 35)))
+     '((top . 23) (left . 912) (width . 108) (height . 35)))
      ;;      '((top . 9) (left . 445) (width . 108) (width . 41)))
    #+END_SRC
 * Update the exec-path
   #+BEGIN_SRC emacs-lisp
-    (append 
+    (setq
      exec-path
-     '(
-      "/usr/local/bin"
-      "/Users/shyam/bin"
-      "/Users/shyam/go/bin"
-      "/Users/shyam/.yarn/bin"
-      "/Users/shyam/Library/Python/2.7/bin"
+     (append 
+      exec-path
+      '(
+	"/usr/local/bin"
+	"/Users/shyam/bin"
+	"/Users/shyam/go/bin"
+	"/Users/shyam/.yarn/bin"
+	"/Users/shyam/Library/Python/2.7/bin"
+	)
       )
      )
   #+END_SRC
+  #+BEGIN_EXAMPLE emacs-lisp
+    (setenv
+     "PATH"
+     (concat
+      (getenv "PATH")
+      ":"
+      (string-join
+       '(
+	 "/usr/local/bin"
+	 "/Users/shyam/bin"
+	 "/Users/shyam/go/bin"
+	 "/Users/shyam/.yarn/bin"
+	 "/Users/shyam/Library/Python/2.7/bin"
+	 )
+       ":")
+      )
+     )
+  #+END_EXAMPLE
 * GNU/MELPA Packages
 ** Try
    #+BEGIN_SRC emacs-lisp
@@ -198,7 +224,7 @@
      (use-package plantuml-mode
        :ensure t
        :custom
-       (plantuml-jar-path "/usr/local/Cellar/plantuml/1.2020.8/libexec/plantuml.jar" "Path to plantum.jar")
+       (plantuml-jar-path "/usr/local/Cellar/plantuml/1.2020.11/libexec/plantuml.jar" "Path to plantum.jar")
        (plantuml-default-exec-mode 'jar))
    #+END_SRC
 ** Yaml
