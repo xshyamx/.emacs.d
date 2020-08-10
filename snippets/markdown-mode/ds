@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: ds
+# key: ds
+# --
+<details>
+  <summary>$1</summary>
+
+  \`\`\` $2
+  $3
+  \`\`\`
+
+</details>

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: n
+# key: n
+# --
+$1[label="$2",shape=${3:$$(yas-choose-value '("box" "record" "cylinder" "folder" "cds" "note" "component" "oval"))}]

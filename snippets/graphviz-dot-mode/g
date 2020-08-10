@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: g
+# key: g
+# --
+digraph G {
+  label="$1"
+  $2
+}

@@ -110,28 +110,12 @@
      ;;      '((top . 9) (left . 445) (width . 108) (width . 41)))
    #+END_SRC
 * Update the exec-path
-  #+BEGIN_SRC emacs-lisp
-    (setq
-     exec-path
-     (append 
+** Update the emacs =exec-path=
+   #+BEGIN_SRC emacs-lisp
+     (setq
       exec-path
-      '(
-	"/usr/local/bin"
-	"/Users/shyam/bin"
-	"/Users/shyam/go/bin"
-	"/Users/shyam/.yarn/bin"
-	"/Users/shyam/Library/Python/2.7/bin"
-	)
-      )
-     )
-  #+END_SRC
-  #+BEGIN_EXAMPLE emacs-lisp
-    (setenv
-     "PATH"
-     (concat
-      (getenv "PATH")
-      ":"
-      (string-join
+      (append 
+       exec-path
        '(
 	 "/usr/local/bin"
 	 "/Users/shyam/bin"
@@ -139,10 +123,29 @@
 	 "/Users/shyam/.yarn/bin"
 	 "/Users/shyam/Library/Python/2.7/bin"
 	 )
-       ":")
+       )
       )
-     )
-  #+END_EXAMPLE
+   #+END_SRC
+** Update environment variable =PATH=
+   #+BEGIN_SRC emacs-lisp
+     (setenv
+      "PATH"
+      (concat
+       (getenv "PATH")
+       ":"
+       (string-join
+	'(
+	  "/usr/local/bin"
+	  "/Users/shyam/bin"
+	  "/Users/shyam/go/bin"
+	  "/Users/shyam/.yarn/bin"
+	  "/Users/shyam/Library/Python/2.7/bin"
+	  )
+	":")
+       )
+      )
+   #+END_SRC
+
 * GNU/MELPA Packages
 ** Try
    #+BEGIN_SRC emacs-lisp

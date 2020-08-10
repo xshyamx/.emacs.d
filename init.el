@@ -46,8 +46,6 @@
     (fzf zenburn-theme typescript-mode powershell dired-subtree projectile edit-indirect php-mode plantuml-mode restclient nord-theme htmlize wsd-mode cql-mode kotlin-mode csv-mode graphviz-dot-mode yasnippet yaml-mode which-key web-mode vlf use-package try terraform-mode markdown-mode json-mode groovy-mode go-mode emmet-mode dockerfile-mode cypher-mode command-log-mode base16-theme auto-complete)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(plantuml-default-exec-mode (quote jar))
- '(plantuml-jar-path
-   "/usr/local/Cellar/plantuml/1.2020.1_1/libexec/plantuml.jar")
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
