@@ -232,9 +232,22 @@
      (use-package plantuml-mode
        :ensure t
        :custom
-       (plantuml-jar-path "/usr/local/Cellar/plantuml/1.2020.15/libexec/plantuml.jar" "Path to plantum.jar")
-       (plantuml-default-exec-mode 'jar))
+       (plantuml-default-exec-mode 'executable)
+       (plantuml-executable-path "/usr/local/bin/plantuml")
+       (plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
+       )
    #+END_SRC
+
+*** Plantuml jar path
+    #+begin_example emacs-lisp
+      (defun unbrew (src target)
+	(setq brew-prefix "/usr/local")
+	(setq plantuml-prefix (file-chase-links (format "%s/%s" brew-prefix src)))
+	(replace-regexp-in-string src target plantuml-prefix)
+	)
+       (message (unbrew "bin/plantuml" "libexec/plantuml.jar"))
+      (custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
+    #+end_example
 ** Mermaid
    Ensure that the NPM package =mermaid.cli= is installed globally
    #+begin_src emacs-lisp
