@@ -389,7 +389,7 @@
    #+END_SRC
 ** Drools
    From https://github.com/pdorrell/rules-editing-mode.git
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_EXAMPLE emacs-lisp
      (add-to-list 'load-path
                   (expand-file-name "~/.emacs.d/site-lisp/drools-mode"))
      (require 'drools-mode)
@@ -402,7 +402,7 @@
                       (setq indent-tabs-mode nil)
                       (yas-minor-mode))
                     )))
-   #+END_SRC
+   #+END_EXAMPLE
 ** Fzf
    My own fork to fix whitespace issue :)
    https://github.com/xshyamx/fzf.el.git

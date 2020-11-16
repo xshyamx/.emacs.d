@@ -28,7 +28,7 @@
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(custom-safe-themes
-   '("816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "bf390ecb203806cbe351b966a88fc3036f3ff68cd2547db6ee3676e87327b311" default))
+   '("f2c35f8562f6a1e5b3f4c543d5ff8f24100fae1da29aeb1864bbc17758f52b70" "816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "bf390ecb203806cbe351b966a88fc3036f3ff68cd2547db6ee3676e87327b311" default))
  '(fci-rule-color "#383838")
  '(fzf/executable "/usr/local/bin/fzf")
  '(graphviz-dot-dot-program "/usr/local/bin/dot")
