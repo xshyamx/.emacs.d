@@ -96,17 +96,18 @@
    #+BEGIN_EXAMPLE emacs-lisp
      (let ((frame-params (frame-parameters (selected-frame))))
        (list
-        (assq 'top frame-params)
-        (assq 'left frame-params)
-        (cons 'width  (frame-width))
-        (cons 'height  (frame-height))
-        )
+	(assq 'top frame-params)
+	(assq 'left frame-params)
+	(cons 'width  (frame-width))
+	(cons 'height  (frame-height))
+	)
        )
    #+END_EXAMPLE
+
 ** Set the current position
    #+BEGIN_SRC emacs-lisp
      (setq default-frame-alist
-     '((top . 23) (left . 912) (width . 108) (height . 35)))
+     '((top . 81) (left . 742) (width . 130) (height . 50)))
      ;;      '((top . 9) (left . 445) (width . 108) (width . 41)))
    #+END_SRC
 * Update the exec-path
