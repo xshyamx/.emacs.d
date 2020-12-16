@@ -431,6 +431,7 @@
        (setq nord-comment-brightness 20)
        (load-theme 'nord t))
    #+END_SRC
+
 ** Zenburn
    #+BEGIN_SRC emacs-lisp
      (use-package zenburn-theme
@@ -453,14 +454,14 @@
      (when (eq system-type 'darwin)
 
         ;; default Latin font (e.g. Consolas)
-        (set-face-attribute 'default nil :family "Inconsolata")
+        (set-face-attribute 'default nil :family "Fira Code")
 
         ;; default font size (point * 10)
         ;;
         ;; WARNING!  Depending on the default font,
         ;; if the size is not supported very well, the frame will be clipped
         ;; so that the beginning of the buffer may not be visible correctly. 
-        (set-face-attribute 'default nil :height 180)
+        (set-face-attribute 'default nil :height 160)
 
         ;; use specific font for Korean charset.
         ;; if you want to use different font size for specific charset,

@@ -39,7 +39,7 @@
  '(org-agenda-files
    '("~/projects/inovalon/inovalon-notes.org" "~/shyam/home/payments.org" "~/shyam/macbook/today.org" "~/shyam/macbook/buf.org"))
  '(package-selected-packages
-   '(mermaid-mode fzf zenburn-theme typescript-mode powershell dired-subtree projectile edit-indirect php-mode plantuml-mode restclient nord-theme htmlize wsd-mode cql-mode kotlin-mode csv-mode graphviz-dot-mode yasnippet yaml-mode which-key web-mode vlf use-package try terraform-mode markdown-mode json-mode groovy-mode go-mode emmet-mode dockerfile-mode cypher-mode command-log-mode base16-theme auto-complete))
+   '(mermaid-mode fzf zenburn-theme typescript-mode powershell dired-subtree projectile edit-indirect php-mode plantuml-mode restclient nord-theme htmlize wsd-mode cql-mode kotlin-mode csv-mode graphviz-dot-mode yasnippet yaml-mode which-key web-mode vlf use-package try terraform-mode markdown-mode json-mode groovy-mode go-mode emmet-mode dockerfile-mode cypher-mode command-log-mode auto-complete))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
