@@ -238,7 +238,6 @@
        (plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
        )
    #+END_SRC
-
 *** Plantuml jar path
     #+begin_example emacs-lisp
       (defun unbrew (src target)
@@ -281,6 +280,13 @@
       (use-package edit-indirect
         :ensure t)
     #+END_SRC
+** Asciidoc
+   #+begin_src emacs-lisp
+     (use-package adoc-mode
+       :ensure t
+       :init
+       (add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
+   #+end_src
 ** +Fzf+
    **NOTE** This package does not work because of trailing whitespace in selection
    #+BEGIN_EXAMPLE emacs-lisp
