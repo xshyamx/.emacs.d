@@ -216,7 +216,7 @@
 ** Go
    #+BEGIN_SRC emacs-lisp
      (use-package go-mode
-       :ensure t
+       :command (go-mode)
        :init
        (add-hook 'before-save-hook #'gofmt-before-save))
    #+END_SRC
@@ -845,7 +845,9 @@
    #+BEGIN_SRC emacs-lisp
      (defalias 'projectile-find-file 'fzf-projectile)
    #+END_SRC
-* Finally 
+* Finally
+  Also use =M-x emacs-init-time= to find out how long emacs took to
+  load
   #+BEGIN_SRC emacs-lisp
     (message "Loaded all from shyam-emacs.org")
   #+END_SRC
