@@ -1,4 +1,7 @@
 #+STARTUP: content
+* Init file
+  #+include: "~/dotfiles/emacs/.emacs.d/init.el" src emacs-lisp
+** [[https://github.com/jwiegley/use-package#getting-started][Use Package Help]]
 * Interface Tweaks
 ** Allow following of symlinks
    From [[https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links][Emacs and symbolic links]]
@@ -127,6 +130,7 @@
        )
       )
    #+END_SRC
+
 ** Update environment variable =PATH=
    #+BEGIN_EXAMPLE emacs-lisp
      (setenv
@@ -147,11 +151,11 @@
       )
    #+END_EXAMPLE
 
-** Run in interactive shell
+** +Run in interactive shell+
    [[https://stackoverflow.com/questions/12224909/is-there-a-way-to-get-my-emacs-to-recognize-my-bash-aliases-and-custom-functions/12229404#12229404][Is there a way to get my emacs to recognize my bash aliases and custom functions when I run a shell command?]]
-   #+begin_src emacs-lisp
+   #+begin_example emacs-lisp
      (setq shell-command-switch "-ic")
-   #+end_src
+   #+end_example
 * GNU/MELPA Packages
 ** Try
    #+BEGIN_SRC emacs-lisp
@@ -209,14 +213,17 @@
        (add-hook 'web-mode-hook  'emmet-mode))
    #+END_SRC
 ** JSON
+   Depends on [[JQ Mode]]
    #+BEGIN_SRC emacs-lisp
      (use-package json-mode
-       :ensure t)
+       :ensure t
+       :bind (:map json-mode-map
+		   ("C-c C-j" . 'jq-interactively))
+       )
    #+END_SRC
 ** Go
    #+BEGIN_SRC emacs-lisp
      (use-package go-mode
-       :command (go-mode)
        :init
        (add-hook 'before-save-hook #'gofmt-before-save))
    #+END_SRC
@@ -347,11 +354,30 @@
      (use-package wsd-mode
        :ensure t)
    #+END_SRC
-** REST Client
-   #+BEGIN_SRC emacs-lisp
+** [[https://github.com/ljos/jq-mode][JQ Mode]]
+   #+begin_src emacs-lisp
+     (use-package jq-mode
+       :ensure t
+       :init
+       (add-to-list 'auto-mode-alist '("\\.jq" . jq-mode))
+       :custom
+       (jq-interactive-command "/usr/local/bin/jq")
+       )
+   #+end_src
+** [[https://github.com/pashky/restclient.el][REST Client]]
+   #+begin_example emacs-lisp
      (use-package restclient
        :ensure t)
-   #+END_SRC
+   #+end_example
+*** Latest from source to support jq
+    Requires [[JQ Mode]]
+    #+begin_src emacs-lisp
+      (add-to-list
+       'load-path
+       (expand-file-name "~/.emacs.d/site-lisp/restclient"))
+      (require 'restclient)
+      (require 'restclient-jq)
+    #+end_src
 ** Ditaa
    #+BEGIN_SRC emacs-lisp
      (org-babel-do-load-languages
