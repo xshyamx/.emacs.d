@@ -170,6 +170,10 @@
        :config
        (exec-path-from-shell-initialize))
    #+END_EXAMPLE
+*** Set path manually
+    #+begin_src emacs-lisp
+      (setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/go/bin:/usr/local/bin"))
+    #+end_src
 ** Which Key
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
@@ -412,6 +416,13 @@
 	      )
      )
    #+END_SRC
+** JSX Support
+   #+begin_src emacs-lisp
+     (use-package rjsx-mode
+       :ensure t)
+     (add-to-list 'auto-mode-alist '("\.tsx\\'" . rjsx-mode))
+     (add-to-list 'auto-mode-alist '("\.jsx\\'" . rjsx-mode))
+   #+end_src
 * Packages not in ELPA/MELPA 
 ** Visual Basic Mode
    From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
