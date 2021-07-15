@@ -144,6 +144,7 @@
 	  "/Users/shyam/bin"
 	  "/Users/shyam/go/bin"
 	  "/Users/shyam/.yarn/bin"
+	  "/Users/shyam/.cargo/bin"
 	  "/Users/shyam/Library/Python/2.7/bin"
 	  )
 	":")
@@ -172,8 +173,14 @@
    #+END_EXAMPLE
 *** Set path manually
     #+begin_src emacs-lisp
-      (setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/go/bin:/usr/local/bin"))
+      (setenv "PATH"
+	      (concat
+	       (getenv "PATH")
+	       ":" (getenv "HOME") "/go/bin"
+	       ":" (getenv "HOME") "/.cargo/bin"
+	       ":/usr/local/bin"))
     #+end_src
+
 ** Which Key
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
@@ -226,10 +233,20 @@
        )
    #+END_SRC
 ** Go
+   https://geeksocket.in/posts/emacs-lsp-go/
    #+BEGIN_SRC emacs-lisp
+     ;; Go - lsp-mode
+     ;; Set up before-save hooks to format buffer and add/delete imports.
+     (defun lsp-go-install-save-hooks ()
+       (add-hook 'before-save-hook #'lsp-format-buffer t t)
+       (add-hook 'before-save-hook #'lsp-organize-imports t t))
+     (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
      (use-package go-mode
        :init
-       (add-hook 'before-save-hook #'gofmt-before-save))
+       (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+       (add-hook 'go-mode-hook #'lsp-deferred)
+       (add-hook 'go-mode-hook #'yas-minor-mode))
+     ;  (add-hook 'before-save-hook #'gofmt-before-save))
    #+END_SRC
 ** Graphviz
    #+BEGIN_SRC emacs-lisp
@@ -422,6 +439,35 @@
        :ensure t)
      (add-to-list 'auto-mode-alist '("\.tsx\\'" . rjsx-mode))
      (add-to-list 'auto-mode-alist '("\.jsx\\'" . rjsx-mode))
+   #+end_src
+** Rust
+   #+begin_src emacs-lisp
+     (use-package rust-mode
+       :ensure t)
+   #+end_src
+** LSP
+   Check if executable is in the path `(executable-find "gopls")`
+   #+begin_src emacs-lisp
+     (use-package lsp-mode
+       :ensure t
+       :config
+       (add-hook 'go-mode-hook #'lsp-deferred)
+       (add-hook 'js-mode-hook #'lsp-deferred)
+       (add-hook 'css-mode-hook #'lsp-deferred)
+       (add-hook 'html-mode-hook #'lsp-deferred)
+       (setq lsp-rust-rls-server-command (concat (getenv "HOME") "/.cargo/bin/rust-analyzer"))
+       (add-hook 'rust-mode-hook #'lsp-deferred)
+       )
+     (use-package lsp-ui
+       :ensure t)
+   #+end_src
+** Company for text completion
+   #+begin_src emacs-lisp
+     (use-package company
+       :ensure t
+       :config
+       (setq company-idle-delay 0)
+       (setq company-minimum-prefix-length 1))
    #+end_src
 * Packages not in ELPA/MELPA 
 ** Visual Basic Mode
