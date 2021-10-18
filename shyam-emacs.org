@@ -126,6 +126,7 @@
 	 "/Users/shyam/go/bin"
 	 "/Users/shyam/.yarn/bin"
 	 "/Users/shyam/Library/Python/2.7/bin"
+	 "/Users/shyam/.nvm/versions/node/v16.4.2/bin"
 	 )
        )
       )
@@ -206,7 +207,7 @@
        :ensure t
        :init
        (ac-config-default)
-       (global-auto-complete-mode t)
+     ;  (global-auto-complete-mode t)
        )
    #+END_SRC
 ** Web Mode
@@ -230,6 +231,8 @@
        :ensure t
        :bind (:map json-mode-map
 		   ("C-c C-j" . 'jq-interactively))
+       :custom
+       (tab-width 2)
        )
    #+END_SRC
 ** Go
@@ -245,7 +248,10 @@
        :init
        (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
        (add-hook 'go-mode-hook #'lsp-deferred)
-       (add-hook 'go-mode-hook #'yas-minor-mode))
+       (add-hook 'go-mode-hook #'yas-minor-mode)
+       :custom
+       (tab-width 2)
+       )
      ;  (add-hook 'before-save-hook #'gofmt-before-save))
    #+END_SRC
 ** Graphviz
@@ -288,8 +294,9 @@
    #+end_src
 ** Yaml
    #+BEGIN_SRC emacs-lisp
-     (use-package yaml-mode
-       :ensure t)
+		 (use-package yaml-mode
+			 :ensure t
+			 :hook whitespace-mode)
    #+END_SRC
 ** Markdown
    Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is installed via go get
@@ -451,6 +458,7 @@
      (use-package lsp-mode
        :ensure t
        :config
+       (setq lsp-log-io nil) ; only enable for debugging
        (add-hook 'go-mode-hook #'lsp-deferred)
        (add-hook 'js-mode-hook #'lsp-deferred)
        (add-hook 'css-mode-hook #'lsp-deferred)
@@ -911,10 +919,10 @@
    #+END_SRC
 ** Yaml mode
    #+BEGIN_SRC emacs-lisp
-     (add-hook 'yaml-mode-hook
-               '(lambda ()
-                  (yas-reload-all)
-                  (yas-minor-mode)))
+		 (add-hook 'yaml-mode-hook
+							 '(lambda ()
+									(yas-reload-all)
+									(yas-minor-mode)))
    #+END_SRC
 ** Html mode
    #+BEGIN_SRC emacs-lisp
