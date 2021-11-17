@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: !m
+# key: !m
+# --
+@startmindmap
+$0
+@endmindmap

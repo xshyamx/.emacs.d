@@ -1,8 +1,5 @@
 # -*- mode: snippet -*-
-# name: !
-# key: !
+# name: t
+# key: t
 # --
-@startuml
 skinparam backgroundcolor transparent
-$0
-@enduml

@@ -288,7 +288,7 @@
      (use-package mermaid-mode
        :ensure t
        :custom
-       (mermaid-mmdc-location "/usr/local/bin/mmdc")
+       (mermaid-mmdc-location "/usr/bin/env mmdc")
        (mermaid-output-format ".png")
      )
    #+end_src
