@@ -294,9 +294,12 @@
    #+end_src
 ** Yaml
    #+BEGIN_SRC emacs-lisp
-		 (use-package yaml-mode
-			 :ensure t
-			 :hook whitespace-mode)
+					(use-package yaml-mode
+						:ensure t
+						:hook whitespace-mode
+						:config
+						(setq indent-tabs-mode nil)
+		 )
    #+END_SRC
 ** Markdown
    Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is installed via go get
@@ -477,6 +480,17 @@
        (setq company-idle-delay 0)
        (setq company-minimum-prefix-length 1))
    #+end_src
+** [[https://github.com/hakimel/reveal.js][Reveal.js]] & [[https://github.com/yjwen/org-reveal][ox-reveal]]
+	 #+begin_src emacs-lisp
+		 (use-package ox-reveal
+			 :ensure t
+			 :config
+			 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
+
+		 ; htmlize dependency
+		 (use-package htmlize
+			 :ensure t)
+	 #+end_src
 * Packages not in ELPA/MELPA 
 ** Visual Basic Mode
    From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
