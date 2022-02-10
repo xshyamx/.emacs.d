@@ -191,10 +191,12 @@
    #+END_SRC
 ** Yasnippet
    #+BEGIN_SRC emacs-lisp
-     (use-package yasnippet
-       :ensure t
-       :init
-       (add-hook 'restclient-mode-hook #'yas-minor-mode))
+		 (use-package yasnippet
+			 :ensure t
+			 :init
+			 (add-hook 'restclient-mode-hook #'yas-minor-mode)
+			 (add-hook 'org-mode-hook #'yas-minor-mode))
+
    #+END_SRC
 ** Dockerfile
    #+BEGIN_SRC emacs-lisp
@@ -489,6 +491,11 @@
 
 		 ; htmlize dependency
 		 (use-package htmlize
+			 :ensure t)
+	 #+end_src
+** Rego
+	 #+begin_src emacs-lisp
+		 (use-package rego-mode
 			 :ensure t)
 	 #+end_src
 * Packages not in ELPA/MELPA 
