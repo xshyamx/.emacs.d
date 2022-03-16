@@ -31,7 +31,7 @@
    #+BEGIN_SRC emacs-lisp
      (tool-bar-mode -1)
    #+END_SRC
-** Hide the menubar
+** +Hide the menubar+
    #+BEGIN_EXAMPLE emacs-lisp
      ;; do not show menubar
      (menu-bar-mode -1)
@@ -96,22 +96,20 @@
    position the emacs window it the bottom right
    find out the current width and height using =(frame-width)= & =(frame-height)= functions
    find out the current position using =(frame-parameters (selected-frame))=
-   #+BEGIN_EXAMPLE emacs-lisp
-     (let ((frame-params (frame-parameters (selected-frame))))
-       (list
-	(assq 'top frame-params)
-	(assq 'left frame-params)
-	(cons 'width  (frame-width))
-	(cons 'height  (frame-height))
-	)
-       )
-   #+END_EXAMPLE
-
+   #+begin_example emacs-lisp
+		 (let ((frame-params (frame-parameters (selected-frame))))
+			 (list
+				(assq 'top frame-params)
+				(assq 'left frame-params)
+				(cons 'width  (frame-width))
+				(cons 'height  (frame-height))
+				)
+			 )
+   #+end_example
 ** Set the current position
    #+BEGIN_SRC emacs-lisp
-     (setq default-frame-alist
-     '((top . 81) (left . 742) (width . 130) (height . 50)))
-     ;;      '((top . 9) (left . 445) (width . 108) (width . 41)))
+		 (setq default-frame-alist
+					 '((top . 34) (left . 646) (width . 110) (height . 50)))
    #+END_SRC
 * Update the exec-path
 ** Update the emacs =exec-path=
