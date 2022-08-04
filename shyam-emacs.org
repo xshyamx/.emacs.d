@@ -264,23 +264,56 @@
    #+END_SRC
 ** Plantuml
    #+BEGIN_SRC emacs-lisp
-     (use-package plantuml-mode
-       :ensure t
-       :custom
-       (plantuml-default-exec-mode 'executable)
-       (plantuml-executable-path "/usr/local/bin/plantuml")
-       (plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-       )
+		 (use-package plantuml-mode
+			 :ensure t
+			 :bind (("C-c C-p" . 'plantuml-export))
+			 :custom
+			 (plantuml-default-exec-mode 'executable)
+			 (plantuml-executable-path "/usr/local/bin/plantuml")
+			 (plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
+			 (org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
+			 )
+		 ;(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+		 ;(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+		 ;; export to file function
+		 (defun plantuml-export-file (fname)
+			 "Compile the graph and preview it in an other buffer."
+			 (interactive)
+			 (let ((f-name (concat (f-no-ext fname) ".png"))
+						 (command-result (string-trim (shell-command-to-string (concat plantuml-executable-path " -t" plantuml-output-type " " (shell-quote-argument (expand-file-name fname)) " -o " (shell-quote-argument (f-dirname (expand-file-name fname))))))))
+				 (if (string-prefix-p "Exception:" command-result)
+						 (message command-result)
+					 (progn
+						 (sleep-for 0 5)
+						 (with-selected-window (selected-window)
+							 (switch-to-buffer-other-window (find-file-noselect f-name t))
+							 ;; I get "changed on disk; really edit the buffer?" prompt w/o this
+							 (sleep-for 0 50)
+							 (revert-buffer t t))))))
+		 (defun plantuml-export ()
+						"Compile the graph and preview it in an other buffer."
+						(interactive)
+						(let ((f-name (concat (f-no-ext (expand-file-name (buffer-file-name))) ".png"))
+									(command-result (string-trim (shell-command-to-string (concat plantuml-executable-path " -t" plantuml-output-type " " (shell-quote-argument (expand-file-name (buffer-file-name))) " -o " (shell-quote-argument (f-dirname (expand-file-name (buffer-file-name)))))))))
+							(if (string-prefix-p "Exception:" command-result)
+									(message command-result)
+								(progn
+									(sleep-for 0 5)
+									(with-selected-window (selected-window)
+										(switch-to-buffer-other-window (find-file-noselect f-name t))
+										;; I get "changed on disk; really edit the buffer?" prompt w/o this
+										(sleep-for 0 50)
+										(revert-buffer t t))))))
    #+END_SRC
 *** Plantuml jar path
     #+begin_example emacs-lisp
-      (defun unbrew (src target)
-	(setq brew-prefix "/usr/local")
-	(setq plantuml-prefix (file-chase-links (format "%s/%s" brew-prefix src)))
-	(replace-regexp-in-string src target plantuml-prefix)
-	)
-       (message (unbrew "bin/plantuml" "libexec/plantuml.jar"))
-      (custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
+			(defun unbrew (src target)
+				(setq brew-prefix "/usr/local")
+				(setq plantuml-prefix (file-chase-links (format "%s/%s" brew-prefix src)))
+				(replace-regexp-in-string src target plantuml-prefix)
+				)
+			(message (unbrew "bin/plantuml" "libexec/plantuml.jar"))
+			(custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
     #+end_example
 ** Mermaid
    Ensure that the NPM package =mermaid.cli= is installed globally
