@@ -2,7 +2,7 @@
 # name: !
 # key: !
 # --
-@startuml
+@start${1:$$(yas-choose-value '("uml" "mindmap" "gantt" "wbs" "json" "yaml" "salt"))}
 skinparam backgroundcolor transparent
 $0
-@enduml
+@end$1

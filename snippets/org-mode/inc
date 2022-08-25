@@ -2,4 +2,4 @@
 # name: inc
 # key: inc
 # --
-#+include: "./org-includes/2014/$2" src ${1:sh}
+#+include: "./org-includes/`(format-time-string "%Y")`/$2" src ${1:sh}
