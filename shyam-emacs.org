@@ -266,7 +266,7 @@
    #+BEGIN_SRC emacs-lisp
 		 (use-package plantuml-mode
 			 :ensure t
-			 :bind (("C-c C-p" . 'plantuml-export))
+			 :bind (:map plantuml-mode-map ("C-c C-p" . 'plantuml-export))
 			 :custom
 			 (plantuml-default-exec-mode 'executable)
 			 (plantuml-executable-path "/usr/local/bin/plantuml")
