@@ -31,7 +31,7 @@
  '(custom-safe-themes
 	 '("e6df46d5085fde0ad56a46ef69ebb388193080cc9819e2d6024c9c6e27388ba9" "f2c35f8562f6a1e5b3f4c543d5ff8f24100fae1da29aeb1864bbc17758f52b70" "816bacf37139d6204b761fea0d25f7f2f43b94affa14aa4598bce46157c160c2" "bf390ecb203806cbe351b966a88fc3036f3ff68cd2547db6ee3676e87327b311" default))
  '(exec-path
-	 '("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14" "/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14" "/Applications/Emacs.app/Contents/MacOS/libexec" "/Applications/Emacs.app/Contents/MacOS/bin" "/usr/local/bin" "/Users/shyam/bin" "/Users/shyam/go/bin" "/Users/shyam/Library/Python/2.7/bin"))
+	 '("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14" "/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14" "/Applications/Emacs.app/Contents/MacOS/libexec" "/Applications/Emacs.app/Contents/MacOS/bin" "/usr/local/bin" "/Users/shyam/go/bin" "/Users/shyam/Library/Python/2.7/bin" "/Users/shyam/.arkade/bin"))
  '(fci-rule-color "#383838")
  '(fzf/executable "/usr/local/bin/fzf")
  '(graphviz-dot-dot-program "/usr/local/bin/dot")
@@ -41,9 +41,14 @@
 	 '("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3"))
  '(org-agenda-files
 	 '("~/projects/inovalon/inovalon-notes.org" "~/shyam/home/payments.org" "~/shyam/macbook/today.org" "~/shyam/macbook/buf.org"))
+ '(org-ditaa-jar-option "-jar -Dawt.headless=true")
  '(package-selected-packages
 	 '(ox-reveal lsp-metals company company-mode rust-mode svelte-mode rjsx-mode scala-mode org org-drill adoc-mode mermaid-mode fzf zenburn-theme typescript-mode powershell dired-subtree projectile edit-indirect php-mode plantuml-mode nord-theme htmlize wsd-mode cql-mode kotlin-mode csv-mode graphviz-dot-mode yasnippet yaml-mode which-key web-mode vlf use-package try terraform-mode markdown-mode json-mode groovy-mode go-mode emmet-mode dockerfile-mode cypher-mode command-log-mode auto-complete))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
+ '(plantuml-executable-path "/usr/local/bin/plantuml")
+ '(plantuml-indent-level 2)
+ '(plantuml-jar-args '("-charset" "UTF-8" "-Djava.awt.headless=true"))
+ '(plantuml-suppress-deprecation-warning nil)
  '(safe-local-variable-values '((org-image-actual-width)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
