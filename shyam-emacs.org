@@ -79,17 +79,22 @@
    #+END_SRC
 ** Use ido mode
    #+BEGIN_SRC emacs-lisp
-     (ido-mode 1)
+		 ;; enable ido completions
+		 (ido-mode 1)
+		 ;; non-contiguos chars matching
+		 (setq ido-enable-flex-matching t)
    #+END_SRC
 * Autosave & Backups
   Change the backup directory to be inside .emacs.d so that it does
   not litter directories with the backup files
   #+BEGIN_SRC emacs-lisp
-    (setq auto-save-default nil)
-    (setq auto-save-file-name-transforms
-          '((".*" "~/.emacs.d/autosaves/\\1" t)))
-    (setq backup-directory-alist
-          '((".*" . "~/.emacs.d/backups/")))
+		(setq auto-save-default nil)
+		;; configure autosaves to folder
+		(setq auto-save-file-name-transforms
+					'(("." "~/.emacs.d/autosaves/\\1" t)))
+		;; move backups to different folder
+		(setq backup-directory-alist
+					'(("." . "~/.emacs.d/backups/")))
   #+END_SRC
 * Position the Emacs frame
 ** Find current coordinates
