@@ -9,10 +9,16 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(setq use-package-verbose t)
+;(setq use-package-verbose t)
 
 ;; have this as early as possible
 (setq vc-follow-symlinks t)
+
+;; or alternatively use emacs-init-time function
+(defun print-startup-time ()
+	(message "Emacs loaded in %s seconds with %d garbage collection" (emacs-init-time "%.02f") gcs-done))
+(add-hook 'emacs-startup-hook #'print-startup-time)
+
 
 (require 'org)
 ;(add-to-list 'org-structure-template-alist
