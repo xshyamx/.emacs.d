@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: fw
+# key: fw
+# expand-env: ((yas/indent-line 'fixed))
+# --
+#+attr_html: :width 100%
