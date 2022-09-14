@@ -1,6 +1,6 @@
 #+STARTUP: content
 * Init file
-  #+include: "~/dotfiles/emacs/.emacs.d/init.el" src emacs-lisp
+#+include: "~/dotfiles/emacs/.emacs.d/init.el" src emacs-lisp
 ** [[https://github.com/jwiegley/use-package#getting-started][Use Package Help]]
 ** Print startup time
 #+begin_src emacs-lisp
@@ -17,74 +17,74 @@ Moved to init.el
 (setq vc-follow-symlinks t)
 #+end_example
 ** Remove startup screen
-   #+BEGIN_SRC emacs-lisp
-     (setq inhibit-startup-screen t)
-   #+END_SRC
+#+begin_src emacs-lisp
+	(setq inhibit-startup-screen t)
+#+end_src
 ** Save active buffers on restart
-   #+BEGIN_SRC emacs-lisp
-     (desktop-save-mode t)
-   #+END_SRC
+#+begin_src emacs-lisp
+	(desktop-save-mode t)
+#+end_src
 ** Use y/p instead of yes/no
 #+begin_src emacs-lisp
 	(defalias 'yes-or-no-p 'y-or-n-p "Use y/n instead of yes/no")
 #+end_src
 ** Use utf-8 encoding everywhere
-   #+BEGIN_SRC emacs-lisp
-     ;; set default encoding for all files
-     (set-language-environment "UTF-8")
-     (set-default-coding-systems 'utf-8)
-     ;(set-buffer-file-coding-system 'utf-8-unix)
-   #+END_SRC
+#+begin_src emacs-lisp
+	;; set default encoding for all files
+	(set-language-environment "UTF-8")
+	(set-default-coding-systems 'utf-8)
+	;(set-buffer-file-coding-system 'utf-8-unix)
+#+end_src
 ** Remove the toolbar
 #+begin_src emacs-lisp
 	(tool-bar-mode -1)
 #+end_src
 ** +Hide the menubar+
-   #+BEGIN_EXAMPLE emacs-lisp
-     ;; do not show menubar
-     (menu-bar-mode -1)
-   #+END_EXAMPLE
+#+begin_example emacs-lisp
+  ;; do not show menubar
+  (menu-bar-mode -1)
+#+end_example
 ** Hide the scroll bar
-   #+BEGIN_SRC emacs-lisp
-     (scroll-bar-mode -1)
-   #+END_SRC
+#+begin_src emacs-lisp
+	(scroll-bar-mode -1)
+#+end_src
 ** Do not allow new emacs frames
-   From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-file-in-a-new-buffer-not-frame-and-be-activated-com][Do not allow new buffer frames]]
-   #+BEGIN_SRC emacs-lisp
-     (setq ns-pop-up-frames nil)
-   #+END_SRC
+From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-file-in-a-new-buffer-not-frame-and-be-activated-com][Do not allow new buffer frames]]
+#+begin_src emacs-lisp
+	(setq ns-pop-up-frames nil)
+#+end_src
 ** Visble bell
-   #+BEGIN_SRC emacs-lisp
-     (setq visible-bell nil
-           ring-bell-function 'flash-mode-line)
-     (defun flash-mode-line ()
-       (invert-face 'mode-line)
-       (run-with-timer 0.1 nil #'invert-face 'mode-line))
-   #+END_SRC
+#+begin_src emacs-lisp
+	(setq visible-bell nil
+				ring-bell-function 'flash-mode-line)
+	(defun flash-mode-line ()
+		(invert-face 'mode-line)
+		(run-with-timer 0.1 nil #'invert-face 'mode-line))
+#+end_src
 *** +Disable Completely+
-    #+BEGIN_EXAMPLE emacs-lisp
-      (setq ring-bell-function 'ignore)
-    #+END_EXAMPLE
+ #+begin_example emacs-lisp
+   (setq ring-bell-function 'ignore)
+ #+end_example
 ** Size indication?
-   #+BEGIN_SRC emacs-lisp
-     (setq size-indication-mode t)
-   #+END_SRC
+#+begin_src emacs-lisp
+	(setq size-indication-mode t)
+#+end_src
 ** Display the column numbers
-  #+BEGIN_SRC emacs-lisp
-    (setq column-number-mode t)
-  #+END_SRC
+#+begin_src emacs-lisp
+		(setq column-number-mode t)
+#+end_src
 ** Electric pair mode everywhere
-   #+BEGIN_SRC emacs-lisp
-     (electric-pair-mode 1)
-   #+END_SRC
+#+begin_src emacs-lisp
+	(electric-pair-mode 1)
+#+end_src
 ** +Higlight current line globally+
-   #+BEGIN_EXAMPLE emacs-lisp
-     (global-hl-line-mode t)
-   #+END_EXAMPLE
+#+begin_example emacs-lisp
+  (global-hl-line-mode t)
+#+end_example
 ** Replace BufferMenu with ibuffer
-   #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "C-x C-b") 'ibuffer)
-   #+END_SRC
+#+begin_src emacs-lisp
+	(global-set-key (kbd "C-x C-b") 'ibuffer)
+#+end_src
 ** Save histories
 #+begin_src emacs-lisp
 	;; persist minibuffer history across sessions
@@ -96,12 +96,12 @@ Moved to init.el
 	(setq view-read-only t)
 #+end_src
 ** Use fido vertical mode
-   #+BEGIN_SRC emacs-lisp
-		 ;; enable ido completions
-		 (fido-vertical-mode 1)
-		 ;; non-contiguos chars matching
-		 ;(setq ido-enable-flex-matching t)
-   #+END_SRC
+#+begin_src emacs-lisp
+	;; enable ido completions
+	(fido-vertical-mode 1)
+	;; non-contiguos chars matching
+	;(setq ido-enable-flex-matching t)
+#+end_src
 ** Set calendar options
 #+begin_src emacs-lisp
 	(calendar-set-date-style 'iso)
@@ -162,19 +162,19 @@ Moved to init.el
 	(add-hook 'emacs-lisp-mode-hook #'eldoc-readonly)
 #+end_src
 * Autosave & Backups
-  Change the backup directory to be inside .emacs.d so that it does
-  not litter directories with the backup files
-  #+BEGIN_SRC emacs-lisp
-		(setq auto-save-default nil)
-		;; configure autosaves to folder
-		(setq auto-save-file-name-transforms
-					'(("." "~/.emacs.d/autosaves/\\1" t)))
-		;; move backups to different folder
-		(setq backup-directory-alist
-					'((".*" . "~/.emacs.d/backups/")))
-		;; do not create lockfiles
-		(setq create-lockfiles nil)
-  #+END_SRC
+Change the backup directory to be inside .emacs.d so that it does
+not litter directories with the backup files
+#+begin_src emacs-lisp
+	(setq auto-save-default nil)
+	;; configure autosaves to folder
+	(setq auto-save-file-name-transforms
+				'(("." "~/.emacs.d/autosaves/\\1" t)))
+	;; move backups to different folder
+	(setq backup-directory-alist
+				'((".*" . "~/.emacs.d/backups/")))
+	;; do not create lockfiles
+	(setq create-lockfiles nil)
+#+end_src
 * Position the Emacs frame
 ** Find current coordinates
 1. Position the emacs window in the bottom right
@@ -197,7 +197,7 @@ Moved to init.el
 #+end_src
 * Update the exec-path
 ** Update the emacs =exec-path=
-   #+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 		 (setq
 			exec-path
 			(append
@@ -211,7 +211,7 @@ Moved to init.el
 				 )
 			 )
 			)
-   #+END_SRC
+#+end_src
 
 ** Update environment variable =PATH=
 #+begin_example emacs-lisp
@@ -233,120 +233,119 @@ Moved to init.el
 		)
 	 )
 #+end_example
-
 ** +Run in interactive shell+
-   [[https://stackoverflow.com/questions/12224909/is-there-a-way-to-get-my-emacs-to-recognize-my-bash-aliases-and-custom-functions/12229404#12229404][Is there a way to get my emacs to recognize my bash aliases and custom functions when I run a shell command?]]
-   #+begin_example emacs-lisp
-     (setq shell-command-switch "-ic")
-   #+end_example
+[[https://stackoverflow.com/questions/12224909/is-there-a-way-to-get-my-emacs-to-recognize-my-bash-aliases-and-custom-functions/12229404#12229404][Is there a way to get my emacs to recognize my bash aliases and custom functions when I run a shell command?]]
+#+begin_example emacs-lisp
+  (setq shell-command-switch "-ic")
+#+end_example
 * GNU/MELPA Packages
 ** Try
-   #+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 		 (use-package try
 			 :ensure t)
-   #+END_SRC
+#+end_src
 ** +Set exec-path from shell+
-   Causes LC_ENCODING issues with projectile-find-file
-   #+BEGIN_EXAMPLE
+Causes LC_ENCODING issues with projectile-find-file
+#+begin_example
 		 (use-package exec-path-from-shell
 			 :ensure t
 			 :config
 			 (exec-path-from-shell-initialize))
-   #+END_EXAMPLE
+#+end_example
 *** Set path manually
-    #+begin_src emacs-lisp
+ #+begin_src emacs-lisp
 			(setenv "PATH"
 							(concat
 							 (getenv "PATH")
 							 ":" (getenv "HOME") "/go/bin"
 							 ":" (getenv "HOME") "/.cargo/bin"
 							 ":/usr/local/bin"))
-    #+end_src
+ #+end_src
 
 ** Which Key
-   #+BEGIN_SRC emacs-lisp
-     (use-package which-key
-       :ensure t
-       :config
-       (which-key-mode))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config
+    (which-key-mode))
+#+end_src
 ** Yasnippet
-   #+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 		 (use-package yasnippet
 			 :ensure t
 			 :init
 			 (add-hook 'restclient-mode-hook #'yas-minor-mode)
 			 (add-hook 'org-mode-hook #'yas-minor-mode))
 
-   #+END_SRC
+#+end_src
 ** Dockerfile
-   #+BEGIN_SRC emacs-lisp
-     (use-package dockerfile-mode
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package dockerfile-mode
+    :ensure t)
+#+end_src
 ** Autocomplete
-   #+BEGIN_SRC emacs-lisp
-     (use-package auto-complete
-       :ensure t
-       :init
-       (ac-config-default)
-     ;  (global-auto-complete-mode t)
-       )
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package auto-complete
+    :ensure t
+    :init
+    (ac-config-default)
+  ;  (global-auto-complete-mode t)
+    )
+#+end_src
 ** Web Mode
-   #+BEGIN_SRC emacs-lisp
-     (use-package web-mode
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :ensure t)
+#+end_src
 ** Emmet
-   #+BEGIN_SRC emacs-lisp
-     (use-package emmet-mode
-       :ensure t
-       :config
-       (add-hook 'sgml-mode-hook 'emmet-mode)
-       (add-hook 'html-mode-hook 'emmet-mode)
-       (add-hook 'web-mode-hook  'emmet-mode))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package emmet-mode
+    :ensure t
+    :config
+    (add-hook 'sgml-mode-hook 'emmet-mode)
+    (add-hook 'html-mode-hook 'emmet-mode)
+    (add-hook 'web-mode-hook  'emmet-mode))
+#+end_src
 ** JSON
-   Depends on [[JQ Mode]]
-   #+BEGIN_SRC emacs-lisp
-     (use-package json-mode
-       :ensure t
-       :bind (:map json-mode-map
+Depends on [[JQ Mode]]
+#+begin_src emacs-lisp
+  (use-package json-mode
+    :ensure t
+    :bind (:map json-mode-map
 		   ("C-c C-j" . 'jq-interactively))
-       :custom
-       (tab-width 2)
-       )
-   #+END_SRC
+    :custom
+    (tab-width 2)
+    )
+#+end_src
 ** Go
-   https://geeksocket.in/posts/emacs-lsp-go/
-   #+BEGIN_SRC emacs-lisp
-     ;; Go - lsp-mode
-     ;; Set up before-save hooks to format buffer and add/delete imports.
-     (defun lsp-go-install-save-hooks ()
-       (add-hook 'before-save-hook #'lsp-format-buffer t t)
-       (add-hook 'before-save-hook #'lsp-organize-imports t t))
-     (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-     (use-package go-mode
-       :init
-       (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-       (add-hook 'go-mode-hook #'lsp-deferred)
-       (add-hook 'go-mode-hook #'yas-minor-mode)
-       :custom
-       (tab-width 2)
-       )
-     ;  (add-hook 'before-save-hook #'gofmt-before-save))
-   #+END_SRC
+https://geeksocket.in/posts/emacs-lsp-go/
+#+begin_src emacs-lisp
+  ;; Go - lsp-mode
+  ;; Set up before-save hooks to format buffer and add/delete imports.
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  (use-package go-mode
+    :init
+    (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+    (add-hook 'go-mode-hook #'lsp-deferred)
+    (add-hook 'go-mode-hook #'yas-minor-mode)
+    :custom
+    (tab-width 2)
+    )
+  ;  (add-hook 'before-save-hook #'gofmt-before-save))
+#+end_src
 ** Graphviz
-   #+BEGIN_SRC emacs-lisp
-     (use-package graphviz-dot-mode
-       :ensure t
-       :custom
-        (graphviz-dot-indent-width 2 "set indent size to 2")
-        (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package graphviz-dot-mode
+    :ensure t
+    :custom
+     (graphviz-dot-indent-width 2 "set indent size to 2")
+     (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
+#+end_src
 ** Plantuml
-   #+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 		 (use-package plantuml-mode
 			 :ensure t
 			 :bind (:map plantuml-mode-map ("C-c C-p" . 'plantuml-export))
@@ -387,9 +386,9 @@ Moved to init.el
 										;; I get "changed on disk; really edit the buffer?" prompt w/o this
 										(sleep-for 0 50)
 										(revert-buffer t t))))))
-   #+END_SRC
+#+end_src
 *** Plantuml jar path
-    #+begin_example emacs-lisp
+ #+begin_example emacs-lisp
 			(defun unbrew (src target)
 				(setq brew-prefix "/usr/local")
 				(setq plantuml-prefix (file-chase-links (format "%s/%s" brew-prefix src)))
@@ -397,134 +396,134 @@ Moved to init.el
 				)
 			(message (unbrew "bin/plantuml" "libexec/plantuml.jar"))
 			(custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
-    #+end_example
+ #+end_example
 ** Mermaid
-   Ensure that the NPM package =mermaid.cli= is installed globally
-   #+begin_src emacs-lisp
-     (use-package mermaid-mode
-       :ensure t
-       :custom
-       (mermaid-mmdc-location "/usr/bin/env mmdc")
-       (mermaid-output-format ".png")
-     )
-   #+end_src
+Ensure that the NPM package =mermaid.cli= is installed globally
+#+begin_src emacs-lisp
+  (use-package mermaid-mode
+    :ensure t
+    :custom
+    (mermaid-mmdc-location "/usr/bin/env mmdc")
+    (mermaid-output-format ".png")
+  )
+#+end_src
 ** Yaml
-   #+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 					(use-package yaml-mode
 						:ensure t
 						:hook whitespace-mode
 						:config
 						(setq indent-tabs-mode nil)
 		 )
-   #+END_SRC
+#+end_src
 ** Markdown
-   Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is installed via go get
-   #+BEGIN_SRC sh
-     go get -u gitlab.com/golang-commonmark/mdtool
-   #+END_SRC
-   #+BEGIN_SRC emacs-lisp
-     (use-package markdown-mode
-       :ensure t
-       :custom
-       (markdown-command "~/go/bin/mdtool +h +ta +l")
-       )
-   #+END_SRC
+Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is installed via go get
+#+begin_src sh
+  go get -u gitlab.com/golang-commonmark/mdtool
+#+end_src
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :custom
+    (markdown-command "~/go/bin/mdtool +h +ta +l")
+    )
+#+end_src
 *** Edit indirect for editing code blocks (Still need to figure out how it works)
-    #+BEGIN_SRC emacs-lisp
-      (use-package edit-indirect
-        :ensure t)
-    #+END_SRC
+ #+begin_src emacs-lisp
+   (use-package edit-indirect
+     :ensure t)
+ #+end_src
 ** Asciidoc
-   #+begin_src emacs-lisp
-     (use-package adoc-mode
-       :ensure t
-       :init
-       (add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package adoc-mode
+    :ensure t
+    :init
+    (add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
+#+end_src
 ** +Fzf+
-   **NOTE** This package does not work because of trailing whitespace in selection
-   #+BEGIN_EXAMPLE emacs-lisp
-     (use-package fzf
-       :ensure t
-       :custom
-       (fzf/executable "/usr/local/bin/fzf" "Set correct path"))
-   #+END_EXAMPLE
+**NOTE** This package does not work because of trailing whitespace in selection
+#+begin_example emacs-lisp
+  (use-package fzf
+    :ensure t
+    :custom
+    (fzf/executable "/usr/local/bin/fzf" "Set correct path"))
+#+end_example
 ** Cypher
-   #+BEGIN_SRC emacs-lisp
-     (use-package cypher-mode
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package cypher-mode
+    :ensure t)
+#+end_src
 ** Terraform
-   #+BEGIN_SRC emacs-lisp
-     (use-package terraform-mode
-       :ensure t
-       :init
-       (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package terraform-mode
+    :ensure t
+    :init
+    (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
+#+end_src
 ** Groovy
-   #+BEGIN_SRC emacs-lisp
-     (use-package groovy-mode
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package groovy-mode
+    :ensure t)
+#+end_src
 ** vlf
-   #+BEGIN_SRC emacs-lisp
-     (use-package vlf
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package vlf
+    :ensure t)
+#+end_src
 ** CSV
-   #+BEGIN_SRC emacs-lisp
-     (use-package csv-mode
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package csv-mode
+    :ensure t)
+#+end_src
 ** Kotlin
-   #+BEGIN_SRC emacs-lisp
-     (use-package kotlin-mode
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package kotlin-mode
+    :ensure t)
+#+end_src
 ** CQL Mode
-   #+BEGIN_SRC emacs-lisp
-     (use-package cql-mode
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package cql-mode
+    :ensure t)
+#+end_src
 ** Powershell
-   #+BEGIN_SRC emacs-lisp
-     (use-package powershell
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package powershell
+    :ensure t)
+#+end_src
 ** Typescript
-   #+BEGIN_SRC emacs-lisp
-     (use-package typescript-mode
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package typescript-mode
+    :ensure t)
+#+end_src
 ** Web Sequence Diagrams
-   #+BEGIN_SRC emacs-lisp
-     (use-package wsd-mode
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package wsd-mode
+    :ensure t)
+#+end_src
 ** [[https://github.com/ljos/jq-mode][JQ Mode]]
-   #+begin_src emacs-lisp
-     (use-package jq-mode
-       :ensure t
-       :init
-       (add-to-list 'auto-mode-alist '("\\.jq" . jq-mode))
-       :custom
-       (jq-interactive-command "/usr/local/bin/jq")
-       )
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package jq-mode
+    :ensure t
+    :init
+    (add-to-list 'auto-mode-alist '("\\.jq" . jq-mode))
+    :custom
+    (jq-interactive-command "/usr/local/bin/jq")
+    )
+#+end_src
 ** [[https://github.com/pashky/restclient.el][REST Client]]
-   #+begin_example emacs-lisp
-     (use-package restclient
-       :ensure t)
-   #+end_example
+#+begin_example emacs-lisp
+  (use-package restclient
+    :ensure t)
+#+end_example
 *** Latest from source to support jq
-    Requires [[JQ Mode]]
-    #+begin_src emacs-lisp
-      (add-to-list
-       'load-path
-       (expand-file-name "~/.emacs.d/site-lisp/restclient"))
-      (require 'restclient)
-      (require 'restclient-jq)
-    #+end_src
+ Requires [[JQ Mode]]
+ #+begin_src emacs-lisp
+   (add-to-list
+    'load-path
+    (expand-file-name "~/.emacs.d/site-lisp/restclient"))
+   (require 'restclient)
+   (require 'restclient-jq)
+ #+end_src
 ** Ditaa
 #+begin_src emacs-lisp
 	;; this line activates ditaa for org mode
@@ -542,14 +541,14 @@ Moved to init.el
 			))
 #+end_src
 ** Projectile
-   [[https://www.projectile.mx/en/latest/usage/][Projectile Usage]]
-   #+BEGIN_SRC emacs-lisp
-     (use-package projectile
-       :ensure t
-       :config
-       (projectile-mode +1)
-       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-   #+END_SRC
+[[https://www.projectile.mx/en/latest/usage/][Projectile Usage]]
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    :config
+    (projectile-mode +1)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+#+end_src
 ** +Dired Subtree+
 #+begin_example emacs-lisp
 	(use-package dired-subtree
@@ -570,42 +569,42 @@ Moved to init.el
 	)
 #+end_example
 ** JSX Support
-   #+begin_src emacs-lisp
-     (use-package rjsx-mode
-       :ensure t)
-     (add-to-list 'auto-mode-alist '("\.tsx\\'" . rjsx-mode))
-     (add-to-list 'auto-mode-alist '("\.jsx\\'" . rjsx-mode))
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package rjsx-mode
+    :ensure t)
+  (add-to-list 'auto-mode-alist '("\.tsx\\'" . rjsx-mode))
+  (add-to-list 'auto-mode-alist '("\.jsx\\'" . rjsx-mode))
+#+end_src
 ** Rust
-   #+begin_src emacs-lisp
-     (use-package rust-mode
-       :ensure t)
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package rust-mode
+    :ensure t)
+#+end_src
 ** LSP
-   Check if executable is in the path `(executable-find "gopls")`
-   #+begin_src emacs-lisp
-     (use-package lsp-mode
-       :ensure t
-       :config
-       (setq lsp-log-io nil) ; only enable for debugging
-       (add-hook 'go-mode-hook #'lsp-deferred)
-       (add-hook 'js-mode-hook #'lsp-deferred)
-       (add-hook 'css-mode-hook #'lsp-deferred)
-       (add-hook 'html-mode-hook #'lsp-deferred)
-       (setq lsp-rust-rls-server-command (concat (getenv "HOME") "/.cargo/bin/rust-analyzer"))
-       (add-hook 'rust-mode-hook #'lsp-deferred)
-       )
-     (use-package lsp-ui
-       :ensure t)
-   #+end_src
+Check if executable is in the path `(executable-find "gopls")`
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :ensure t
+    :config
+    (setq lsp-log-io nil) ; only enable for debugging
+    (add-hook 'go-mode-hook #'lsp-deferred)
+    (add-hook 'js-mode-hook #'lsp-deferred)
+    (add-hook 'css-mode-hook #'lsp-deferred)
+    (add-hook 'html-mode-hook #'lsp-deferred)
+    (setq lsp-rust-rls-server-command (concat (getenv "HOME") "/.cargo/bin/rust-analyzer"))
+    (add-hook 'rust-mode-hook #'lsp-deferred)
+    )
+  (use-package lsp-ui
+    :ensure t)
+#+end_src
 ** Company for text completion
-   #+begin_src emacs-lisp
-     (use-package company
-       :ensure t
-       :config
-       (setq company-idle-delay 0)
-       (setq company-minimum-prefix-length 1))
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure t
+    :config
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 1))
+#+end_src
 ** [[https://github.com/hakimel/reveal.js][Reveal.js]] & [[https://github.com/yjwen/org-reveal][ox-reveal]]
 	 #+begin_src emacs-lisp
 		 (use-package ox-reveal
@@ -624,7 +623,7 @@ Moved to init.el
 	 #+end_src
 * Packages not in ELPA/MELPA
 ** Visual Basic Mode
-   From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
+From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
 #+begin_src emacs-lisp
 	(use-package visual-basic-mode
 		:mode "\\.vbs\\'"
@@ -638,8 +637,8 @@ Moved to init.el
 	(require 'visual-basic-mode)
 #+end_example
 ** Drools
-   From https://github.com/pdorrell/rules-editing-mode.git
-   #+BEGIN_EXAMPLE emacs-lisp
+From https://github.com/pdorrell/rules-editing-mode.git
+#+begin_example emacs-lisp
 		 (add-to-list 'load-path
 									(expand-file-name "~/.emacs.d/site-lisp/drools-mode"))
 		 (require 'drools-mode)
@@ -652,18 +651,18 @@ Moved to init.el
 											(setq indent-tabs-mode nil)
 											(yas-minor-mode))
 										)))
-   #+END_EXAMPLE
+#+end_example
 ** Fzf
-   My own fork to fix whitespace issue :)
-   https://github.com/xshyamx/fzf.el.git
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list
-      'load-path
-      (expand-file-name "~/.emacs.d/site-lisp/fzf"))
-     (require 'fzf)
-     ;(eval-after-load "fzf"
-     ;  (setq (fzf/executable "/usr/local/bin/fzf"))
-   #+END_SRC
+My own fork to fix whitespace issue :)
+https://github.com/xshyamx/fzf.el.git
+#+begin_src emacs-lisp
+  (add-to-list
+   'load-path
+   (expand-file-name "~/.emacs.d/site-lisp/fzf"))
+  (require 'fzf)
+  ;(eval-after-load "fzf"
+  ;  (setq (fzf/executable "/usr/local/bin/fzf"))
+#+end_src
 ** [[https://github.com/holistics/dbml][DBML]]
 	 From https://github.com/ccod/dbd-mode
 	 #+begin_src emacs-lisp
@@ -671,73 +670,73 @@ Moved to init.el
 	 #+end_src
 * Color Theme
 ** +[[https://github.com/chriskempson/base16][Base16]] - [[https://github.com/belak/base16-emacs][Emacs]]+
-   #+BEGIN_SRC lisp
-     (use-package base16-theme
-       :ensure t
-       :config
-       (load-theme 'base16-tomorrow-night t))
-   #+END_SRC
+#+begin_src lisp
+  (use-package base16-theme
+    :ensure t
+    :config
+    (load-theme 'base16-tomorrow-night t))
+#+end_src
 ** +[[https://github.com/arcticicestudio/nord-emacs][Nord]]+
-   #+BEGIN_SRC lisp
-     (use-package nord-theme
-       :ensure t
-       :config
-       (setq nord-comment-brightness 20)
-       (load-theme 'nord t))
-   #+END_SRC
+#+begin_src lisp
+  (use-package nord-theme
+    :ensure t
+    :config
+    (setq nord-comment-brightness 20)
+    (load-theme 'nord t))
+#+end_src
 
 ** Zenburn
-   #+BEGIN_SRC emacs-lisp
-     (use-package zenburn-theme
-       :ensure t
-       :config
-       (load-theme 'zenburn t)
-       )
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package zenburn-theme
+    :ensure t
+    :config
+    (load-theme 'zenburn t)
+    )
+#+end_src
 ** Set Font
-   #+BEGIN_EXAMPLE emacs-lisp
-     (custom-set-faces
-      ;; custom-set-faces was added by Custom.
-      ;; If you edit it by hand, you could mess it up, so be careful.
-      ;; Your init file should contain only one such instance.
-      ;; If there is more than one, they won't work right.
-      '(default ((t (:family "Inconsolata" :foundry "outline" :slant normal :weight normal :height 180 :width normal)))))
-   #+END_EXAMPLE
-   From https://www.emacswiki.org/emacs/SetFonts
-   #+BEGIN_SRC emacs-lisp
-     (when (eq system-type 'darwin)
+#+begin_example emacs-lisp
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(default ((t (:family "Inconsolata" :foundry "outline" :slant normal :weight normal :height 180 :width normal)))))
+#+end_example
+From https://www.emacswiki.org/emacs/SetFonts
+#+begin_src emacs-lisp
+  (when (eq system-type 'darwin)
 
-        ;; default Latin font (e.g. Consolas)
-        (set-face-attribute 'default nil :family "Fira Code")
+     ;; default Latin font (e.g. Consolas)
+     (set-face-attribute 'default nil :family "Fira Code")
 
-        ;; default font size (point * 10)
-        ;;
-        ;; WARNING!  Depending on the default font,
-        ;; if the size is not supported very well, the frame will be clipped
-        ;; so that the beginning of the buffer may not be visible correctly.
-        (set-face-attribute 'default nil :height 160)
+     ;; default font size (point * 10)
+     ;;
+     ;; WARNING!  Depending on the default font,
+     ;; if the size is not supported very well, the frame will be clipped
+     ;; so that the beginning of the buffer may not be visible correctly.
+     (set-face-attribute 'default nil :height 160)
 
-        ;; use specific font for Korean charset.
-        ;; if you want to use different font size for specific charset,
-        ;; add :size POINT-SIZE in the font-spec.
-        ;(set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
+     ;; use specific font for Korean charset.
+     ;; if you want to use different font size for specific charset,
+     ;; add :size POINT-SIZE in the font-spec.
+     ;(set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
 
-        ;; you may want to add different for other charset in this way.
-        )
-   #+END_SRC
+     ;; you may want to add different for other charset in this way.
+     )
+#+end_src
 * Enable advanced flags
 ** Case Sensitive replacements
-   #+BEGIN_SRC emacs-lisp
-     (setq case-replace nil)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (setq case-replace nil)
+#+end_src
 ** Enable =C-x C-u= to convert region to uppercase
-   #+BEGIN_SRC emacs-lisp
-     (put 'upcase-region 'disabled nil)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (put 'upcase-region 'disabled nil)
+#+end_src
 ** Enable =C-x C-l= to convert region to lowercase
-   #+BEGIN_SRC emacs-lisp
-     (put 'downcase-region 'disabled nil)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (put 'downcase-region 'disabled nil)
+#+end_src
 ** Enable narrowing =C-x n n= & widening =C-x n w=
 #+begin_src emacs-lisp
 	;; `C-x n n` & `C-x n w n`
@@ -745,10 +744,10 @@ Moved to init.el
 #+end_src
 * Tabs & Indentation
 ** Indenting
-   Set indentation level to 2 for most used modes
-   #+BEGIN_EXAMPLE emacs-lisp
-     (indent-tab s-mode)
-   #+END_EXAMPLE
+Set indentation level to 2 for most used modes
+#+begin_example emacs-lisp
+  (indent-tab s-mode)
+#+end_example
 ** Basic offset to 2
 #+begin_src emacs-lisp
 	(setq default-indent-offset 2)
@@ -780,22 +779,22 @@ Moved to init.el
 	(mapc #'set-default-indent-offset offset-vars)
 #+end_src
 * Saving Abbreviations
-  #+BEGIN_SRC emacs-lisp
-    (setq abbrev-file-name
-          (expand-file-name "~/.emacs.d/abbrev_defs"))
-    (setq save-abbrevs 'silent)
-  #+END_SRC
+#+begin_src emacs-lisp
+ (setq abbrev-file-name
+       (expand-file-name "~/.emacs.d/abbrev_defs"))
+ (setq save-abbrevs 'silent)
+#+end_src
 * Server
-  #+BEGIN_SRC emacs-lisp
-    ;; start the server !!
-    (load "server")
-    (setq server-socket-dir "~/.emacs.d/server")
-    (server-start)
-    (unless (server-running-p) (server-start))
-    (message "started server")
-  #+END_SRC
+#+begin_src emacs-lisp
+ ;; start the server !!
+ (load "server")
+ (setq server-socket-dir "~/.emacs.d/server")
+ (server-start)
+ (unless (server-running-p) (server-start))
+ (message "started server")
+#+end_src
 * Org Mode
-  #+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 		(setq org-confirm-babel-evaluate nil)
 		(setq org-agenda-files
 					'("~/shyam/home/payments.org" "~/shyam/macbook/today.org" "~/shyam/macbook/buf.org"))
@@ -804,40 +803,40 @@ Moved to init.el
 		 '((js . t)))
 
 		(setq org-structure-template-alist (append org-structure-template-alist '(("x" . "src emacs-lisp"))))
-  #+END_SRC
+#+end_src
 ** Install htmlize from elpa
-   #+BEGIN_SRC emacs-lisp
-     (use-package htmlize
-       :ensure t)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package htmlize
+    :ensure t)
+#+end_src
 * Utility Functions
 ** Recreate scratch buffer
-   #+BEGIN_SRC emacs-lisp
-     ;; recreate scratch buffer
-     (defun create-scratch-buffer nil
-       "create a scratch buffer"
-       (interactive)
-       (pop-to-buffer (get-buffer-create "*scratch*"))
-       (insert (string-join
-                '(";; This buffer is for text that is not saved, and for Lisp evaluation."
-                  ";; To create a file, visit it with C-x C-f and enter text in its buffer."
-                  ";; Use C-x C-e to eval expressing and C-j to eval and print\n"
-                  )
-                "\n"))
-       (lisp-interaction-mode)
-       (switch-to-buffer)
-       )
-   #+END_SRC
+#+begin_src emacs-lisp
+  ;; recreate scratch buffer
+  (defun create-scratch-buffer nil
+    "create a scratch buffer"
+    (interactive)
+    (pop-to-buffer (get-buffer-create "*scratch*"))
+    (insert (string-join
+             '(";; This buffer is for text that is not saved, and for Lisp evaluation."
+               ";; To create a file, visit it with C-x C-f and enter text in its buffer."
+               ";; Use C-x C-e to eval expressing and C-j to eval and print\n"
+               )
+             "\n"))
+    (lisp-interaction-mode)
+    (switch-to-buffer)
+    )
+#+end_src
 ** Untabify buffer
-   From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-saving-certain-file-types-and-only-those-file-ty][Untabify certain filetypes in Emacs]]
-   #+BEGIN_SRC emacs-lisp
-     (defun untabify-buffer ()
-       "Untabify current buffer"
-       (interactive)
-       (untabify (point-min) (point-max)))
-   #+END_SRC
+From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-saving-certain-file-types-and-only-those-file-ty][Untabify certain filetypes in Emacs]]
+#+begin_src emacs-lisp
+  (defun untabify-buffer ()
+    "Untabify current buffer"
+    (interactive)
+    (untabify (point-min) (point-max)))
+#+end_src
 ** Unhexify
-   #+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 		 (defun unhexify
 			 (color)
 			 (map
@@ -851,148 +850,148 @@ Moved to init.el
 				)
 			 )
 		 (provide 'unhexify)
-   #+END_SRC
+#+end_src
 ** Camelcase
-   #+BEGIN_SRC emacs-lisp
-     ;;;###autoload
-     (defun camel-case (input)
-       (let ((parts (split-string input "[ \f\t\n\r\v_-]+")))
-         (mapconcat 'identity (cons (downcase (car parts)) (mapcar 'capitalize (cdr parts))) "")
-         )
-       )
+#+begin_src emacs-lisp
+  ;;;###autoload
+  (defun camel-case (input)
+    (let ((parts (split-string input "[ \f\t\n\r\v_-]+")))
+      (mapconcat 'identity (cons (downcase (car parts)) (mapcar 'capitalize (cdr parts))) "")
+      )
+    )
 
-   #+END_SRC
+#+end_src
 ** Align Declarations
-   #+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 		 (fset 'align-decl
 					 (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217848 97 108 105 103 110 45 114 101 103 101 120 112 return 61 return 24 24 134217848 114 101 112 108 97 99 101 45 114 101 103 101 120 112 return 92 40 91 94 32 6 43 92 41 92 40 32 43 92 41 32 61 return 92 50 92 49 32 61 return] 0 "%d")) arg)))
-   #+END_SRC
+#+end_src
 ** dos2unix
-   #+BEGIN_SRC emacs-lisp
-     (fset 'dos2unix
-        (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([201326629 17 13 return return 33] 0 "%d")) arg)))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (fset 'dos2unix
+     (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([201326629 17 13 return return 33] 0 "%d")) arg)))
+#+end_src
 ** base64 url encode & decode
-   From https://gist.github.com/inouetmhr/4116307
-   #+BEGIN_SRC emacs-lisp
-     (defun base64-to-base64url (str)
-       (setq str (replace-regexp-in-string "=+$" "" str))
-       (setq str (replace-regexp-in-string "+" "-" str))
-       (setq str (replace-regexp-in-string "/" "_" str)))
+From https://gist.github.com/inouetmhr/4116307
+#+begin_src emacs-lisp
+  (defun base64-to-base64url (str)
+    (setq str (replace-regexp-in-string "=+$" "" str))
+    (setq str (replace-regexp-in-string "+" "-" str))
+    (setq str (replace-regexp-in-string "/" "_" str)))
 
-     (defun base64url-to-base64 (str)
-       (setq str (replace-regexp-in-string "-" "+" str))
-       (setq str (replace-regexp-in-string "_" "/" str))
-       (let ((mod (% (length str) 4)))
-         (cond
-          ((= mod 1) (concat str "==="))
-          ((= mod 2) (concat str "=="))
-          ((= mod 3) (concat str "="))
-          (t str))))
+  (defun base64url-to-base64 (str)
+    (setq str (replace-regexp-in-string "-" "+" str))
+    (setq str (replace-regexp-in-string "_" "/" str))
+    (let ((mod (% (length str) 4)))
+      (cond
+       ((= mod 1) (concat str "==="))
+       ((= mod 2) (concat str "=="))
+       ((= mod 3) (concat str "="))
+       (t str))))
 
-     (defun base64url-encode-string (str)
-       (base64-to-base64url (base64-encode-string str t)))
+  (defun base64url-encode-string (str)
+    (base64-to-base64url (base64-encode-string str t)))
 
-     (defun base64url-decode-string (str)
-       (base64-decode-string (base64url-to-base64 str)))
+  (defun base64url-decode-string (str)
+    (base64-decode-string (base64url-to-base64 str)))
 
-   #+END_SRC
+#+end_src
 ** Toggle proxy
-   #+BEGIN_SRC emacs-lisp
-     (defun emacs-proxy ()
-       "Toggle proxy settings for emacs"
-       (interactive)
-       (if url-using-proxy
-           (progn
-             (setq url-using-proxy nil)
-             (setq url-proxy-services nil)
-             (setenv "http_proxy" nil)
-             (setenv "https_proxy" nil)
-             (setenv "no_proxy" nil)
-             (message "Proxy disabled")
-             )
-         (progn
-           (setq url-using-proxy t)
-           (setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
-                                      ("http" . "proxy1.wipro.com:8080")))
-           (setenv "http_proxy" "http://localhost:3128")
-           (setenv "https_proxy" "http://localhost:3128")
-           (setenv "no_proxy" "localhost,wipro.com")
-           (message "Proxy enabled")
-           )
+#+begin_src emacs-lisp
+  (defun emacs-proxy ()
+    "Toggle proxy settings for emacs"
+    (interactive)
+    (if url-using-proxy
+        (progn
+          (setq url-using-proxy nil)
+          (setq url-proxy-services nil)
+          (setenv "http_proxy" nil)
+          (setenv "https_proxy" nil)
+          (setenv "no_proxy" nil)
+          (message "Proxy disabled")
+          )
+      (progn
+        (setq url-using-proxy t)
+        (setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
+                                   ("http" . "proxy1.wipro.com:8080")))
+        (setenv "http_proxy" "http://localhost:3128")
+        (setenv "https_proxy" "http://localhost:3128")
+        (setenv "no_proxy" "localhost,wipro.com")
+        (message "Proxy enabled")
+        )
 
-         )
-       )
-   #+END_SRC
+      )
+    )
+#+end_src
 
-   #+RESULTS:
-   : emacs-proxy
+#+RESULTS:
+: emacs-proxy
 
 * File Mode Specific
 ** JSON for javascript dotfiles
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'auto-mode-alist '("\\.bowerrc\\'"      . json-mode))
-     (add-to-list 'auto-mode-alist '("\\.babelrc\\'"      . json-mode))
-     (add-to-list 'auto-mode-alist '("package\\.json\\'"  . json-mode))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.bowerrc\\'"      . json-mode))
+  (add-to-list 'auto-mode-alist '("\\.babelrc\\'"      . json-mode))
+  (add-to-list 'auto-mode-alist '("package\\.json\\'"  . json-mode))
+#+end_src
 ** Groovy
-   #+BEGIN_SRC emacs-lisp
-     ;; groovy
-     (add-to-list 'auto-mode-alist '("Jenkinsfile\\'" . groovy-mode))
-   #+END_SRC
+#+begin_src emacs-lisp
+  ;; groovy
+  (add-to-list 'auto-mode-alist '("Jenkinsfile\\'" . groovy-mode))
+#+end_src
 ** Web mode
 *** Highlight current tag
-    #+BEGIN_SRC emacs-lisp
-      (setq web-mode-enable-current-element-highlight t)
-    #+END_SRC
+ #+begin_src emacs-lisp
+   (setq web-mode-enable-current-element-highlight t)
+ #+end_src
 *** Add additional extension
-    #+BEGIN_SRC emacs-lisp
-      (add-to-list 'auto-mode-alist '("\\.phtml\\'"      . web-mode))
-      (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'"  . web-mode))
-      (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'"    . web-mode))
-      (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'"    . web-mode))
-      (add-to-list 'auto-mode-alist '("\\.erb\\'"        . web-mode))
-      (add-to-list 'auto-mode-alist '("\\.mustache\\'"   . web-mode))
-      (add-to-list 'auto-mode-alist '("\\.hbs$"          . web-mode))
-      (add-to-list 'auto-mode-alist '("\\.djhtml\\'"     . web-mode))
-    #+END_SRC
+ #+begin_src emacs-lisp
+   (add-to-list 'auto-mode-alist '("\\.phtml\\'"      . web-mode))
+   (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'"  . web-mode))
+   (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'"    . web-mode))
+   (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'"    . web-mode))
+   (add-to-list 'auto-mode-alist '("\\.erb\\'"        . web-mode))
+   (add-to-list 'auto-mode-alist '("\\.mustache\\'"   . web-mode))
+   (add-to-list 'auto-mode-alist '("\\.hbs$"          . web-mode))
+   (add-to-list 'auto-mode-alist '("\\.djhtml\\'"     . web-mode))
+ #+end_src
 ** Emmet
-   Auto-start on any markup modes
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'sgml-mode-hook 'emmet-mode)
-     (add-hook 'html-mode-hook 'emmet-mode)
-     (add-hook 'web-mode-hook 'emmet-mode)
-   #+END_SRC
+Auto-start on any markup modes
+#+begin_src emacs-lisp
+  (add-hook 'sgml-mode-hook 'emmet-mode)
+  (add-hook 'html-mode-hook 'emmet-mode)
+  (add-hook 'web-mode-hook 'emmet-mode)
+#+end_src
 ** Ruby mode for Vagrantfile
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
+#+end_src
 ** SQL
-   Setup sql-mode to highlight sql keywords
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'sql-mode-hook
-               (lambda () (sql-highlight-ansi-keywords)))
-   #+END_SRC
+Setup sql-mode to highlight sql keywords
+#+begin_src emacs-lisp
+  (add-hook 'sql-mode-hook
+            (lambda () (sql-highlight-ansi-keywords)))
+#+end_src
 ** Java
-   Force indents, offsets and disable tabs
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'java-mode-hook
-               (lambda ()
-                 (setq c-basic-offset 2
-                       tab-width 2
-                       indent-tabs-mode nil)))
-   #+END_SRC
+Force indents, offsets and disable tabs
+#+begin_src emacs-lisp
+  (add-hook 'java-mode-hook
+            (lambda ()
+              (setq c-basic-offset 2
+                    tab-width 2
+                    indent-tabs-mode nil)))
+#+end_src
 ** Golang
 ** Untabify files using prog mode hooks
-   #+BEGIN_SRC emacs-lisp
-     (defun progmodes-hooks ()
-       "Hooks for programming modes"
-       (add-hook 'before-save-hook 'progmodes-write-hooks)
-       (message (format "Adding save hook for %s" major-mode)))
+#+begin_src emacs-lisp
+  (defun progmodes-hooks ()
+    "Hooks for programming modes"
+    (add-hook 'before-save-hook 'progmodes-write-hooks)
+    (message (format "Adding save hook for %s" major-mode)))
 
-     (defun progmodes-write-hooks ()
-       "Hooks which run on file write for programming modes"
-       (prog1 nil
+  (defun progmodes-write-hooks ()
+    "Hooks which run on file write for programming modes"
+    (prog1 nil
 	 (if (member major-mode (list 'makefile-bsdmake-mode)
 		     (lambda ()
 		       (message (format "untabifying buffer %s" major-mode))
@@ -1001,38 +1000,38 @@ Moved to init.el
 		     (lambda ()
 		       (message (format "skipping for %s" major-mode))))
 	     ))
-       )
+    )
 
-     (add-hook 'sh-set-shell-hook 'progmodes-hooks)
-     (add-hook 'python-mode-hook 'progmodes-hooks)
-     (add-hook 'js-mode-hook 'progmodes-hooks)
-   #+END_SRC
+  (add-hook 'sh-set-shell-hook 'progmodes-hooks)
+  (add-hook 'python-mode-hook 'progmodes-hooks)
+  (add-hook 'js-mode-hook 'progmodes-hooks)
+#+end_src
 ** Show whitespace in makefiles
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'makefile-bsdmake-mode-hook 'whitespace-mode)
-     (add-hook 'makefile-bsdmake-mode-hook (lambda () (remove-hook 'sh-set-shell-hook 'progmodes-hooks t)))
-     (add-hook 'makefile-bsdmake-mode-hook (lambda () (message "removed untabify for makefile")))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (add-hook 'makefile-bsdmake-mode-hook 'whitespace-mode)
+  (add-hook 'makefile-bsdmake-mode-hook (lambda () (remove-hook 'sh-set-shell-hook 'progmodes-hooks t)))
+  (add-hook 'makefile-bsdmake-mode-hook (lambda () (message "removed untabify for makefile")))
+#+end_src
 *** Setup GOPATH and variables for go-mode
-    #+BEGIN_SRC emacs-lisp
-      (setq go-home "/usr/local/go")
-      (setq go-path (expand-file-name "go" (getenv "HOME")))
-      (setq godef-command (expand-file-name "bin/godef" go-path))
-      (setq gofmt-command (expand-file-name "bin/goimports" go-path))
-      (setq godoc-command (expand-file-name "bin/godoc" go-home))
-      (setq go-command (expand-file-name "bin/go" go-home))
-    #+END_SRC
+ #+begin_src emacs-lisp
+   (setq go-home "/usr/local/go")
+   (setq go-path (expand-file-name "go" (getenv "HOME")))
+   (setq godef-command (expand-file-name "bin/godef" go-path))
+   (setq gofmt-command (expand-file-name "bin/goimports" go-path))
+   (setq godoc-command (expand-file-name "bin/godoc" go-home))
+   (setq go-command (expand-file-name "bin/go" go-home))
+ #+end_src
 *** Gofmt before save
-    #+BEGIN_SRC emacs-lisp
-      (add-hook 'go-mode-hook
-                (lambda ()
-                  (progn
-                    (setq tab-width 2)
-                    (message "run go-mode-hook")
-                    (add-hook 'before-save-hook #'gofmt-before-save))))
-      (add-hook 'before-save-hook #'gofmt-before-save)
+ #+begin_src emacs-lisp
+   (add-hook 'go-mode-hook
+             (lambda ()
+               (progn
+                 (setq tab-width 2)
+                 (message "run go-mode-hook")
+                 (add-hook 'before-save-hook #'gofmt-before-save))))
+   (add-hook 'before-save-hook #'gofmt-before-save)
 
-    #+END_SRC
+ #+end_src
 * Global key bindings
 #+begin_src emacs-lisp
 	(global-set-key (kbd "M-o") 'occur)
@@ -1040,38 +1039,38 @@ Moved to init.el
 	;(global-unset-key (kbd "C-c C-d"))
 #+end_src
 * Proxy
-  #+BEGIN_EXAMPLE emacs-lisp
-    (setenv "http_proxy" "http://localhost:3128")
-    (setenv "https_proxy" "http://localhost:3128")
-    (setenv "no_proxy" "localhost,wipro.com")
-    (setq url-proxy-services '(("no_proxy" . "*\\.wipro\\.com")
-                               ("http" . "localhost:3128")))
+#+begin_example emacs-lisp
+ (setenv "http_proxy" "http://localhost:3128")
+ (setenv "https_proxy" "http://localhost:3128")
+ (setenv "no_proxy" "localhost,wipro.com")
+ (setq url-proxy-services '(("no_proxy" . "*\\.wipro\\.com")
+                            ("http" . "localhost:3128")))
 
-    (setq url-using-proxy t)
-    (setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
-                               ("http" . "proxy1.wipro.com:8080")))
-  #+END_EXAMPLE
-  #+BEGIN_SRC emacs-lisp
-    (if (file-exists-p "~/.proxy.lock")
-        (progn
-          (setq url-using-proxy t)
-          (setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
-                                     ("http" . "proxy1.wipro.com:8080")))
-          (setenv "http_proxy" "http://localhost:3128")
-          (setenv "https_proxy" "http://localhost:3128")
-          (setenv "no_proxy" "localhost,wipro.com")
-          (message "Proxy enabled")
-          )
-      (progn
-        (setq url-using-proxy nil)
-        (setq url-proxy-services nil)
-        (setenv "http_proxy" nil)
-        (setenv "https_proxy" nil)
-        (setenv "no_proxy" nil)
-        (message "Proxy disabled")
-        )
-      )
-  #+END_SRC
+ (setq url-using-proxy t)
+ (setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
+                            ("http" . "proxy1.wipro.com:8080")))
+#+end_example
+#+begin_src emacs-lisp
+ (if (file-exists-p "~/.proxy.lock")
+     (progn
+       (setq url-using-proxy t)
+       (setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
+                                  ("http" . "proxy1.wipro.com:8080")))
+       (setenv "http_proxy" "http://localhost:3128")
+       (setenv "https_proxy" "http://localhost:3128")
+       (setenv "no_proxy" "localhost,wipro.com")
+       (message "Proxy enabled")
+       )
+   (progn
+     (setq url-using-proxy nil)
+     (setq url-proxy-services nil)
+     (setenv "http_proxy" nil)
+     (setenv "https_proxy" nil)
+     (setenv "no_proxy" nil)
+     (message "Proxy disabled")
+     )
+   )
+#+end_src
 * Yasnippets
   Enable Yasnippets to specific modes
 ** yas hook function
@@ -1091,12 +1090,11 @@ Moved to init.el
 #+end_src
 * Mode customizations
 ** Remap projectile-find-file to use fzf
-   #+BEGIN_SRC emacs-lisp
-     (defalias 'projectile-find-file 'fzf-projectile)
-   #+END_SRC
+#+begin_src emacs-lisp
+  (defalias 'projectile-find-file 'fzf-projectile)
+#+end_src
 * Finally
-  Also use =M-x emacs-init-time= to find out how long emacs took to
-  load
-  #+BEGIN_SRC emacs-lisp
-    (message "Loaded all from shyam-emacs.org")
-  #+END_SRC
+Also use =M-x emacs-init-time= to find out how long emacs took to load
+#+begin_src emacs-lisp
+ (message "Loaded all from shyam-emacs.org")
+#+end_src
