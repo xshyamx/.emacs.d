@@ -161,6 +161,10 @@ From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-fi
 
 	(add-hook 'emacs-lisp-mode-hook #'eldoc-readonly)
 #+end_src
+** Remove trailing whitespace
+#+begin_src emacs-lisp
+	(add-hook 'before-save-hook #'delete-trailing-whitespace)
+#+end_src
 * Autosave & Backups
 Change the backup directory to be inside .emacs.d so that it does
 not litter directories with the backup files
