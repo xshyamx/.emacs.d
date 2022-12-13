@@ -51,7 +51,7 @@ Moved to init.el
 ** Do not allow new emacs frames
 From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-file-in-a-new-buffer-not-frame-and-be-activated-com][Do not allow new buffer frames]]
 #+begin_src emacs-lisp
-	(setq ns-pop-up-frames nil)
+	(setq pop-up-frames nil)
 #+end_src
 ** Visble bell
 #+begin_src emacs-lisp
@@ -97,6 +97,7 @@ From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-fi
 #+end_src
 ** Use fido vertical mode
 #+begin_src emacs-lisp
+	(setq  completion-styles '(basic partial-completion emacs22 flex))
 	;; enable ido completions
 	(fido-vertical-mode 1)
 	;; non-contiguos chars matching
@@ -471,8 +472,10 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 #+end_src
 ** vlf
 #+begin_src emacs-lisp
-  (use-package vlf
-    :ensure t)
+	(use-package vlf
+		:ensure t
+		:config
+		(require 'vlf-setup))
 #+end_src
 ** CSV
 #+begin_src emacs-lisp
