@@ -15,7 +15,7 @@
 ;;; have this as early as possible
 (setq vc-follow-symlinks t)
 ;;; load literate configuration
-(org-babel-load-file (expand-file-name "~/.emacs.d/shyam-emacs.org"))
+(org-babel-load-file (expand-file-name "~/.emacs.d/emacs.org"))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

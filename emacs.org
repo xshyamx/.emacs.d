@@ -14,7 +14,7 @@
 From [[https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links][Emacs and symbolic links]]
 Moved to init.el
 #+begin_example emacs-lisp
-(setq vc-follow-symlinks t)
+	(setq vc-follow-symlinks t)
 #+end_example
 ** Remove startup screen
 #+begin_src emacs-lisp
@@ -62,16 +62,16 @@ From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-fi
 		(run-with-timer 0.1 nil #'invert-face 'mode-line))
 #+end_src
 *** +Disable Completely+
- #+begin_example emacs-lisp
-   (setq ring-bell-function 'ignore)
- #+end_example
+#+begin_example emacs-lisp
+	(setq ring-bell-function 'ignore)
+#+end_example
 ** Size indication?
 #+begin_src emacs-lisp
 	(setq size-indication-mode t)
 #+end_src
 ** Display the column numbers
 #+begin_src emacs-lisp
-		(setq column-number-mode t)
+	(setq column-number-mode t)
 #+end_src
 ** Electric pair mode everywhere
 #+begin_src emacs-lisp
@@ -189,10 +189,10 @@ not litter directories with the backup files
 #+begin_example emacs-lisp
 	(defun emacs-frame-size-plist ()
 		(list
-					:top (frame-parameter (selected-frame) 'top)
-					:left (frame-parameter (selected-frame) 'left)
-					:width  (frame-width)
-					:height  (frame-height))
+		 :top (frame-parameter (selected-frame) 'top)
+		 :left (frame-parameter (selected-frame) 'left)
+		 :width  (frame-width)
+		 :height  (frame-height))
 		)
 #+end_example
 ** Set the current position
@@ -203,19 +203,19 @@ not litter directories with the backup files
 * Update the exec-path
 ** Update the emacs =exec-path=
 #+begin_src emacs-lisp
-		 (setq
-			exec-path
-			(append
-			 exec-path
-			 '(
-				 "/usr/local/bin"
-				 "/Users/shyam/.arkade/bin"
-				 "/Users/shyam/go/bin"
-				 "/Users/shyam/Library/Python/2.7/bin"
-				 "/Users/shyam/.nvm/versions/node/v16.4.2/bin"
-				 )
-			 )
+	(setq
+	 exec-path
+	 (append
+		exec-path
+		'(
+			"/usr/local/bin"
+			"/Users/shyam/.arkade/bin"
+			"/Users/shyam/go/bin"
+			"/Users/shyam/Library/Python/2.7/bin"
+			"/Users/shyam/.nvm/versions/node/v16.4.2/bin"
 			)
+		)
+	 )
 #+end_src
 
 ** Update environment variable =PATH=
@@ -246,42 +246,40 @@ not litter directories with the backup files
 * GNU/MELPA Packages
 ** Try
 #+begin_src emacs-lisp
-		 (use-package try
-			 :ensure t)
+	(use-package try
+		:ensure t)
 #+end_src
 ** +Set exec-path from shell+
 Causes LC_ENCODING issues with projectile-find-file
 #+begin_example
-		 (use-package exec-path-from-shell
-			 :ensure t
-			 :config
-			 (exec-path-from-shell-initialize))
+	(use-package exec-path-from-shell
+		:ensure t
+		:config
+		(exec-path-from-shell-initialize))
 #+end_example
 *** Set path manually
- #+begin_src emacs-lisp
-			(setenv "PATH"
-							(concat
-							 (getenv "PATH")
-							 ":" (getenv "HOME") "/go/bin"
-							 ":" (getenv "HOME") "/.cargo/bin"
-							 ":/usr/local/bin"))
- #+end_src
-
+#+begin_src emacs-lisp
+	(setenv "PATH"
+					(concat
+					 (getenv "PATH")
+					 ":" (getenv "HOME") "/go/bin"
+					 ":" (getenv "HOME") "/.cargo/bin"
+					 ":/usr/local/bin"))
+#+end_src
 ** Which Key
 #+begin_src emacs-lisp
-  (use-package which-key
-    :ensure t
-    :config
-    (which-key-mode))
+	(use-package which-key
+		:ensure t
+		:config
+		(which-key-mode))
 #+end_src
 ** Yasnippet
 #+begin_src emacs-lisp
-		 (use-package yasnippet
-			 :ensure t
-			 :init
-			 (add-hook 'restclient-mode-hook #'yas-minor-mode)
-			 (add-hook 'org-mode-hook #'yas-minor-mode))
-
+	(use-package yasnippet
+		:ensure t
+		:init
+		(add-hook 'restclient-mode-hook #'yas-minor-mode)
+		(add-hook 'org-mode-hook #'yas-minor-mode))
 #+end_src
 ** Dockerfile
 #+begin_src emacs-lisp
@@ -351,57 +349,57 @@ https://geeksocket.in/posts/emacs-lsp-go/
 #+end_src
 ** Plantuml
 #+begin_src emacs-lisp
-		 (use-package plantuml-mode
-			 :ensure t
-			 :bind (:map plantuml-mode-map ("C-c C-p" . 'plantuml-export))
-			 :custom
-			 (plantuml-default-exec-mode 'executable)
-			 (plantuml-executable-path "/usr/local/bin/plantuml")
-			 (plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-			 (org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-			 )
-		 ;(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-		 ;(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
-		 ;; export to file function
-		 (defun plantuml-export-file (fname)
-			 "Compile the graph and preview it in an other buffer."
-			 (interactive)
-			 (let ((f-name (concat (f-no-ext fname) ".png"))
-						 (command-result (string-trim (shell-command-to-string (concat plantuml-executable-path " -t" plantuml-output-type " " (shell-quote-argument (expand-file-name fname)) " -o " (shell-quote-argument (f-dirname (expand-file-name fname))))))))
-				 (if (string-prefix-p "Exception:" command-result)
-						 (message command-result)
-					 (progn
-						 (sleep-for 0 5)
-						 (with-selected-window (selected-window)
-							 (switch-to-buffer-other-window (find-file-noselect f-name t))
-							 ;; I get "changed on disk; really edit the buffer?" prompt w/o this
-							 (sleep-for 0 50)
-							 (revert-buffer t t))))))
-		 (defun plantuml-export ()
-						"Compile the graph and preview it in an other buffer."
-						(interactive)
-						(let ((f-name (concat (f-no-ext (expand-file-name (buffer-file-name))) ".png"))
-									(command-result (string-trim (shell-command-to-string (concat plantuml-executable-path " -t" plantuml-output-type " " (shell-quote-argument (expand-file-name (buffer-file-name))) " -o " (shell-quote-argument (f-dirname (expand-file-name (buffer-file-name)))))))))
-							(if (string-prefix-p "Exception:" command-result)
-									(message command-result)
-								(progn
-									(sleep-for 0 5)
-									(with-selected-window (selected-window)
-										(switch-to-buffer-other-window (find-file-noselect f-name t))
-										;; I get "changed on disk; really edit the buffer?" prompt w/o this
-										(sleep-for 0 50)
-										(revert-buffer t t))))))
+	(use-package plantuml-mode
+		:ensure t
+		:bind (:map plantuml-mode-map ("C-c C-p" . 'plantuml-export))
+		:custom
+		(plantuml-default-exec-mode 'executable)
+		(plantuml-executable-path "/usr/local/bin/plantuml")
+		(plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
+		(org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
+		)
+	;(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+	;(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+	;; export to file function
+	(defun plantuml-export-file (fname)
+		"Compile the graph and preview it in an other buffer."
+		(interactive)
+		(let ((f-name (concat (f-no-ext fname) ".png"))
+					(command-result (string-trim (shell-command-to-string (concat plantuml-executable-path " -t" plantuml-output-type " " (shell-quote-argument (expand-file-name fname)) " -o " (shell-quote-argument (f-dirname (expand-file-name fname))))))))
+			(if (string-prefix-p "Exception:" command-result)
+					(message command-result)
+				(progn
+					(sleep-for 0 5)
+					(with-selected-window (selected-window)
+						(switch-to-buffer-other-window (find-file-noselect f-name t))
+						;; I get "changed on disk; really edit the buffer?" prompt w/o this
+						(sleep-for 0 50)
+						(revert-buffer t t))))))
+	(defun plantuml-export ()
+				 "Compile the graph and preview it in an other buffer."
+				 (interactive)
+				 (let ((f-name (concat (f-no-ext (expand-file-name (buffer-file-name))) ".png"))
+							 (command-result (string-trim (shell-command-to-string (concat plantuml-executable-path " -t" plantuml-output-type " " (shell-quote-argument (expand-file-name (buffer-file-name))) " -o " (shell-quote-argument (f-dirname (expand-file-name (buffer-file-name)))))))))
+					 (if (string-prefix-p "Exception:" command-result)
+							 (message command-result)
+						 (progn
+							 (sleep-for 0 5)
+							 (with-selected-window (selected-window)
+								 (switch-to-buffer-other-window (find-file-noselect f-name t))
+								 ;; I get "changed on disk; really edit the buffer?" prompt w/o this
+								 (sleep-for 0 50)
+								 (revert-buffer t t))))))
 #+end_src
 *** Plantuml jar path
- #+begin_example emacs-lisp
-			(defun unbrew (src target)
-				(setq brew-prefix "/usr/local")
-				(setq plantuml-prefix (file-chase-links (format "%s/%s" brew-prefix src)))
-				(replace-regexp-in-string src target plantuml-prefix)
-				)
-			(message (unbrew "bin/plantuml" "libexec/plantuml.jar"))
-			(custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
- #+end_example
+#+begin_example emacs-lisp
+	(defun unbrew (src target)
+		(setq brew-prefix "/usr/local")
+		(setq plantuml-prefix (file-chase-links (format "%s/%s" brew-prefix src)))
+		(replace-regexp-in-string src target plantuml-prefix)
+		)
+	(message (unbrew "bin/plantuml" "libexec/plantuml.jar"))
+	(custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
+#+end_example
 ** Mermaid
 Ensure that the NPM package =mermaid.cli= is installed globally
 #+begin_src emacs-lisp
@@ -414,12 +412,12 @@ Ensure that the NPM package =mermaid.cli= is installed globally
 #+end_src
 ** Yaml
 #+begin_src emacs-lisp
-					(use-package yaml-mode
-						:ensure t
-						:hook whitespace-mode
-						:config
-						(setq indent-tabs-mode nil)
-		 )
+	(use-package yaml-mode
+		:ensure t
+		:hook whitespace-mode
+		:config
+		(setq indent-tabs-mode nil)
+		)
 #+end_src
 ** Markdown
 Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is installed via go get
@@ -427,36 +425,36 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
   go get -u gitlab.com/golang-commonmark/mdtool
 #+end_src
 #+begin_src emacs-lisp
-  (use-package markdown-mode
-    :ensure t
-    :custom
-    (markdown-command "~/go/bin/mdtool +h +ta +l")
-    )
+	(use-package markdown-mode
+		:ensure t
+		:custom
+		(markdown-command "~/go/bin/mdtool +h +ta +l")
+		)
 #+end_src
 *** Edit indirect for editing code blocks (Still need to figure out how it works)
- #+begin_src emacs-lisp
-   (use-package edit-indirect
-     :ensure t)
- #+end_src
+#+begin_src emacs-lisp
+	(use-package edit-indirect
+		:ensure t)
+#+end_src
 ** Asciidoc
 #+begin_src emacs-lisp
-  (use-package adoc-mode
-    :ensure t
-    :init
-    (add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
+	(use-package adoc-mode
+		:ensure t
+		:init
+		(add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
 #+end_src
 ** +Fzf+
 **NOTE** This package does not work because of trailing whitespace in selection
 #+begin_example emacs-lisp
-  (use-package fzf
-    :ensure t
-    :custom
-    (fzf/executable "/usr/local/bin/fzf" "Set correct path"))
+	(use-package fzf
+		:ensure t
+		:custom
+		(fzf/executable "/usr/local/bin/fzf" "Set correct path"))
 #+end_example
 ** Cypher
 #+begin_src emacs-lisp
-  (use-package cypher-mode
-    :ensure t)
+	(use-package cypher-mode
+		:ensure t)
 #+end_src
 ** Terraform
 #+begin_src emacs-lisp
@@ -613,21 +611,21 @@ Check if executable is in the path `(executable-find "gopls")`
     (setq company-minimum-prefix-length 1))
 #+end_src
 ** [[https://github.com/hakimel/reveal.js][Reveal.js]] & [[https://github.com/yjwen/org-reveal][ox-reveal]]
-	 #+begin_src emacs-lisp
-		 (use-package ox-reveal
-			 :ensure t
-			 :config
-			 (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
+#+begin_src emacs-lisp
+	(use-package ox-reveal
+		:ensure t
+		:config
+		(setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
 
-		 ; htmlize dependency
-		 (use-package htmlize
-			 :ensure t)
-	 #+end_src
+	; htmlize dependency
+	(use-package htmlize
+		:ensure t)
+#+end_src
 ** Rego
-	 #+begin_src emacs-lisp
-		 (use-package rego-mode
-			 :ensure t)
-	 #+end_src
+#+begin_src emacs-lisp
+	(use-package rego-mode
+		:ensure t)
+#+end_src
 * Packages not in ELPA/MELPA
 ** Visual Basic Mode
 From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
@@ -646,35 +644,35 @@ From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emac
 ** Drools
 From https://github.com/pdorrell/rules-editing-mode.git
 #+begin_example emacs-lisp
-		 (add-to-list 'load-path
-									(expand-file-name "~/.emacs.d/site-lisp/drools-mode"))
-		 (require 'drools-mode)
-		 (eval-after-load "drools-mode"
-			 '(progn
-					(add-to-list 'auto-mode-alist '("\\.drl\\'" . drools-mode))
-					(add-hook 'drools-mode-hook
-										(lambda ()
-											(setq drools-tab-indent 2)
-											(setq indent-tabs-mode nil)
-											(yas-minor-mode))
-										)))
+	(add-to-list 'load-path
+							 (expand-file-name "~/.emacs.d/site-lisp/drools-mode"))
+	(require 'drools-mode)
+	(eval-after-load "drools-mode"
+		'(progn
+			 (add-to-list 'auto-mode-alist '("\\.drl\\'" . drools-mode))
+			 (add-hook 'drools-mode-hook
+								 (lambda ()
+									 (setq drools-tab-indent 2)
+									 (setq indent-tabs-mode nil)
+									 (yas-minor-mode))
+								 )))
 #+end_example
 ** Fzf
 My own fork to fix whitespace issue :)
 https://github.com/xshyamx/fzf.el.git
 #+begin_src emacs-lisp
-  (add-to-list
-   'load-path
-   (expand-file-name "~/.emacs.d/site-lisp/fzf"))
-  (require 'fzf)
-  ;(eval-after-load "fzf"
-  ;  (setq (fzf/executable "/usr/local/bin/fzf"))
+	(add-to-list
+	 'load-path
+	 (expand-file-name "~/.emacs.d/site-lisp/fzf"))
+	(require 'fzf)
+	;(eval-after-load "fzf"
+	;  (setq (fzf/executable "/usr/local/bin/fzf"))
 #+end_src
 ** [[https://github.com/holistics/dbml][DBML]]
-	 From https://github.com/ccod/dbd-mode
-	 #+begin_src emacs-lisp
-		 (load-file "~/.emacs.d/site-lisp/dbdiagram-mode/dbdiagram-mode.el")
-	 #+end_src
+From https://github.com/ccod/dbd-mode
+#+begin_src emacs-lisp
+	(load-file "~/.emacs.d/site-lisp/dbdiagram-mode/dbdiagram-mode.el")
+#+end_src
 * Color Theme
 ** +[[https://github.com/chriskempson/base16][Base16]] - [[https://github.com/belak/base16-emacs][Emacs]]+
 #+begin_src lisp
@@ -691,45 +689,44 @@ https://github.com/xshyamx/fzf.el.git
     (setq nord-comment-brightness 20)
     (load-theme 'nord t))
 #+end_src
-
 ** Zenburn
 #+begin_src emacs-lisp
-  (use-package zenburn-theme
-    :ensure t
-    :config
-    (load-theme 'zenburn t)
-    )
+	(use-package zenburn-theme
+		:ensure t
+		:config
+		(load-theme 'zenburn t)
+		)
 #+end_src
 ** Set Font
 #+begin_example emacs-lisp
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(default ((t (:family "Inconsolata" :foundry "outline" :slant normal :weight normal :height 180 :width normal)))))
+	(custom-set-faces
+	 ;; custom-set-faces was added by Custom.
+	 ;; If you edit it by hand, you could mess it up, so be careful.
+	 ;; Your init file should contain only one such instance.
+	 ;; If there is more than one, they won't work right.
+	 '(default ((t (:family "Inconsolata" :foundry "outline" :slant normal :weight normal :height 180 :width normal)))))
 #+end_example
 From https://www.emacswiki.org/emacs/SetFonts
 #+begin_src emacs-lisp
-  (when (eq system-type 'darwin)
+	(when (eq system-type 'darwin)
 
-     ;; default Latin font (e.g. Consolas)
-     (set-face-attribute 'default nil :family "Fira Code")
+		 ;; default Latin font (e.g. Consolas)
+		 (set-face-attribute 'default nil :family "Fira Code")
 
-     ;; default font size (point * 10)
-     ;;
-     ;; WARNING!  Depending on the default font,
-     ;; if the size is not supported very well, the frame will be clipped
-     ;; so that the beginning of the buffer may not be visible correctly.
-     (set-face-attribute 'default nil :height 160)
+		 ;; default font size (point * 10)
+		 ;;
+		 ;; WARNING!  Depending on the default font,
+		 ;; if the size is not supported very well, the frame will be clipped
+		 ;; so that the beginning of the buffer may not be visible correctly.
+		 (set-face-attribute 'default nil :height 160)
 
-     ;; use specific font for Korean charset.
-     ;; if you want to use different font size for specific charset,
-     ;; add :size POINT-SIZE in the font-spec.
-     ;(set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
+		 ;; use specific font for Korean charset.
+		 ;; if you want to use different font size for specific charset,
+		 ;; add :size POINT-SIZE in the font-spec.
+		 ;(set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
 
-     ;; you may want to add different for other charset in this way.
-     )
+		 ;; you may want to add different for other charset in this way.
+		 )
 #+end_src
 * Enable advanced flags
 ** Case Sensitive replacements
@@ -787,153 +784,148 @@ Set indentation level to 2 for most used modes
 #+end_src
 * Saving Abbreviations
 #+begin_src emacs-lisp
- (setq abbrev-file-name
-       (expand-file-name "~/.emacs.d/abbrev_defs"))
- (setq save-abbrevs 'silent)
+	(setq abbrev-file-name
+				(expand-file-name "~/.emacs.d/abbrev_defs"))
+	(setq save-abbrevs 'silent)
 #+end_src
 * Server
 #+begin_src emacs-lisp
- ;; start the server !!
- (load "server")
- (setq server-socket-dir "~/.emacs.d/server")
- (server-start)
- (unless (server-running-p) (server-start))
- (message "started server")
+	;; start the server !!
+	(load "server")
+	(setq server-socket-dir "~/.emacs.d/server")
+	(server-start)
+	(unless (server-running-p) (server-start))
+	(message "started server")
 #+end_src
 * Org Mode
 #+begin_src emacs-lisp
-		(setq org-confirm-babel-evaluate nil)
-		(setq org-agenda-files
-					'("~/shyam/home/payments.org" "~/shyam/macbook/today.org" "~/shyam/macbook/buf.org"))
-		(org-babel-do-load-languages
-		 'org-babel-load-languages
-		 '((js . t)))
+	(setq org-confirm-babel-evaluate nil)
+	(setq org-agenda-files
+				'("~/shyam/home/payments.org" "~/shyam/macbook/today.org" "~/shyam/macbook/buf.org"))
+	(org-babel-do-load-languages
+	 'org-babel-load-languages
+	 '((js . t)))
 
-		(setq org-structure-template-alist (append org-structure-template-alist '(("x" . "src emacs-lisp"))))
+	(setq org-structure-template-alist (append org-structure-template-alist '(("x" . "src emacs-lisp"))))
 #+end_src
 ** Install htmlize from elpa
 #+begin_src emacs-lisp
-  (use-package htmlize
-    :ensure t)
+	(use-package htmlize
+		:ensure t)
 #+end_src
 * Utility Functions
 ** Recreate scratch buffer
 #+begin_src emacs-lisp
-  ;; recreate scratch buffer
-  (defun create-scratch-buffer nil
-    "create a scratch buffer"
-    (interactive)
-    (pop-to-buffer (get-buffer-create "*scratch*"))
-    (insert (string-join
-             '(";; This buffer is for text that is not saved, and for Lisp evaluation."
-               ";; To create a file, visit it with C-x C-f and enter text in its buffer."
-               ";; Use C-x C-e to eval expressing and C-j to eval and print\n"
-               )
-             "\n"))
-    (lisp-interaction-mode)
-    (switch-to-buffer)
-    )
+	;; recreate scratch buffer
+	(defun create-scratch-buffer nil
+		"create a scratch buffer"
+		(interactive)
+		(pop-to-buffer (get-buffer-create "*scratch*"))
+		(insert (string-join
+						 '(";; This buffer is for text that is not saved, and for Lisp evaluation."
+							 ";; To create a file, visit it with C-x C-f and enter text in its buffer."
+							 ";; Use C-x C-e to eval expressing and C-j to eval and print\n"
+							 )
+						 "\n"))
+		(lisp-interaction-mode)
+		(switch-to-buffer)
+		)
 #+end_src
 ** Untabify buffer
 From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-saving-certain-file-types-and-only-those-file-ty][Untabify certain filetypes in Emacs]]
 #+begin_src emacs-lisp
-  (defun untabify-buffer ()
-    "Untabify current buffer"
-    (interactive)
-    (untabify (point-min) (point-max)))
+	(defun untabify-buffer ()
+		"Untabify current buffer"
+		(interactive)
+		(untabify (point-min) (point-max)))
 #+end_src
 ** Unhexify
 #+begin_src emacs-lisp
-		 (defun unhexify
-			 (color)
-			 (map
-				'list
-				(lambda (x) (string-to-number x 16))
-				(split-string
-				 (replace-regexp-in-string
-					"#\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)"
-					"\\1-\\2-\\3"
-					color) "-")
-				)
-			 )
-		 (provide 'unhexify)
+	(defun unhexify
+		(color)
+		(map
+		 'list
+		 (lambda (x) (string-to-number x 16))
+		 (split-string
+			(replace-regexp-in-string
+			 "#\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)"
+			 "\\1-\\2-\\3"
+			 color) "-")
+		 )
+		)
+	(provide 'unhexify)
 #+end_src
 ** Camelcase
 #+begin_src emacs-lisp
-  ;;;###autoload
-  (defun camel-case (input)
-    (let ((parts (split-string input "[ \f\t\n\r\v_-]+")))
-      (mapconcat 'identity (cons (downcase (car parts)) (mapcar 'capitalize (cdr parts))) "")
-      )
-    )
-
+	;;;###autoload
+	(defun camel-case (input)
+		(let ((parts (split-string input "[ \f\t\n\r\v_-]+")))
+			(mapconcat 'identity (cons (downcase (car parts)) (mapcar 'capitalize (cdr parts))) "")
+			)
+		)
 #+end_src
 ** Align Declarations
 #+begin_src emacs-lisp
-		 (fset 'align-decl
-					 (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217848 97 108 105 103 110 45 114 101 103 101 120 112 return 61 return 24 24 134217848 114 101 112 108 97 99 101 45 114 101 103 101 120 112 return 92 40 91 94 32 6 43 92 41 92 40 32 43 92 41 32 61 return 92 50 92 49 32 61 return] 0 "%d")) arg)))
+	(fset 'align-decl
+				(lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217848 97 108 105 103 110 45 114 101 103 101 120 112 return 61 return 24 24 134217848 114 101 112 108 97 99 101 45 114 101 103 101 120 112 return 92 40 91 94 32 6 43 92 41 92 40 32 43 92 41 32 61 return 92 50 92 49 32 61 return] 0 "%d")) arg)))
 #+end_src
 ** dos2unix
 #+begin_src emacs-lisp
-  (fset 'dos2unix
-     (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([201326629 17 13 return return 33] 0 "%d")) arg)))
+	(fset 'dos2unix
+		 (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([201326629 17 13 return return 33] 0 "%d")) arg)))
 #+end_src
 ** base64 url encode & decode
 From https://gist.github.com/inouetmhr/4116307
 #+begin_src emacs-lisp
-  (defun base64-to-base64url (str)
-    (setq str (replace-regexp-in-string "=+$" "" str))
-    (setq str (replace-regexp-in-string "+" "-" str))
-    (setq str (replace-regexp-in-string "/" "_" str)))
+	(defun base64-to-base64url (str)
+		(setq str (replace-regexp-in-string "=+$" "" str))
+		(setq str (replace-regexp-in-string "+" "-" str))
+		(setq str (replace-regexp-in-string "/" "_" str)))
 
-  (defun base64url-to-base64 (str)
-    (setq str (replace-regexp-in-string "-" "+" str))
-    (setq str (replace-regexp-in-string "_" "/" str))
-    (let ((mod (% (length str) 4)))
-      (cond
-       ((= mod 1) (concat str "==="))
-       ((= mod 2) (concat str "=="))
-       ((= mod 3) (concat str "="))
-       (t str))))
+	(defun base64url-to-base64 (str)
+		(setq str (replace-regexp-in-string "-" "+" str))
+		(setq str (replace-regexp-in-string "_" "/" str))
+		(let ((mod (% (length str) 4)))
+			(cond
+			 ((= mod 1) (concat str "==="))
+			 ((= mod 2) (concat str "=="))
+			 ((= mod 3) (concat str "="))
+			 (t str))))
 
-  (defun base64url-encode-string (str)
-    (base64-to-base64url (base64-encode-string str t)))
+	(defun base64url-encode-string (str)
+		(base64-to-base64url (base64-encode-string str t)))
 
-  (defun base64url-decode-string (str)
-    (base64-decode-string (base64url-to-base64 str)))
+	(defun base64url-decode-string (str)
+		(base64-decode-string (base64url-to-base64 str)))
 
 #+end_src
 ** Toggle proxy
 #+begin_src emacs-lisp
-  (defun emacs-proxy ()
-    "Toggle proxy settings for emacs"
-    (interactive)
-    (if url-using-proxy
-        (progn
-          (setq url-using-proxy nil)
-          (setq url-proxy-services nil)
-          (setenv "http_proxy" nil)
-          (setenv "https_proxy" nil)
-          (setenv "no_proxy" nil)
-          (message "Proxy disabled")
-          )
-      (progn
-        (setq url-using-proxy t)
-        (setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
-                                   ("http" . "proxy1.wipro.com:8080")))
-        (setenv "http_proxy" "http://localhost:3128")
-        (setenv "https_proxy" "http://localhost:3128")
-        (setenv "no_proxy" "localhost,wipro.com")
-        (message "Proxy enabled")
-        )
+	(defun emacs-proxy ()
+		"Toggle proxy settings for emacs"
+		(interactive)
+		(if url-using-proxy
+				(progn
+					(setq url-using-proxy nil)
+					(setq url-proxy-services nil)
+					(setenv "http_proxy" nil)
+					(setenv "https_proxy" nil)
+					(setenv "no_proxy" nil)
+					(message "Proxy disabled")
+					)
+			(progn
+				(setq url-using-proxy t)
+				(setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
+																	 ("http" . "proxy1.wipro.com:8080")))
+				(setenv "http_proxy" "http://localhost:3128")
+				(setenv "https_proxy" "http://localhost:3128")
+				(setenv "no_proxy" "localhost,wipro.com")
+				(message "Proxy enabled")
+				)
 
-      )
-    )
+			)
+		)
 #+end_src
-
-#+RESULTS:
-: emacs-proxy
-
 * File Mode Specific
 ** JSON for javascript dotfiles
 #+begin_src emacs-lisp
@@ -976,8 +968,8 @@ Auto-start on any markup modes
 ** SQL
 Setup sql-mode to highlight sql keywords
 #+begin_src emacs-lisp
-  (add-hook 'sql-mode-hook
-            (lambda () (sql-highlight-ansi-keywords)))
+	(add-hook 'sql-mode-hook
+						(lambda () (sql-highlight-ansi-keywords)))
 #+end_src
 ** Java
 Force indents, offsets and disable tabs
@@ -988,7 +980,6 @@ Force indents, offsets and disable tabs
                     tab-width 2
                     indent-tabs-mode nil)))
 #+end_src
-** Golang
 ** Untabify files using prog mode hooks
 #+begin_src emacs-lisp
   (defun progmodes-hooks ()
@@ -1015,30 +1006,30 @@ Force indents, offsets and disable tabs
 #+end_src
 ** Show whitespace in makefiles
 #+begin_src emacs-lisp
-  (add-hook 'makefile-bsdmake-mode-hook 'whitespace-mode)
-  (add-hook 'makefile-bsdmake-mode-hook (lambda () (remove-hook 'sh-set-shell-hook 'progmodes-hooks t)))
-  (add-hook 'makefile-bsdmake-mode-hook (lambda () (message "removed untabify for makefile")))
+	(add-hook 'makefile-bsdmake-mode-hook 'whitespace-mode)
+	(add-hook 'makefile-bsdmake-mode-hook (lambda () (remove-hook 'sh-set-shell-hook 'progmodes-hooks t)))
+	(add-hook 'makefile-bsdmake-mode-hook (lambda () (message "removed untabify for makefile")))
 #+end_src
+** Golang
 *** Setup GOPATH and variables for go-mode
- #+begin_src emacs-lisp
-   (setq go-home "/usr/local/go")
-   (setq go-path (expand-file-name "go" (getenv "HOME")))
-   (setq godef-command (expand-file-name "bin/godef" go-path))
-   (setq gofmt-command (expand-file-name "bin/goimports" go-path))
-   (setq godoc-command (expand-file-name "bin/godoc" go-home))
-   (setq go-command (expand-file-name "bin/go" go-home))
- #+end_src
+#+begin_src emacs-lisp
+	(setq go-home "/usr/local/go")
+	(setq go-path (expand-file-name "go" (getenv "HOME")))
+	(setq godef-command (expand-file-name "bin/godef" go-path))
+	(setq gofmt-command (expand-file-name "bin/goimports" go-path))
+	(setq godoc-command (expand-file-name "bin/godoc" go-home))
+	(setq go-command (expand-file-name "bin/go" go-home))
+#+end_src
 *** Gofmt before save
- #+begin_src emacs-lisp
-   (add-hook 'go-mode-hook
-             (lambda ()
-               (progn
-                 (setq tab-width 2)
-                 (message "run go-mode-hook")
-                 (add-hook 'before-save-hook #'gofmt-before-save))))
-   (add-hook 'before-save-hook #'gofmt-before-save)
-
- #+end_src
+#+begin_src emacs-lisp
+	(add-hook 'go-mode-hook
+						(lambda ()
+							(progn
+								(setq tab-width 2)
+								(message "run go-mode-hook")
+								(add-hook 'before-save-hook #'gofmt-before-save))))
+	(add-hook 'before-save-hook #'gofmt-before-save)
+#+end_src
 * Global key bindings
 #+begin_src emacs-lisp
 	(global-set-key (kbd "M-o") 'occur)
@@ -1098,7 +1089,7 @@ Force indents, offsets and disable tabs
 * Mode customizations
 ** Remap projectile-find-file to use fzf
 #+begin_src emacs-lisp
-  (defalias 'projectile-find-file 'fzf-projectile)
+	(defalias 'projectile-find-file 'fzf-projectile)
 #+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
