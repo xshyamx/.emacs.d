@@ -641,21 +641,34 @@ From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emac
 							 (expand-file-name "~/.emacs.d/site-lisp/visual-basic-mode"))
 	(require 'visual-basic-mode)
 #+end_example
-** Drools
+** +Drools+
 From https://github.com/pdorrell/rules-editing-mode.git
 #+begin_example emacs-lisp
-	(add-to-list 'load-path
-							 (expand-file-name "~/.emacs.d/site-lisp/drools-mode"))
+	(use-package drools-mode
+		:mode "\\.drl\\'"
+		:load-path "site-lisp/drools-mode"
+		:custom
+		(drools-tab-indent 2 "set indent size to 2")
+		(indent-tabs-mode nil "do not use tabs for indent")
+		:hook yas-minor-mode)
+#+end_example
+*** Old way
+#+begin_example emacs-lisp
+	(add-to-list
+	 'load-path
+	 (expand-file-name "site-lisp/drools-mode" user-emacs-directory))
+	(defun init-drools-mode ()
+		(setq
+		 drools-tab-indent 2
+		 indent-tabs-mode nil)
+		(yas-minor-mode))
+	(defun setup-drools-mode ()
+		(add-to-list 'auto-mode-alist '("\\.drl\\'" . drools-mode))
+		(add-hook 'drools-mode-hook #'init-drools-mode)
+		)
 	(require 'drools-mode)
 	(eval-after-load "drools-mode"
-		'(progn
-			 (add-to-list 'auto-mode-alist '("\\.drl\\'" . drools-mode))
-			 (add-hook 'drools-mode-hook
-								 (lambda ()
-									 (setq drools-tab-indent 2)
-									 (setq indent-tabs-mode nil)
-									 (yas-minor-mode))
-								 )))
+		#'setup-drools-mode)
 #+end_example
 ** Fzf
 My own fork to fix whitespace issue :)
@@ -663,16 +676,31 @@ https://github.com/xshyamx/fzf.el.git
 #+begin_src emacs-lisp
 	(add-to-list
 	 'load-path
-	 (expand-file-name "~/.emacs.d/site-lisp/fzf"))
+	 (expand-file-name "site-lisp/fzf" user-emacs-directory))
 	(require 'fzf)
-	;(eval-after-load "fzf"
-	;  (setq (fzf/executable "/usr/local/bin/fzf"))
+	;; (eval-after-load "fzf"
+	;;  (setq (fzf/executable "/usr/local/bin/fzf"))
 #+end_src
 ** [[https://github.com/holistics/dbml][DBML]]
 From https://github.com/ccod/dbd-mode
 #+begin_src emacs-lisp
-	(load-file "~/.emacs.d/site-lisp/dbdiagram-mode/dbdiagram-mode.el")
+	(use-package dbdiagram-mode
+		:load-path "site-lisp/dbdiagram-mode")
 #+end_src
+*** Old way
+#+begin_example emacs-lisp
+	(load-file (locate-user-emacs-file "site-lisp/dbdiagram-mode/dbdiagram-mode.el"))
+#+end_example
+** gedcom
+From https://github.com/emacsattic/gedcom
+#+begin_src emacs-lisp
+	(use-package gedcom
+		:load-path "site-lisp/gedcom")
+#+end_src
+*** Old way
+#+begin_example emacs-lisp
+	(load-file (locate-user-emacs-file "site-lisp/gedcom/gedcom.el"))
+#+end_example
 * Color Theme
 ** +[[https://github.com/chriskempson/base16][Base16]] - [[https://github.com/belak/base16-emacs][Emacs]]+
 #+begin_src lisp
@@ -806,7 +834,7 @@ Set indentation level to 2 for most used modes
 	 'org-babel-load-languages
 	 '((js . t)))
 
-	(setq org-structure-template-alist (append org-structure-template-alist '(("x" . "src emacs-lisp"))))
+	(add-to-list 'org-structure-template-alist '("x" . "src emacs-lisp") t)
 #+end_src
 ** Install htmlize from elpa
 #+begin_src emacs-lisp
@@ -824,7 +852,7 @@ Set indentation level to 2 for most used modes
 		(insert (string-join
 						 '(";; This buffer is for text that is not saved, and for Lisp evaluation."
 							 ";; To create a file, visit it with C-x C-f and enter text in its buffer."
-							 ";; Use C-x C-e to eval expressing and C-j to eval and print\n"
+							 ";; Use C-x C-e to eval expressing and C-j to eval and print\n\n"
 							 )
 						 "\n"))
 		(lisp-interaction-mode)
