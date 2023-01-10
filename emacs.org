@@ -577,6 +577,66 @@ Check if executable is in the path `(executable-find "gopls")`
 		:ensure t
 		:command rainbow-mode)
 #+end_src
+** Hydra
+#+begin_src emacs-lisp
+	(use-package hydra
+		:ensure t)
+#+end_src
+*** Setup functions used by the hydra
+#+begin_src emacs-lisp
+	;; base directories
+	(setq
+	 dotfiles-home (expand-file-name "dotfiles" (getenv "HOME"))
+	 macbook-home (expand-file-name "shyam/macbook" (getenv "HOME"))
+	 projects-home (expand-file-name "projects" (getenv "HOME"))
+	 )
+	;; build list of projects and org files
+	(setq project-notes
+				(let ((remove-prefix
+							 ;; remove the projects-home basedir
+							 (lambda (x) (replace-regexp-in-string
+														(rx-to-string `(: line-start ,projects-home "/") t)
+														""
+														x)))
+							(matcher
+							 ;; matcher to find org files
+							 (lambda (x) (string-suffix-p "-notes.org" x)))
+							(make-pair
+							 ;; create a pair with the directory name & filename
+							 (lambda (x) (cons (f-base (f-dirname x)) x)))
+							)
+					(seq-map make-pair
+									 (seq-map remove-prefix
+														(f-files projects-home matcher t)))))
+	;; sort ?
+	;(setq project-notes (seq-sort-by #'car #'string< project-notes))
+
+	(defun find-project-notes ()
+		"Select a project from `project-notes' and open it"
+		(interactive "i")
+		(let ((proj (assoc
+								 (completing-read "Select project: " (seq-map #'car project-notes))
+								 project-notes)))
+			(when proj
+				(find-file (expand-file-name (cdr proj) projects-home)))
+			)
+		)
+#+end_src
+*** Commonly used org files
+#+begin_src emacs-lisp
+	(global-unset-key (kbd "s-g"))
+	(defhydra common-org-files (:exit t)
+		"goto"
+		("b" (find-file (expand-file-name "buf.org" macbook-home)) "buf.org")
+		("d" (find-file (expand-file-name "daily-log-2023.org" macbook-home)) "daily-log-2023.org")
+		("e" (find-file (expand-file-name "emacs/.emacs.d/emacs.org" dotfiles-home)) "emacs.org")
+		("t" (find-file (expand-file-name "today.org" macbook-home)) "today.org")
+		("l" (find-file (expand-file-name "laptop-config.org" macbook-home)) "laptop-config.org")
+		("p" (find-project-notes) "Projects")
+		("q" nil "quit")
+		)
+	(global-set-key (kbd "s-g") #'common-org-files/body)
+#+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
 Add top-level directories under ~site-lisp~ to ~load-path~
