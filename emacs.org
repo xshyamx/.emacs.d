@@ -1,4 +1,6 @@
 #+STARTUP: content
+#+property: header-args :tangle emacs.el
+#+property: org-babel-default-header-args :tangle yes
 * Init file
 #+include: "~/dotfiles/emacs/.emacs.d/init.el" src emacs-lisp
 ** [[https://github.com/jwiegley/use-package#getting-started][Use Package Help]]
@@ -381,7 +383,7 @@ Ensure that the NPM package =mermaid.cli= is installed globally
 #+end_src
 ** Markdown
 Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is installed via go get
-#+begin_src sh
+#+begin_src sh :tangle no
   go get -u gitlab.com/golang-commonmark/mdtool
 #+end_src
 #+begin_src emacs-lisp
