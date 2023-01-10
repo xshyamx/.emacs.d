@@ -10,23 +10,11 @@
 	(add-hook 'emacs-startup-hook #'print-startup-time)
 #+end_src
 * Interface Tweaks
-** +Allow following of symlinks+
-From [[https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links][Emacs and symbolic links]]
-Moved to init.el
-#+begin_example emacs-lisp
-	(setq vc-follow-symlinks t)
-#+end_example
-** Remove startup screen
-#+begin_src emacs-lisp
-	(setq inhibit-startup-screen t)
-#+end_src
-** Save active buffers on restart
-#+begin_src emacs-lisp
-	(desktop-save-mode t)
-#+end_src
 ** Use y/p instead of yes/no
 #+begin_src emacs-lisp
-	(defalias 'yes-or-no-p 'y-or-n-p "Use y/n instead of yes/no")
+	(if (version< emacs-version "28.1")
+			(defalias 'yes-or-no-p 'y-or-n-p "Use y/n instead of yes/no")
+		(setq use-short-answers t))
 #+end_src
 ** Use utf-8 encoding everywhere
 #+begin_src emacs-lisp
@@ -35,25 +23,26 @@ Moved to init.el
 	(set-default-coding-systems 'utf-8)
 	;(set-buffer-file-coding-system 'utf-8-unix)
 #+end_src
-** Remove the toolbar
+** UI tweaks
+- From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-file-in-a-new-buffer-not-frame-and-be-activated-com][Do not allow new buffer frames]]
 #+begin_src emacs-lisp
-	(tool-bar-mode -1)
+	(tool-bar-mode -1)				; hide toolbar
+	(menu-bar-mode t)					; show menubar
+	(scroll-bar-mode -1)			; hide scrollbar
+	(electric-pair-mode t)		; auto-close parenthesis everywhere
+	(desktop-save-mode t)			; save all emacs buffers
+
+	(setq
+	 inhibit-startup-screen t	; do not show startup screen
+	 size-indication-mode t		; show human readable file size in modeline
+	 column-number-mode t			; show column numbers
+	 pop-up-frames nil				; do not allow new frames
+	 global-hl-line-mode nil	; do not highlight current line
+	 savehist-mode 1					; persist minibuffer history across sessions
+	 view-read-only t					; use view-mode for readonly buffers
+	 )
 #+end_src
-** +Hide the menubar+
-#+begin_example emacs-lisp
-  ;; do not show menubar
-  (menu-bar-mode -1)
-#+end_example
-** Hide the scroll bar
-#+begin_src emacs-lisp
-	(scroll-bar-mode -1)
-#+end_src
-** Do not allow new emacs frames
-From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-file-in-a-new-buffer-not-frame-and-be-activated-com][Do not allow new buffer frames]]
-#+begin_src emacs-lisp
-	(setq pop-up-frames nil)
-#+end_src
-** Visble bell
+** Flash modeline instead of visble bell
 #+begin_src emacs-lisp
 	(setq visible-bell nil
 				ring-bell-function 'flash-mode-line)
@@ -65,35 +54,9 @@ From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-fi
 #+begin_example emacs-lisp
 	(setq ring-bell-function 'ignore)
 #+end_example
-** Size indication?
-#+begin_src emacs-lisp
-	(setq size-indication-mode t)
-#+end_src
-** Display the column numbers
-#+begin_src emacs-lisp
-	(setq column-number-mode t)
-#+end_src
-** Electric pair mode everywhere
-#+begin_src emacs-lisp
-	(electric-pair-mode 1)
-#+end_src
-** +Higlight current line globally+
-#+begin_example emacs-lisp
-  (global-hl-line-mode t)
-#+end_example
 ** Replace BufferMenu with ibuffer
 #+begin_src emacs-lisp
 	(global-set-key (kbd "C-x C-b") 'ibuffer)
-#+end_src
-** Save histories
-#+begin_src emacs-lisp
-	;; persist minibuffer history across sessions
-	(savehist-mode 1)
-#+end_src
-** Use view-mode for readonly buffers
-#+begin_src emacs-lisp
-	;; Use view-mode for readonly buffers
-	(setq view-read-only t)
 #+end_src
 ** Use fido vertical mode
 #+begin_src emacs-lisp
@@ -148,17 +111,15 @@ From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-fi
 ** Open emacs sources in readonly view mode
 #+begin_src emacs-lisp
 	(defun eldoc-readonly ()
+		"When browsing gzipped elisp files mark them as readonly"
 		(when
 				(and
-				 (bound-and-true-p eldoc-mode)
 				 (string-suffix-p ".el.gz" (f-filename buffer-file-name))
 				 (not buffer-read-only))
-			(progn
-				(read-only-mode t)
-				(view-mode t)
-				(message "read-only view mode enabled"))
-			)
-		)
+
+			(read-only-mode t)
+			(view-mode t)
+			(message "read-only view mode enabled")))
 
 	(add-hook 'emacs-lisp-mode-hook #'eldoc-readonly)
 #+end_src
@@ -180,7 +141,8 @@ not litter directories with the backup files
 	;; do not create lockfiles
 	(setq create-lockfiles nil)
 #+end_src
-* Position the Emacs frame
+* +Position the Emacs frame+
+Already handled by desktop?
 ** Find current coordinates
 1. Position the emacs window in the bottom right
 2. Find out the current width and height using =(frame-width)= & =(frame-height)= functions
@@ -196,10 +158,10 @@ not litter directories with the backup files
 		)
 #+end_example
 ** Set the current position
-#+begin_src emacs-lisp
+#+begin_example emacs-lisp
 	(setq default-frame-alist
 				'((top . 34) (left . 646) (width . 110) (height . 50)))
-#+end_src
+#+end_example
 * Update the exec-path
 ** Update the emacs =exec-path=
 #+begin_src emacs-lisp
@@ -288,56 +250,54 @@ Causes LC_ENCODING issues with projectile-find-file
 #+end_src
 ** Autocomplete
 #+begin_src emacs-lisp
-  (use-package auto-complete
-    :ensure t
-    :init
-    (ac-config-default)
-  ;  (global-auto-complete-mode t)
-    )
+	(use-package auto-complete
+		:ensure t
+		:init
+		(ac-config-default)
+	;  (global-auto-complete-mode t)
+		)
 #+end_src
 ** Web Mode
 #+begin_src emacs-lisp
-  (use-package web-mode
-    :ensure t)
+	(use-package web-mode
+		:mode "\\.\(phtml\|tpl\\.php\|[agj]sp\|as[cp]x\|erb\|mustache\|hbs\|djhtml\)\\'"
+		:custom
+		(web-mode-enable-current-element-highlight t "Highlight current tag")
+		:ensure t)
 #+end_src
 ** Emmet
 #+begin_src emacs-lisp
-  (use-package emmet-mode
-    :ensure t
-    :config
-    (add-hook 'sgml-mode-hook 'emmet-mode)
-    (add-hook 'html-mode-hook 'emmet-mode)
-    (add-hook 'web-mode-hook  'emmet-mode))
+	(use-package emmet-mode
+		:ensure t
+		:hook (sgml-mode html-mode web-mode))
 #+end_src
 ** JSON
 Depends on [[JQ Mode]]
 #+begin_src emacs-lisp
-  (use-package json-mode
-    :ensure t
-    :bind (:map json-mode-map
-		   ("C-c C-j" . 'jq-interactively))
-    :custom
-    (tab-width 2)
-    )
+	(use-package json-mode
+		:mode "\\.\\(\\(babel\\|bower\\)rc\\|json\\)\\'"
+		:ensure t
+		:bind (:map json-mode-map
+			 ("C-c C-j" . 'jq-interactively))
+		:custom
+		(tab-width 2)
+		)
 #+end_src
 ** Go
 https://geeksocket.in/posts/emacs-lsp-go/
 #+begin_src emacs-lisp
-  ;; Go - lsp-mode
-  ;; Set up before-save hooks to format buffer and add/delete imports.
-  (defun lsp-go-install-save-hooks ()
-    (add-hook 'before-save-hook #'lsp-format-buffer t t)
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
-  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-  (use-package go-mode
-    :init
-    (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-    (add-hook 'go-mode-hook #'lsp-deferred)
-    (add-hook 'go-mode-hook #'yas-minor-mode)
-    :custom
-    (tab-width 2)
-    )
-  ;  (add-hook 'before-save-hook #'gofmt-before-save))
+	;; Go - lsp-mode
+	;; Set up before-save hooks to format buffer and add/delete imports.
+	(use-package go-mode
+		:config
+		(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+		(add-hook 'go-mode-hook #'lsp-deferred)
+		(add-hook 'go-mode-hook #'yas-minor-mode)
+		(add-hook 'before-save-hook #'gofmt-before-save)
+		:custom
+		(tab-width 2)
+		)
+	;  (add-hook 'before-save-hook #'gofmt-before-save))
 #+end_src
 ** Graphviz
 #+begin_src emacs-lisp
@@ -465,8 +425,9 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 #+end_src
 ** Groovy
 #+begin_src emacs-lisp
-  (use-package groovy-mode
-    :ensure t)
+	(use-package groovy-mode
+		:mode "\\(^Jenkinsfile|\\.groovy\\)\\'"
+		:ensure t)
 #+end_src
 ** vlf
 #+begin_src emacs-lisp
@@ -554,25 +515,6 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
     (projectile-mode +1)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 #+end_src
-** +Dired Subtree+
-#+begin_example emacs-lisp
-	(use-package dired-subtree
-		:ensure t
-		:bind (:map dired-mode-map ("C-c t" . dired-subtree-toggle)
-						("C-c d" . dired-subtree-down)
-						("C-c u" . dired-subtree-up))
-		)
-#+end_example
-** +Expand Region (semantic)+
-#+begin_example emacs-lisp
-	(use-package expand-region
-		:ensure t
-		:bind (
-		 ("C-+" . er/expand-region)
-		 ("C--" . er/contract-region)
-		 )
-	)
-#+end_example
 ** JSX Support
 #+begin_src emacs-lisp
   (use-package rjsx-mode
@@ -627,14 +569,25 @@ Check if executable is in the path `(executable-find "gopls")`
 		:ensure t)
 #+end_src
 * Packages not in ELPA/MELPA
+** +Fix ~load-path~+
+Add top-level directories under ~site-lisp~ to ~load-path~
+#+begin_example emacs-lisp
+	(let* ((default-directory user-emacs-directory)
+				(parent-mapper (lambda (x) (expand-file-name x "site-lisp")))
+				(dotfile-filter (lambda (x) (not (or (equal "." x) (equal ".." x)))))
+				(dirs (seq-filter dotfile-filter (directory-files (locate-user-emacs-file "site-lisp")))))
+		;; add specified directories only
+		(normal-top-level-add-to-load-path (seq-map parent-mapper dirs))
+		)
+#+end_example
 ** Visual Basic Mode
 From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
-#+begin_src emacs-lisp
+#+begin_example emacs-lisp
 	(use-package visual-basic-mode
 		:mode "\\.vbs\\'"
 		:load-path "site-lisp/visual-basic-mode"
 		)
-#+end_src
+#+end_example
 *** Old way
 #+begin_example emacs-lisp
 	(add-to-list 'load-path
@@ -702,21 +655,6 @@ From https://github.com/emacsattic/gedcom
 	(load-file (locate-user-emacs-file "site-lisp/gedcom/gedcom.el"))
 #+end_example
 * Color Theme
-** +[[https://github.com/chriskempson/base16][Base16]] - [[https://github.com/belak/base16-emacs][Emacs]]+
-#+begin_src lisp
-  (use-package base16-theme
-    :ensure t
-    :config
-    (load-theme 'base16-tomorrow-night t))
-#+end_src
-** +[[https://github.com/arcticicestudio/nord-emacs][Nord]]+
-#+begin_src lisp
-  (use-package nord-theme
-    :ensure t
-    :config
-    (setq nord-comment-brightness 20)
-    (load-theme 'nord t))
-#+end_src
 ** Zenburn
 #+begin_src emacs-lisp
 	(use-package zenburn-theme
@@ -955,40 +893,6 @@ From https://gist.github.com/inouetmhr/4116307
 		)
 #+end_src
 * File Mode Specific
-** JSON for javascript dotfiles
-#+begin_src emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.bowerrc\\'"      . json-mode))
-  (add-to-list 'auto-mode-alist '("\\.babelrc\\'"      . json-mode))
-  (add-to-list 'auto-mode-alist '("package\\.json\\'"  . json-mode))
-#+end_src
-** Groovy
-#+begin_src emacs-lisp
-  ;; groovy
-  (add-to-list 'auto-mode-alist '("Jenkinsfile\\'" . groovy-mode))
-#+end_src
-** Web mode
-*** Highlight current tag
- #+begin_src emacs-lisp
-   (setq web-mode-enable-current-element-highlight t)
- #+end_src
-*** Add additional extension
- #+begin_src emacs-lisp
-   (add-to-list 'auto-mode-alist '("\\.phtml\\'"      . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'"  . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'"    . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'"    . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.erb\\'"        . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.mustache\\'"   . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.hbs$"          . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.djhtml\\'"     . web-mode))
- #+end_src
-** Emmet
-Auto-start on any markup modes
-#+begin_src emacs-lisp
-  (add-hook 'sgml-mode-hook 'emmet-mode)
-  (add-hook 'html-mode-hook 'emmet-mode)
-  (add-hook 'web-mode-hook 'emmet-mode)
-#+end_src
 ** Ruby mode for Vagrantfile
 #+begin_src emacs-lisp
   (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
@@ -1047,16 +951,6 @@ Force indents, offsets and disable tabs
 	(setq gofmt-command (expand-file-name "bin/goimports" go-path))
 	(setq godoc-command (expand-file-name "bin/godoc" go-home))
 	(setq go-command (expand-file-name "bin/go" go-home))
-#+end_src
-*** Gofmt before save
-#+begin_src emacs-lisp
-	(add-hook 'go-mode-hook
-						(lambda ()
-							(progn
-								(setq tab-width 2)
-								(message "run go-mode-hook")
-								(add-hook 'before-save-hook #'gofmt-before-save))))
-	(add-hook 'before-save-hook #'gofmt-before-save)
 #+end_src
 * Global key bindings
 #+begin_src emacs-lisp
