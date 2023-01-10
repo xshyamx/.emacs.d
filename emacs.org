@@ -570,6 +570,13 @@ Check if executable is in the path `(executable-find "gopls")`
 	(use-package rego-mode
 		:ensure t)
 #+end_src
+** Rainbow colors
+#+begin_src emacs-lisp
+	;; use `M-x rainbow-mode' to fontify colors
+	(use-package rainbow-mode
+		:ensure t
+		:command rainbow-mode)
+#+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
 Add top-level directories under ~site-lisp~ to ~load-path~
