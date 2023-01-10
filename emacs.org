@@ -661,9 +661,11 @@ From https://github.com/emacsattic/gedcom
 #+begin_src emacs-lisp
 	(use-package zenburn-theme
 		:ensure t
-		:config
 		(load-theme 'zenburn t)
 		)
+	;; pop the icomplete selected item :D
+	(custom-set-faces
+	 '(icomplete-selected-match ((t (:background "dark cyan")))))
 #+end_src
 ** Set Font
 #+begin_example emacs-lisp
