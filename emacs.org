@@ -41,6 +41,7 @@
 	 pop-up-frames nil				; do not allow new frames
 	 global-hl-line-mode nil	; do not highlight current line
 	 savehist-mode 1					; persist minibuffer history across sessions
+	 save-place-mode 1				; save the place when last visited
 	 view-read-only t					; use view-mode for readonly buffers
 	 )
 #+end_src
