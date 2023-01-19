@@ -590,6 +590,16 @@ Check if executable is in the path `(executable-find "gopls")`
 		)
 	(global-set-key (kbd "s-g") #'common-org-files/body)
 #+end_src
+** vterm
+vterm requires libtool & [[https://cmake.org/][cmake]] install them with
+#+begin_src sh
+	brew install libtool
+	brew install --cask cmake
+#+end_src
+#+begin_src emacs-lisp
+	(use-package vterm
+		:ensure t)
+#+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
 Add top-level directories under ~site-lisp~ to ~load-path~
@@ -849,11 +859,10 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 										 ";; To create a file, visit it with C-x C-f and enter text in its buffer."
 										 ";; Use C-x C-e to eval expressing and C-j to eval and print\n\n"
 										 )
-									 "\n")))
-				(lisp-interaction-mode)
+									 "\n"))
+					(lisp-interaction-mode))
 				)
 			(let (buffer (get-buffer buffer-name))
-				(pop-to-buffer buffer)
 				(switch-to-buffer buffer)
 				)
 			)
@@ -951,28 +960,29 @@ From https://gist.github.com/inouetmhr/4116307
 #+end_src
 ** Toggle proxy
 #+begin_src emacs-lisp
-	(defun fc/emacs-proxy ()
+	(defun fc/toggle-proxy (&optional force)
 		"Toggle proxy settings for emacs"
 		(interactive)
-		(if url-using-proxy
+		(if (or force (file-exists-p "~/.proxy.lock"))
 				(progn
-					(setq url-using-proxy nil)
-					(setq url-proxy-services nil)
-					(setenv "http_proxy" nil)
-					(setenv "https_proxy" nil)
-					(setenv "no_proxy" nil)
-					(message "Proxy disabled")
+					(setq url-using-proxy t
+								url-proxy-services
+								'(("no_proxy" . "localhost")
+									("http" . "localhost:3128")
+									("https" . "localhost:3128")))
+					(setenv "http_proxy" "http://localhost:3128")
+					(setenv "https_proxy" "http://localhost:3128")
+					(setenv "no_proxy" "localhost")
+					(message "Proxy enabled")
 					)
 			(progn
-				(setq url-using-proxy t)
-				(setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
-																	 ("http" . "proxy1.wipro.com:8080")))
-				(setenv "http_proxy" "http://localhost:3128")
-				(setenv "https_proxy" "http://localhost:3128")
-				(setenv "no_proxy" "localhost,wipro.com")
-				(message "Proxy enabled")
+				(setq url-using-proxy nil
+							url-proxy-services nil)
+				(setenv "http_proxy" nil)
+				(setenv "https_proxy" nil)
+				(setenv "no_proxy" nil)
+				(message "Proxy disabled")
 				)
-
 			)
 		)
 #+end_src
@@ -1043,37 +1053,9 @@ Force indents, offsets and disable tabs
 	;(global-unset-key (kbd "C-c C-d"))
 #+end_src
 * Proxy
-#+begin_example emacs-lisp
- (setenv "http_proxy" "http://localhost:3128")
- (setenv "https_proxy" "http://localhost:3128")
- (setenv "no_proxy" "localhost,wipro.com")
- (setq url-proxy-services '(("no_proxy" . "*\\.wipro\\.com")
-                            ("http" . "localhost:3128")))
-
- (setq url-using-proxy t)
- (setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
-                            ("http" . "proxy1.wipro.com:8080")))
-#+end_example
 #+begin_src emacs-lisp
- (if (file-exists-p "~/.proxy.lock")
-     (progn
-       (setq url-using-proxy t)
-       (setq url-proxy-services '(("no_proxy" . "localhost,wipro.com")
-                                  ("http" . "proxy1.wipro.com:8080")))
-       (setenv "http_proxy" "http://localhost:3128")
-       (setenv "https_proxy" "http://localhost:3128")
-       (setenv "no_proxy" "localhost,wipro.com")
-       (message "Proxy enabled")
-       )
-   (progn
-     (setq url-using-proxy nil)
-     (setq url-proxy-services nil)
-     (setenv "http_proxy" nil)
-     (setenv "https_proxy" nil)
-     (setenv "no_proxy" nil)
-     (message "Proxy disabled")
-     )
-   )
+	;; toggle proxy
+	(fc/toggle-proxy)
 #+end_src
 * Yasnippets
   Enable Yasnippets to specific modes
@@ -1100,5 +1082,5 @@ Force indents, offsets and disable tabs
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
- (message "Loaded all from shyam-emacs.org")
+ (message "Loaded all from %s" (ff-basename (buffer-file-name)))
 #+end_src
