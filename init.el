@@ -11,6 +11,7 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+
 ;; (setq use-package-verbose t)
 
 ;;; have this as early as possible
@@ -22,4 +23,4 @@
 (load-file custom-file)
 
 ;;; load literate configuration
-(org-babel-load-file (expand-file-name "~/.emacs.d/emacs.org"))
+(org-babel-load-file (locate-user-emacs-file "emacs.org"))
