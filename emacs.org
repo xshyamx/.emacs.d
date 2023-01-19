@@ -1,5 +1,5 @@
 #+STARTUP: content
-#+property: header-args :tangle emacs.el
+#+property: header-args :tangle (locate-user-emacs-file "emacs.el") :results silent
 #+property: org-babel-default-header-args :tangle yes
 * Init file
 #+include: "~/dotfiles/emacs/.emacs.d/init.el" src emacs-lisp
@@ -7,9 +7,9 @@
 ** Print startup time
 #+begin_src emacs-lisp
 	;; or alternatively use emacs-init-time function
-	(defun print-startup-time ()
+	(defun fc/print-startup-time ()
 		(message "Emacs loaded in %s seconds with %d garbage collection" (emacs-init-time "%.02f") gcs-done))
-	(add-hook 'emacs-startup-hook #'print-startup-time)
+	(add-hook 'emacs-startup-hook #'fc/print-startup-time)
 #+end_src
 * Interface Tweaks
 ** Use y/p instead of yes/no
@@ -48,8 +48,8 @@
 ** Flash modeline instead of visble bell
 #+begin_src emacs-lisp
 	(setq visible-bell nil
-				ring-bell-function 'flash-mode-line)
-	(defun flash-mode-line ()
+				ring-bell-function 'fc/flash-mode-line)
+	(defun fc/flash-mode-line ()
 		(invert-face 'mode-line)
 		(run-with-timer 0.1 nil #'invert-face 'mode-line))
 #+end_src
@@ -90,7 +90,7 @@
 				holiday-solar-holidays			nil)
 
 	;; holidays for 2022
-	(defun holidays-2022 ()
+	(defun fc/holidays-2022 ()
 		'(((1 14 2022) "Pongal")
 			((4 14 2022) "Dr. Ambedkar Jayanti")
 			((4 15 2022) "Good Friday")
@@ -111,9 +111,10 @@
 																					;					(holidays-2022)
 					))
 #+end_src
+
 ** Open emacs sources in readonly view mode
 #+begin_src emacs-lisp
-	(defun eldoc-readonly ()
+	(defun fc/eldoc-readonly ()
 		"When browsing gzipped elisp files mark them as readonly"
 		(when
 				(and
@@ -124,7 +125,7 @@
 			(view-mode t)
 			(message "read-only view mode enabled")))
 
-	(add-hook 'emacs-lisp-mode-hook #'eldoc-readonly)
+	(add-hook 'emacs-lisp-mode-hook #'fc/eldoc-readonly)
 #+end_src
 ** Remove trailing whitespace
 #+begin_src emacs-lisp
@@ -152,7 +153,7 @@ Already handled by desktop?
 3. Find out the current position using =(frame-parameters (selected-frame))=
 
 #+begin_example emacs-lisp
-	(defun emacs-frame-size-plist ()
+	(defun fc/emacs-frame-size-plist ()
 		(list
 		 :top (frame-parameter (selected-frame) 'top)
 		 :left (frame-parameter (selected-frame) 'left)
@@ -309,59 +310,6 @@ https://geeksocket.in/posts/emacs-lsp-go/
      (graphviz-dot-indent-width 2 "set indent size to 2")
      (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
 #+end_src
-** Plantuml
-#+begin_src emacs-lisp
-	(use-package plantuml-mode
-		:ensure t
-		:bind (:map plantuml-mode-map ("C-c C-p" . 'plantuml-export))
-		:custom
-		(plantuml-default-exec-mode 'executable)
-		(plantuml-executable-path "/usr/local/bin/plantuml")
-		(plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-		(org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-		)
-	;(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-	;(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
-	;; export to file function
-	(defun plantuml-export-file (fname)
-		"Compile the graph and preview it in an other buffer."
-		(interactive)
-		(let ((f-name (concat (f-no-ext fname) ".png"))
-					(command-result (string-trim (shell-command-to-string (concat plantuml-executable-path " -t" plantuml-output-type " " (shell-quote-argument (expand-file-name fname)) " -o " (shell-quote-argument (f-dirname (expand-file-name fname))))))))
-			(if (string-prefix-p "Exception:" command-result)
-					(message command-result)
-				(progn
-					(sleep-for 0 5)
-					(with-selected-window (selected-window)
-						(switch-to-buffer-other-window (find-file-noselect f-name t))
-						;; I get "changed on disk; really edit the buffer?" prompt w/o this
-						(sleep-for 0 50)
-						(revert-buffer t t))))))
-	(defun plantuml-export ()
-				 "Compile the graph and preview it in an other buffer."
-				 (interactive)
-				 (let ((f-name (concat (f-no-ext (expand-file-name (buffer-file-name))) ".png"))
-							 (command-result (string-trim (shell-command-to-string (concat plantuml-executable-path " -t" plantuml-output-type " " (shell-quote-argument (expand-file-name (buffer-file-name))) " -o " (shell-quote-argument (f-dirname (expand-file-name (buffer-file-name)))))))))
-					 (if (string-prefix-p "Exception:" command-result)
-							 (message command-result)
-						 (progn
-							 (sleep-for 0 5)
-							 (with-selected-window (selected-window)
-								 (switch-to-buffer-other-window (find-file-noselect f-name t))
-								 ;; I get "changed on disk; really edit the buffer?" prompt w/o this
-								 (sleep-for 0 50)
-								 (revert-buffer t t))))))
-#+end_src
-*** Plantuml jar path
-#+begin_example emacs-lisp
-	(defun unbrew (src target)
-		(setq brew-prefix "/usr/local")
-		(setq plantuml-prefix (file-chase-links (format "%s/%s" brew-prefix src)))
-		(replace-regexp-in-string src target plantuml-prefix)
-		)
-	(message (unbrew "bin/plantuml" "libexec/plantuml.jar"))
-	(custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
-#+end_example
 ** Mermaid
 Ensure that the NPM package =mermaid.cli= is installed globally
 #+begin_src emacs-lisp
@@ -532,19 +480,24 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 ** LSP
 Check if executable is in the path `(executable-find "gopls")`
 #+begin_src emacs-lisp
-  (use-package lsp-mode
-    :ensure t
-    :config
-    (setq lsp-log-io nil) ; only enable for debugging
-    (add-hook 'go-mode-hook #'lsp-deferred)
-    (add-hook 'js-mode-hook #'lsp-deferred)
-    (add-hook 'css-mode-hook #'lsp-deferred)
-    (add-hook 'html-mode-hook #'lsp-deferred)
-    (setq lsp-rust-rls-server-command (concat (getenv "HOME") "/.cargo/bin/rust-analyzer"))
-    (add-hook 'rust-mode-hook #'lsp-deferred)
-    )
-  (use-package lsp-ui
-    :ensure t)
+	(defun fc/lsp-deferred ()
+			"When enabling lsp-mode disable auto-complete"
+		(auto-complete-mode -1)
+		(lsp-deferred))
+
+	(use-package lsp-mode
+		:ensure t
+		:config
+		(setq lsp-log-io nil) ; only enable for debugging
+		(add-hook 'go-mode-hook #'fc/lsp-deferred)
+		(add-hook 'js-mode-hook #'fc/lsp-deferred)
+		(add-hook 'css-mode-hook #'fc/lsp-deferred)
+		(add-hook 'html-mode-hook #'fc/lsp-deferred)
+		(setq lsp-rust-rls-server-command (concat (getenv "HOME") "/.cargo/bin/rust-analyzer"))
+		(add-hook 'rust-mode-hook #'fc/lsp-deferred)
+		)
+	(use-package lsp-ui
+		:ensure t)
 #+end_src
 ** Company for text completion
 #+begin_src emacs-lisp
@@ -611,7 +564,7 @@ Check if executable is in the path `(executable-find "gopls")`
 	;; sort ?
 	;(setq project-notes (seq-sort-by #'car #'string< project-notes))
 
-	(defun find-project-notes ()
+	(defun fc/find-project-notes ()
 		"Select a project from `project-notes' and open it"
 		(interactive "i")
 		(let ((proj (assoc
@@ -632,7 +585,7 @@ Check if executable is in the path `(executable-find "gopls")`
 		("e" (find-file (expand-file-name "emacs/.emacs.d/emacs.org" dotfiles-home)) "emacs.org")
 		("t" (find-file (expand-file-name "today.org" macbook-home)) "today.org")
 		("l" (find-file (expand-file-name "laptop-config.org" macbook-home)) "laptop-config.org")
-		("p" (find-project-notes) "Projects")
+		("p" (fc/find-project-notes) "Projects")
 		("q" nil "quit")
 		)
 	(global-set-key (kbd "s-g") #'common-org-files/body)
@@ -651,12 +604,12 @@ Add top-level directories under ~site-lisp~ to ~load-path~
 #+end_example
 ** Visual Basic Mode
 From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
-#+begin_example emacs-lisp
+#+begin_src emacs-lisp
 	(use-package visual-basic-mode
 		:mode "\\.vbs\\'"
 		:load-path "site-lisp/visual-basic-mode"
 		)
-#+end_example
+#+end_src
 *** Old way
 #+begin_example emacs-lisp
 	(add-to-list 'load-path
@@ -679,18 +632,18 @@ From https://github.com/pdorrell/rules-editing-mode.git
 	(add-to-list
 	 'load-path
 	 (expand-file-name "site-lisp/drools-mode" user-emacs-directory))
-	(defun init-drools-mode ()
+	(defun fc/init-drools-mode ()
 		(setq
 		 drools-tab-indent 2
 		 indent-tabs-mode nil)
 		(yas-minor-mode))
-	(defun setup-drools-mode ()
+	(defun fc/setup-drools-mode ()
 		(add-to-list 'auto-mode-alist '("\\.drl\\'" . drools-mode))
-		(add-hook 'drools-mode-hook #'init-drools-mode)
+		(add-hook 'drools-mode-hook #'fc/init-drools-mode)
 		)
 	(require 'drools-mode)
 	(eval-after-load "drools-mode"
-		#'setup-drools-mode)
+		#'fc/setup-drools-mode)
 #+end_example
 ** Fzf
 My own fork to fix whitespace issue :)
@@ -818,7 +771,7 @@ Set indentation level to 2 for most used modes
 ** Basic offset to 2
 #+begin_src emacs-lisp
 	(setq default-indent-offset 2)
-	(defun set-default-indent-offset (var)
+	(defun fc/set-default-indent-offset (var)
 		(setq x default-indent-offset))
 
 	(setq offset-vars
@@ -843,7 +796,7 @@ Set indentation level to 2 for most used modes
 					)
 				)
 	;; set for all the variables
-	(mapc #'set-default-indent-offset offset-vars)
+	(mapc #'fc/set-default-indent-offset offset-vars)
 #+end_src
 * Saving Abbreviations
 #+begin_src emacs-lisp
@@ -876,36 +829,55 @@ Set indentation level to 2 for most used modes
 	(use-package htmlize
 		:ensure t)
 #+end_src
+** Always open files in emacs
+From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files with C-c C-o inside Emacs]]
+#+begin_src emacs-lisp
+	(setq org-file-apps '((t . emacs)))
+#+end_src
 * Utility Functions
 ** Recreate scratch buffer
 #+begin_src emacs-lisp
 	;; recreate scratch buffer
-	(defun create-scratch-buffer nil
-		"create a scratch buffer"
+	(defun fc/create-scratch-buffer ()
+		"Create a scratch buffer if one does not already exist"
 		(interactive)
-		(pop-to-buffer (get-buffer-create "*scratch*"))
-		(insert (string-join
-						 '(";; This buffer is for text that is not saved, and for Lisp evaluation."
-							 ";; To create a file, visit it with C-x C-f and enter text in its buffer."
-							 ";; Use C-x C-e to eval expressing and C-j to eval and print\n\n"
-							 )
-						 "\n"))
-		(lisp-interaction-mode)
-		(switch-to-buffer)
+		(let ((buffer-name "*scratch*"))
+			(unless (get-buffer buffer-name)
+				(with-current-buffer (get-buffer-create "*scratch*")
+					(insert (string-join
+									 '(";; This buffer is for text that is not saved, and for Lisp evaluation."
+										 ";; To create a file, visit it with C-x C-f and enter text in its buffer."
+										 ";; Use C-x C-e to eval expressing and C-j to eval and print\n\n"
+										 )
+									 "\n")))
+				(lisp-interaction-mode)
+				)
+			(let (buffer (get-buffer buffer-name))
+				(pop-to-buffer buffer)
+				(switch-to-buffer buffer)
+				)
+			)
 		)
+	(defalias
+		'create-scratch-buffer
+		'fc/create-scratch-buffer
+		"Alias namespaced function to an non-namespaced name")
 #+end_src
 ** Untabify buffer
 From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-saving-certain-file-types-and-only-those-file-ty][Untabify certain filetypes in Emacs]]
 #+begin_src emacs-lisp
-	(defun untabify-buffer ()
+	(defun fc/untabify-buffer ()
 		"Untabify current buffer"
 		(interactive)
 		(untabify (point-min) (point-max)))
+	(defalias
+		'untabify-buffer
+		'fc/untabify-buffer
+		"Alias namespaced function to an non-namespaced name")
 #+end_src
 ** Unhexify
 #+begin_src emacs-lisp
-	(defun unhexify
-		(color)
+	(defun fc/unhexify (color)
 		(map
 		 'list
 		 (lambda (x) (string-to-number x 16))
@@ -916,16 +888,31 @@ From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-
 			 color) "-")
 		 )
 		)
-	(provide 'unhexify)
+	(defalias
+		'unhexify
+		'fc/unhexify
+		"Alias namespaced function to an non-namespaced name")
 #+end_src
 ** Camelcase
 #+begin_src emacs-lisp
 	;;;###autoload
-	(defun camel-case (input)
+	(defun fc/camel-case (input &optional upper)
+		"Convert INPUT to camel case string. If UPPER is passed then the
+	first word is capitalized"
 		(let ((parts (split-string input "[ \f\t\n\r\v_-]+")))
-			(mapconcat 'identity (cons (downcase (car parts)) (mapcar 'capitalize (cdr parts))) "")
+			(let ((first-word-transformer (if upper #'capitalize #'downcase)))
+				(mapconcat
+				 'identity
+				 (cons (funcall first-word-transformer (car parts))
+							 (mapcar 'capitalize (cdr parts)))
+				 "")
+				)
 			)
 		)
+	(defalias
+		'camel-case
+		'fc/camel-case
+		"Alias namespaced function to an non-namespaced name")
 #+end_src
 ** Align Declarations
 #+begin_src emacs-lisp
@@ -940,12 +927,12 @@ From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-
 ** base64 url encode & decode
 From https://gist.github.com/inouetmhr/4116307
 #+begin_src emacs-lisp
-	(defun base64-to-base64url (str)
+	(defun fc/base64-to-base64url (str)
 		(setq str (replace-regexp-in-string "=+$" "" str))
 		(setq str (replace-regexp-in-string "+" "-" str))
 		(setq str (replace-regexp-in-string "/" "_" str)))
 
-	(defun base64url-to-base64 (str)
+	(defun fc/base64url-to-base64 (str)
 		(setq str (replace-regexp-in-string "-" "+" str))
 		(setq str (replace-regexp-in-string "_" "/" str))
 		(let ((mod (% (length str) 4)))
@@ -955,16 +942,16 @@ From https://gist.github.com/inouetmhr/4116307
 			 ((= mod 3) (concat str "="))
 			 (t str))))
 
-	(defun base64url-encode-string (str)
+	(defun fc/base64url-encode-string (str)
 		(base64-to-base64url (base64-encode-string str t)))
 
-	(defun base64url-decode-string (str)
+	(defun fc/base64url-decode-string (str)
 		(base64-decode-string (base64url-to-base64 str)))
 
 #+end_src
 ** Toggle proxy
 #+begin_src emacs-lisp
-	(defun emacs-proxy ()
+	(defun fc/emacs-proxy ()
 		"Toggle proxy settings for emacs"
 		(interactive)
 		(if url-using-proxy
@@ -1011,12 +998,12 @@ Force indents, offsets and disable tabs
 #+end_src
 ** Untabify files using prog mode hooks
 #+begin_src emacs-lisp
-  (defun progmodes-hooks ()
+  (defun fc/progmodes-hooks ()
     "Hooks for programming modes"
     (add-hook 'before-save-hook 'progmodes-write-hooks)
     (message (format "Adding save hook for %s" major-mode)))
 
-  (defun progmodes-write-hooks ()
+  (defun fc/progmodes-write-hooks ()
     "Hooks which run on file write for programming modes"
     (prog1 nil
 	 (if (member major-mode (list 'makefile-bsdmake-mode)
@@ -1029,9 +1016,9 @@ Force indents, offsets and disable tabs
 	     ))
     )
 
-  (add-hook 'sh-set-shell-hook 'progmodes-hooks)
-  (add-hook 'python-mode-hook 'progmodes-hooks)
-  (add-hook 'js-mode-hook 'progmodes-hooks)
+  (add-hook 'sh-set-shell-hook 'fc/progmodes-hooks)
+  (add-hook 'python-mode-hook 'fc/progmodes-hooks)
+  (add-hook 'js-mode-hook 'fc/progmodes-hooks)
 #+end_src
 ** Show whitespace in makefiles
 #+begin_src emacs-lisp
@@ -1092,7 +1079,7 @@ Force indents, offsets and disable tabs
   Enable Yasnippets to specific modes
 ** yas hook function
 #+begin_src emacs-lisp
-	(defun add-yas-minor-mode ()
+	(defun fc/add-yas-minor-mode ()
 		"Reload snippets and enable yasnippet minor mode"
 		(yas-reload-all)
 		(yas-minor-mode))
@@ -1103,7 +1090,7 @@ Force indents, offsets and disable tabs
 					yaml-mode-hook
 					html-mode-hook))
 	;; load yas-minor-mode for each of the yas-modes
-	(mapc (lambda (hook) (add-hook hook #'add-yas-minor-mode)) yas-modes)
+	(mapc (lambda (hook) (add-hook hook #'fc/add-yas-minor-mode)) yas-modes)
 #+end_src
 * Mode customizations
 ** Remap projectile-find-file to use fzf
