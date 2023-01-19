@@ -256,8 +256,7 @@ Causes LC_ENCODING issues with projectile-find-file
 	(use-package auto-complete
 		:ensure t
 		:init
-		(ac-config-default)
-	;  (global-auto-complete-mode t)
+		(ac-config-default)									; enables global-auto-complete-mode
 		)
 #+end_src
 ** Web Mode
@@ -292,9 +291,9 @@ https://geeksocket.in/posts/emacs-lsp-go/
 	;; Go - lsp-mode
 	;; Set up before-save hooks to format buffer and add/delete imports.
 	(use-package go-mode
+		:ensure t
 		:config
 		(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-		(add-hook 'go-mode-hook #'lsp-deferred)
 		(add-hook 'go-mode-hook #'yas-minor-mode)
 		(add-hook 'before-save-hook #'gofmt-before-save)
 		:custom
@@ -576,7 +575,7 @@ Check if executable is in the path `(executable-find "gopls")`
 	;; use `M-x rainbow-mode' to fontify colors
 	(use-package rainbow-mode
 		:ensure t
-		:command rainbow-mode)
+		:init (rainbow-mode))
 #+end_src
 ** Hydra
 #+begin_src emacs-lisp
@@ -718,17 +717,43 @@ From https://github.com/ccod/dbd-mode
 From https://github.com/emacsattic/gedcom
 #+begin_src emacs-lisp
 	(use-package gedcom
+		:mode ("\\.ged\\'" . gedcom-mode)
 		:load-path "site-lisp/gedcom")
 #+end_src
 *** Old way
 #+begin_example emacs-lisp
 	(load-file (locate-user-emacs-file "site-lisp/gedcom/gedcom.el"))
 #+end_example
+** Plantuml
+#+begin_src emacs-lisp
+	(use-package plantuml-mode
+		:load-path "site-lisp/plantuml-mode"
+		:custom
+		(plantuml-default-exec-mode 'executable)
+		(plantuml-executable-path "/usr/local/bin/plantuml")
+		(plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
+		(org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
+		)
+	;(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+	;(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+#+end_src
+*** Plantuml jar path
+#+begin_example emacs-lisp
+	(defun fc/unbrew (src target)
+		"Expand the symbolic link to the brew target"
+		(let* ((brew-prefix "/usr/local")
+					 (plantuml-prefix (file-chase-links (format "%s/%s" brew-prefix src))))
+			(replace-regexp-in-string src target plantuml-prefix)))
+	(message (unbrew "bin/plantuml" "libexec/plantuml.jar"))
+
+	(custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
+#+end_example
 * Color Theme
 ** Zenburn
 #+begin_src emacs-lisp
 	(use-package zenburn-theme
 		:ensure t
+		:config
 		(load-theme 'zenburn t)
 		)
 	;; pop the icomplete selected item :D
