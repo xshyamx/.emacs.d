@@ -118,6 +118,7 @@
 		"When browsing gzipped elisp files mark them as readonly"
 		(when
 				(and
+				 (buffer-file-name)
 				 (string-suffix-p ".el.gz" (f-filename buffer-file-name))
 				 (not buffer-read-only))
 
@@ -853,7 +854,7 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 		(interactive)
 		(let ((buffer-name "*scratch*"))
 			(unless (get-buffer buffer-name)
-				(with-current-buffer (get-buffer-create "*scratch*")
+				(with-current-buffer (get-buffer-create buffer-name)
 					(insert (string-join
 									 '(";; This buffer is for text that is not saved, and for Lisp evaluation."
 										 ";; To create a file, visit it with C-x C-f and enter text in its buffer."
@@ -862,9 +863,7 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 									 "\n"))
 					(lisp-interaction-mode))
 				)
-			(let (buffer (get-buffer buffer-name))
-				(switch-to-buffer buffer)
-				)
+			(switch-to-buffer buffer-name)
 			)
 		)
 	(defalias
