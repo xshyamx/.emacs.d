@@ -591,6 +591,13 @@ Check if executable is in the path `(executable-find "gopls")`
 		)
 	(global-set-key (kbd "s-g") #'common-org-files/body)
 #+end_src
+** ace-window
+#+begin_src emacs-lisp
+	(use-package ace-window
+		:bind ("M-o" . ace-window)
+		:custom
+		(aw-dispatch-always t))
+#+end_src
 ** vterm
 vterm requires libtool & [[https://cmake.org/][cmake]] install them with
 #+begin_src sh
