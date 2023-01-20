@@ -1081,5 +1081,5 @@ Force indents, offsets and disable tabs
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
- (message "Loaded all from %s" (ff-basename (buffer-file-name)))
+ (message "Loaded all from emacs.org")
 #+end_src
