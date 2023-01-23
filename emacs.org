@@ -627,16 +627,6 @@ From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emac
 ** +Drools+
 From https://github.com/pdorrell/rules-editing-mode.git
 #+begin_src emacs-lisp
-	(use-package drools-mode
-		:mode "\\.drl\\'"
-		:load-path "site-lisp/drools-mode"
-		:custom
-		(drools-tab-indent 2 "set indent size to 2")
-		(indent-tabs-mode nil "do not use tabs for indent")
-		:hook yas-minor-mode)
-#+end_src
-*** Old way
-#+begin_example emacs-lisp
 	(add-to-list
 	 'load-path
 	 (expand-file-name "site-lisp/drools-mode" user-emacs-directory))
@@ -652,7 +642,7 @@ From https://github.com/pdorrell/rules-editing-mode.git
 	(require 'drools-mode)
 	(eval-after-load "drools-mode"
 		#'fc/setup-drools-mode)
-#+end_example
+#+end_src
 ** Fzf
 My own fork to fix whitespace issue :)
 https://github.com/xshyamx/fzf.el.git
