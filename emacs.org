@@ -598,16 +598,6 @@ Check if executable is in the path `(executable-find "gopls")`
 		:custom
 		(aw-dispatch-always t))
 #+end_src
-** vterm
-vterm requires libtool & [[https://cmake.org/][cmake]] install them with
-#+begin_src sh
-	brew install libtool
-	brew install --cask cmake
-#+end_src
-#+begin_src emacs-lisp
-	(use-package vterm
-		:ensure t)
-#+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
 Add top-level directories under ~site-lisp~ to ~load-path~
