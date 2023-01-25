@@ -264,7 +264,7 @@ Causes LC_ENCODING issues with projectile-find-file
 ** Web Mode
 #+begin_src emacs-lisp
 	(use-package web-mode
-		:mode "\\.\(phtml\|tpl\\.php\|[agj]sp\|as[cp]x\|erb\|mustache\|hbs\|djhtml\)\\'"
+		:mode "\\.\\(?:aspx?\\|djhtml\\|erb\\|h\\(?:bs\\|tml\\)\\|jsp\\|mustache\\|phtml\\|tpl\\.php\\)\\'"
 		:custom
 		(web-mode-enable-current-element-highlight t "Highlight current tag")
 		:ensure t)
@@ -354,14 +354,6 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 		:init
 		(add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
 #+end_src
-** +Fzf+
-**NOTE** This package does not work because of trailing whitespace in selection
-#+begin_example emacs-lisp
-	(use-package fzf
-		:ensure t
-		:custom
-		(fzf/executable "/usr/local/bin/fzf" "Set correct path"))
-#+end_example
 ** Cypher
 #+begin_src emacs-lisp
 	(use-package cypher-mode
@@ -456,15 +448,6 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 							(:java . "-Dfile.encoding=UTF-8 -Djava.awt.headless=true")))
 			(message "Configured org babel")
 			))
-#+end_src
-** Projectile
-[[https://www.projectile.mx/en/latest/usage/][Projectile Usage]]
-#+begin_src emacs-lisp
-  (use-package projectile
-    :ensure t
-    :config
-    (projectile-mode +1)
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 #+end_src
 ** JSX Support
 #+begin_src emacs-lisp
@@ -642,17 +625,6 @@ From https://github.com/pdorrell/rules-editing-mode.git
 	(require 'drools-mode)
 	(eval-after-load "drools-mode"
 		#'fc/setup-drools-mode)
-#+end_src
-** Fzf
-My own fork to fix whitespace issue :)
-https://github.com/xshyamx/fzf.el.git
-#+begin_src emacs-lisp
-	(add-to-list
-	 'load-path
-	 (expand-file-name "site-lisp/fzf" user-emacs-directory))
-	(require 'fzf)
-	;; (eval-after-load "fzf"
-	;;  (setq (fzf/executable "/usr/local/bin/fzf"))
 #+end_src
 ** [[https://github.com/holistics/dbml][DBML]]
 From https://github.com/ccod/dbd-mode
@@ -1061,10 +1033,6 @@ Force indents, offsets and disable tabs
 	(mapc (lambda (hook) (add-hook hook #'fc/add-yas-minor-mode)) yas-modes)
 #+end_src
 * Mode customizations
-** Remap projectile-find-file to use fzf
-#+begin_src emacs-lisp
-	(defalias 'projectile-find-file 'fzf-projectile)
-#+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
