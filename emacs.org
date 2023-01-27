@@ -1006,7 +1006,6 @@ Force indents, offsets and disable tabs
 #+end_src
 * Global key bindings
 #+begin_src emacs-lisp
-	(global-set-key (kbd "M-o") 'occur)
 	;(global-set-key (kbd "C-c C-d") 'calendar)
 	;(global-unset-key (kbd "C-c C-d"))
 #+end_src
