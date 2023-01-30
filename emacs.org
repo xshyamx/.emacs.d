@@ -295,7 +295,7 @@ https://geeksocket.in/posts/emacs-lsp-go/
 	(use-package go-mode
 		:ensure t
 		:config
-		(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+	;	(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 		(add-hook 'go-mode-hook #'yas-minor-mode)
 		(add-hook 'before-save-hook #'gofmt-before-save)
 		:custom
@@ -463,7 +463,7 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 #+end_src
 ** LSP
 Check if executable is in the path `(executable-find "gopls")`
-#+begin_src emacs-lisp
+#+begin_example emacs-lisp
 	(defun fc/lsp-deferred ()
 			"When enabling lsp-mode disable auto-complete"
 		(auto-complete-mode -1)
@@ -482,15 +482,15 @@ Check if executable is in the path `(executable-find "gopls")`
 		)
 	(use-package lsp-ui
 		:ensure t)
-#+end_src
+#+end_example
 ** Company for text completion
-#+begin_src emacs-lisp
+#+begin_example emacs-lisp
   (use-package company
     :ensure t
     :config
     (setq company-idle-delay 0)
     (setq company-minimum-prefix-length 1))
-#+end_src
+#+end_example
 ** [[https://github.com/hakimel/reveal.js][Reveal.js]] & [[https://github.com/yjwen/org-reveal][ox-reveal]]
 #+begin_src emacs-lisp
 	(use-package ox-reveal
@@ -564,6 +564,7 @@ Check if executable is in the path `(executable-find "gopls")`
 	(global-unset-key (kbd "s-g"))
 	(defhydra common-org-files (:exit t)
 		"goto"
+		("a" (find-file (expand-file-name "../profile/asset.org" macbook-home)) "asset.org")
 		("b" (find-file (expand-file-name "buf.org" macbook-home)) "buf.org")
 		("d" (find-file (expand-file-name "daily-log-2023.org" macbook-home)) "daily-log-2023.org")
 		("e" (find-file (expand-file-name "emacs/.emacs.d/emacs.org" dotfiles-home)) "emacs.org")
@@ -577,9 +578,20 @@ Check if executable is in the path `(executable-find "gopls")`
 ** ace-window
 #+begin_src emacs-lisp
 	(use-package ace-window
-		:bind ("M-o" . ace-window)
+		:bind ("C-x o" . ace-window)
 		:custom
-		(aw-dispatch-always t))
+		(aw-dispatch-always nil))
+#+end_src
+** eglot
+#+begin_src emacs-lisp
+	(use-package eglot
+		:ensure t)
+#+end_src
+** Avy
+#+begin_src emacs-lisp
+	(define-key global-map (kbd "s-l") nil)
+	(use-package avy
+		:bind ("s-l" . avy-goto-line))
 #+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
@@ -676,12 +688,13 @@ From https://github.com/emacsattic/gedcom
 #+begin_src emacs-lisp
 	(use-package zenburn-theme
 		:ensure t
+		:init
+		;; pop the icomplete selected item :D
+		(custom-set-faces
+		 '(icomplete-selected-match ((t (:background "dark cyan")))))
 		:config
 		(load-theme 'zenburn t)
 		)
-	;; pop the icomplete selected item :D
-	(custom-set-faces
-	 '(icomplete-selected-match ((t (:background "dark cyan")))))
 #+end_src
 ** Set Font
 #+begin_example emacs-lisp
