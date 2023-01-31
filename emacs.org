@@ -1052,6 +1052,13 @@ Force indents, offsets and disable tabs
 	(mapc (lambda (hook) (add-hook hook #'fc/add-yas-minor-mode)) yas-modes)
 #+end_src
 * Mode customizations
+* Open links in firefox
+#+begin_src emacs-lisp
+	;; open links in firefox
+	(setq
+	 browse-url-browser-function 'browse-url-firefox
+	 browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox")
+#+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
