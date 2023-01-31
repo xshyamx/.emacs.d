@@ -221,6 +221,10 @@ Already handled by desktop?
 	(use-package try
 		:ensure t)
 #+end_src
+** Diminish
+#+begin_src emacs-lisp
+	(use-package diminish)
+#+end_src
 ** +Set exec-path from shell+
 Causes LC_ENCODING issues with projectile-find-file
 #+begin_example
