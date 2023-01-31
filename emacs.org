@@ -660,6 +660,8 @@ From https://github.com/emacsattic/gedcom
 #+begin_src emacs-lisp
 	(use-package gedcom
 		:mode ("\\.ged\\'" . gedcom-mode)
+		:custom
+		(gedcom-startup-message nil)
 		:load-path "site-lisp/gedcom")
 #+end_src
 *** Old way
