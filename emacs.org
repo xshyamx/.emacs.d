@@ -132,6 +132,11 @@
 #+begin_src emacs-lisp
 	(add-hook 'before-save-hook #'delete-trailing-whitespace)
 #+end_src
+** imenu keybinding
+#+begin_src emacs-lisp
+	;; bind super-i to imenu
+	(define-key global-map (kbd "s-i") #'imenu)
+#+end_src
 * Autosave & Backups
 Change the backup directory to be inside .emacs.d so that it does
 not litter directories with the backup files
