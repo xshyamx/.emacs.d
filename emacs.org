@@ -237,6 +237,7 @@ Causes LC_ENCODING issues with projectile-find-file
 #+begin_src emacs-lisp
 	(use-package which-key
 		:ensure t
+		:diminish
 		:config
 		(which-key-mode))
 #+end_src
@@ -257,6 +258,7 @@ Causes LC_ENCODING issues with projectile-find-file
 #+begin_src emacs-lisp
 	(use-package auto-complete
 		:ensure t
+		:diminish
 		:init
 		(ac-config-default)									; enables global-auto-complete-mode
 		)
