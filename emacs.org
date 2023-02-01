@@ -1,4 +1,4 @@
-#+STARTUP: content
+#+STARTUP: content hideblocks
 #+property: header-args :tangle (locate-user-emacs-file "emacs.el") :results silent
 #+property: org-babel-default-header-args :tangle yes
 * Init file
@@ -47,6 +47,7 @@
 #+end_src
 ** Flash modeline instead of visble bell
 #+begin_src emacs-lisp
+	;; flash mode line instead of beeping
 	(setq visible-bell nil
 				ring-bell-function 'fc/flash-mode-line)
 	(defun fc/flash-mode-line ()
@@ -59,10 +60,12 @@
 #+end_example
 ** Replace BufferMenu with ibuffer
 #+begin_src emacs-lisp
+	;; user `ibuffer' for buffer listing
 	(global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
 ** Use fido vertical mode
 #+begin_src emacs-lisp
+	;; list of available styles `completion-styles-alist'
 	(setq  completion-styles '(basic partial-completion emacs22 flex))
 	;; enable ido completions
 	(fido-vertical-mode 1)
@@ -223,7 +226,8 @@ Already handled by desktop?
 #+end_src
 ** Diminish
 #+begin_src emacs-lisp
-	(use-package diminish)
+	(use-package diminish
+		:ensure t)
 #+end_src
 ** +Set exec-path from shell+
 Causes LC_ENCODING issues with projectile-find-file
@@ -255,6 +259,7 @@ Causes LC_ENCODING issues with projectile-find-file
 	(use-package yasnippet
 		:ensure t
 		:init
+		(diminish 'yas-minor-mode '(:propertize " yas" face '(:foreground "coral")))
 		(add-hook 'restclient-mode-hook #'yas-minor-mode)
 		(add-hook 'org-mode-hook #'yas-minor-mode))
 #+end_src
