@@ -92,24 +92,34 @@
 				holiday-oriental-holidays		nil
 				holiday-solar-holidays			nil)
 
-	;; list of holidays in 2022 filter by if calendar is visible
-	(defun fc/holidays-2022 ()
-		(let ((holidays '(((1 14 2022) "Pongal")
-											((4 14 2022) "Dr. Ambedkar Jayanti")
-											((4 15 2022) "Good Friday")
-											((5 3 2022) "Ramzan/Id-ul-Fitr")
-											((8 31 2022) "Ganesh Chaturthi")
-											((10 05 2022) "Dussehra / Vijaya Dashami")
-											((10 24 2022) "Diwali"))))
-			(seq-filter (lambda (x) (calendar-date-is-visible-p (car x))) holidays))
+
+	(defconst fc/holidays-2022
+		'(((1 14 2022) "Pongal")
+			((4 14 2022) "Dr. Ambedkar Jayanti")
+			((4 15 2022) "Good Friday")
+			((5 3 2022) "Ramzan/Id-ul-Fitr")
+			((8 31 2022) "Ganesh Chaturthi")
+			((10 05 2022) "Dussehra / Vijaya Dashami")
+			((10 24 2022) "Diwali"))
+		"List of holidays in 2022"
 		)
+	(defconst fc/holidays-2023
+		'(((3 22 2023) "Gudi Padva / Ugadi")
+			((6 29 2023) "Id-ul-Zuha/ Bakrid")
+			((9 19 2023) "Ganesh Chaturthi")
+			((10 24 2023) "Dussehra / Vijaya Dashmi"))
+		"List of holidays in 2023")
+
+	;; list of holidays filter by if calendar is visible
+	(defun fc/filtered-holidays (holidays)
+		"Returns a list of HOLIDAYS that ar within the visible calendar range"
+			(seq-filter (lambda (x) (calendar-date-is-visible-p (car x))) holidays)
+			)
+
 
 	;; holidays for 2023
 	(defun fc/holidays-2023 ()
-		(let ((holidays '(((3 22 2023) "Gudi Padva / Ugadi")
-											((6 29 2023) "Id-ul-Zuha/ Bakrid")
-											((9 19 2023) "Ganesh Chaturthi")
-											((10 24 2023) "Dussehra / Vijaya Dashmi"))))
+		(let ((holidays ))
 			(seq-filter (lambda (x) (calendar-date-is-visible-p (car x))) holidays))
 		)
 	;; set displayable holidays
@@ -121,8 +131,8 @@
 					(holiday-fixed 10 2 "Gandhi Jayanthi")
 					(holiday-fixed 11 1 "Karnataka Rajyotsava")
 					(holiday-fixed 12 25 "Christmas")
-					(fc/holidays-2022)
-					(fc/holidays-2023)
+					(fc/filtered-holidays fc/holidays-2022)
+					(fc/filtered-holidays fc/holidays-2023)
 					))
 #+end_src
 ** Open emacs sources in readonly view mode
