@@ -66,7 +66,7 @@
 ** Use fido vertical mode
 #+begin_src emacs-lisp
 	;; list of available styles `completion-styles-alist'
-	(setq  completion-styles '(basic partial-completion emacs22 flex))
+	(setq  completion-styles '(basic partial-completion emacs22 initials flex))
 	;; enable ido completions
 	(fido-vertical-mode 1)
 	;; non-contiguos chars matching
@@ -321,14 +321,6 @@ https://geeksocket.in/posts/emacs-lsp-go/
 		(tab-width 2)
 		)
 	;  (add-hook 'before-save-hook #'gofmt-before-save))
-#+end_src
-** Graphviz
-#+begin_src emacs-lisp
-  (use-package graphviz-dot-mode
-    :ensure t
-    :custom
-     (graphviz-dot-indent-width 2 "set indent size to 2")
-     (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
 #+end_src
 ** Mermaid
 Ensure that the NPM package =mermaid.cli= is installed globally
@@ -737,6 +729,14 @@ From https://github.com/emacsattic/gedcom
 
 	(custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
 #+end_example
+** Graphviz
+#+begin_src emacs-lisp
+  (use-package graphviz-dot-mode
+		:load-path "site-lisp/graphviz-dot-mode"
+    :custom
+     (graphviz-dot-indent-width 2 "set indent size to 2")
+     (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
+#+end_src
 * Color Theme
 ** Zenburn
 #+begin_src emacs-lisp
