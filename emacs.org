@@ -143,6 +143,10 @@
 	;; bind super-i to imenu
 	(define-key global-map (kbd "s-i") #'imenu)
 #+end_src
+** Hide mouse cursor while typing
+#+begin_src emacs-lisp
+	(setq make-pointer-invisible t)
+#+end_src
 * Autosave & Backups
 Change the backup directory to be inside .emacs.d so that it does
 not litter directories with the backup files
