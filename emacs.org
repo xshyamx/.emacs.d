@@ -641,6 +641,12 @@ Check if executable is in the path `(executable-find "gopls")`
 	(use-package avy
 		:bind ("s-l" . avy-goto-line))
 #+end_src
+** ActivityWatch
+#+begin_src emacs-lisp
+	(use-package activity-watch-mode
+		:custom
+		(global-activity-watch-mode))
+#+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
 Add top-level directories under ~site-lisp~ to ~load-path~
