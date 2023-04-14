@@ -1109,6 +1109,12 @@ Force indents, offsets and disable tabs
 	(mapc (lambda (hook) (add-hook hook #'fc/add-yas-minor-mode)) yas-modes)
 #+end_src
 * Mode customizations
+** Highlight elisp functions
+#+begin_src emacs-lisp
+	(font-lock-add-keywords
+	 'emacs-lisp-mode
+	 '(("#'[^[:space:]]+\\>" . font-lock-function-name-face)))
+#+end_src
 * Open links in firefox
 #+begin_src emacs-lisp
 	;; open links in firefox
