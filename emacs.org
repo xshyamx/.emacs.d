@@ -38,7 +38,7 @@
 	 inhibit-startup-screen t	; do not show startup screen
 	 size-indication-mode t		; show human readable file size in modeline
 	 column-number-mode t			; show column numbers
-	 pop-up-frames nil				; do not allow new frames
+	 ns-pop-up-frames nil			; do not allow new frames
 	 global-hl-line-mode nil	; do not highlight current line
 	 savehist-mode 1					; persist minibuffer history across sessions
 	 save-place-mode 1				; save the place when last visited
