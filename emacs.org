@@ -125,7 +125,7 @@
 		(when
 				(and
 				 (buffer-file-name)
-				 (string-suffix-p ".el.gz" (f-filename buffer-file-name))
+				 (string-suffix-p ".el.gz" (file-name-nondirectory buffer-file-name))
 				 (not buffer-read-only))
 
 			(read-only-mode t)
@@ -543,25 +543,23 @@ Check if executable is in the path `(executable-find "gopls")`
 	 projects-home (expand-file-name "projects" (getenv "HOME"))
 	 )
 
-	(defun fc/project-matcher (path)
-		"matcher to find org files"
-		(string-suffix-p "-notes.org" path)
-		)
+
+	(defun fc/remove-prefix (name)
+		(replace-regexp-in-string
+		 (rx-to-string `(: line-start ,projects-home "/") t)
+		 ""
+		 name))
+
 	(defun fc/make-pair (path)
 		"create a pair with the directory name & filename"
-		(cons (f-base (f-dirname path)) path))
+		(cons (file-name-nondirectory path) path))
 
 	;; build list of projects and org files
 	(setq project-notes
-				(let ((remove-prefix
-							 (lambda (x)
-								 (replace-regexp-in-string
-									(rx-to-string `(: line-start ,projects-home "/") t)
-									""
-									x))))
-					(seq-map #'fc/make-pair
-									 (seq-map remove-prefix
-														(f-files projects-home #'fc/project-matcher t)))))
+				(seq-map
+				 #'fc/make-pair
+				 (seq-map #'fc/remove-prefix
+									(directory-files-recursively projects-home  "-notes\\.org$"))))
 	;; sort ?
 																					;(setq project-notes (seq-sort-by #'car #'string< project-notes))
 
@@ -570,19 +568,12 @@ Check if executable is in the path `(executable-find "gopls")`
 		(and (string-prefix-p (concat macbook-home "/daily-log-") path) (string-suffix-p ".org" path)))
 	(defun fc/daily-make-pair (path)
 		"Create a pair with the year & filename"
-		(cons (replace-regexp-in-string "daily-log-" "" (f-base path)) path))
+		(cons (replace-regexp-in-string "daily-log-" "" (file-name-base path)) path))
 	;; build list of daily notes
 	(setq daily-notes
-				(let ((remove-prefix
-							 (lambda (x)
-								 (replace-regexp-in-string
-									(rx-to-string `(: line-start ,projects-home "/") t)
-									""
-									x))))
-					(seq-map #'fc/daily-make-pair
-									 (seq-map remove-prefix
-														(f-files macbook-home #'fc/daily-notes-matcher t)))))
-
+				(seq-map #'fc/daily-make-pair
+								 (directory-files macbook-home nil "daily-log-[[:digit:]]\\{4\\}\\.org$")
+								 ))
 
 	(defun fc/find-project-notes ()
 		"Select a project from `project-notes' and open it"
