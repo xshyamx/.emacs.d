@@ -713,6 +713,7 @@ From https://github.com/emacsattic/gedcom
 		:load-path "site-lisp/plantuml-mode"
 		:custom
 		(plantuml-default-exec-mode 'executable)
+		(plantuml-output-type 'png)
 		(plantuml-executable-path "/usr/local/bin/plantuml")
 		(plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
 		(org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
@@ -740,7 +741,7 @@ From https://github.com/emacsattic/gedcom
      (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
 #+end_src
 * Color Theme
-** Zenburn
+** +Zenburn+
 #+begin_src emacs-lisp
 	(use-package zenburn-theme
 		:ensure t
@@ -872,6 +873,13 @@ Set indentation level to 2 for most used modes
 From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files with C-c C-o inside Emacs]]
 #+begin_src emacs-lisp
 	(setq org-file-apps '((t . emacs)))
+#+end_src
+** Allow elisp evaluation
+#+begin_src emacs-lisp
+	;; allow elisp evaluation in org files
+	(defun org-babel-allow-elisp (lang body)
+		(not (string= lang "emacs-lisp")))
+	(setq org-confirm-babel-evaluate #'org-babel-allow-elisp)
 #+end_src
 * Utility Functions
 ** Recreate scratch buffer
@@ -1117,5 +1125,8 @@ Force indents, offsets and disable tabs
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
- (message "Loaded all from emacs.org")
+	(when (not (eq plantuml-output-type "png"))
+			(setq plantuml-output-type "png"))
+
+	(message "Loaded all from emacs.org")
 #+end_src
