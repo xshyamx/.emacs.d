@@ -646,6 +646,20 @@ Check if executable is in the path `(executable-find "gopls")`
 		:custom
 		(global-activity-watch-mode))
 #+end_src
+** Golden Ratio
+#+begin_src emacs-lisp
+	;; add advice so that golden ratio is called
+	(use-package golden-ratio
+		:ensure t
+		:diminish
+		:init
+		(golden-ratio-mode 1)
+		(define-advice select-window
+				(:after (window &optional no-record) golden-ratio-resize-window)
+			(golden-ratio)
+			nil)
+		)
+#+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
 Add top-level directories under ~site-lisp~ to ~load-path~
