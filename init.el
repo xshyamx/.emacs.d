@@ -1,3 +1,11 @@
+(defun set-emacs-gc-threshold (value)
+	(message "Setting gc-cons-threshold to %d" value)
+	(setq original-gc-cons-threshold gc-cons-threshold)
+	(setq gc-cons-threshold value))
+;; increase gc-cons-threshold
+(message "Increase gc-cons-threshold")
+(set-emacs-gc-threshold (* 50 (* 1024 1024))) ; 50MB
+
 ;;; Initialize package
 (require 'package)
 ;; Add melpa repository

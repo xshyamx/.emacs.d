@@ -1128,5 +1128,6 @@ Also use =M-x emacs-init-time= to find out how long emacs took to load
 	(when (not (eq plantuml-output-type "png"))
 			(setq plantuml-output-type "png"))
 
+	(run-with-idle-timer 2 nil #'set-emacs-gc-threshold original-gc-cons-threshold)
 	(message "Loaded all from emacs.org")
 #+end_src
