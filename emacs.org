@@ -1143,6 +1143,22 @@ Force indents, offsets and disable tabs
 	 browse-url-browser-function 'browse-url-firefox
 	 browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox")
 #+end_src
+* Get active tab in firefox as org link
+#+begin_src emacs-lisp
+	(defun ff-link-org ()
+		(interactive)
+		(insert
+		 (shell-command-to-string
+			(string-join
+			 '("lz4jsoncat \"$FIREFOX_PROFILE/sessionstore-backups/recovery.jsonlz4\""
+				 "jq -r '.windows[0].tabs | sort_by(.lastAccessed)[-1] | .entries[.index-1] | \"[[\" + (.url) + \"][\" + (.title) + \"]]\"'"
+				 "tr -d '\n'")
+			 " | ")))
+		)
+	(define-key org-mode-map (kbd "C-c f") 'ff-link-org)
+	(setenv "FIREFOX_PROFILE" "/Users/shyam/Library/Application Support/Firefox/Profiles/sz5s61iv.default-release")
+#+end_src
+
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
