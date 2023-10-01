@@ -762,7 +762,7 @@ From https://github.com/emacsattic/gedcom
 #+end_src
 * Color Theme
 ** +Zenburn+
-#+begin_src emacs-lisp
+#+begin_example emacs-lisp
 	(use-package zenburn-theme
 		:ensure t
 		:init
@@ -772,7 +772,7 @@ From https://github.com/emacsattic/gedcom
 		:config
 		(load-theme 'zenburn t)
 		)
-#+end_src
+#+end_example
 ** Set Font
 #+begin_example emacs-lisp
 	(custom-set-faces
