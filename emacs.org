@@ -1159,6 +1159,15 @@ Force indents, offsets and disable tabs
 	(setenv "FIREFOX_PROFILE" "/Users/shyam/Library/Application Support/Firefox/Profiles/sz5s61iv.default-release")
 #+end_src
 
+* Do not save .el.gz buffers
+Exclude ~.el.gz~ buffers when saving the desktop
+#+begin_src emacs-lisp
+	(setq desktop-files-not-to-save
+				(rx (group (or
+					(seq bos "/" (* (not (any "/:"))) ":")
+					(seq "(ftp)" eos)
+					(seq ".el.gz" eos)))))
+#+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
