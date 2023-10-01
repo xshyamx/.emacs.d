@@ -279,9 +279,7 @@ Causes LC_ENCODING issues with projectile-find-file
 	(use-package yasnippet
 		:ensure t
 		:init
-		(diminish 'yas-minor-mode '(:propertize " yas" face '(:foreground "coral")))
-		(add-hook 'restclient-mode-hook #'yas-minor-mode)
-		(add-hook 'org-mode-hook #'yas-minor-mode))
+		(diminish 'yas-minor-mode '(:propertize " yas" face '(:foreground "coral"))))
 #+end_src
 ** Dockerfile
 #+begin_src emacs-lisp
@@ -331,13 +329,10 @@ https://geeksocket.in/posts/emacs-lsp-go/
 	(use-package go-mode
 		:ensure t
 		:config
-	;	(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-		(add-hook 'go-mode-hook #'yas-minor-mode)
 		(add-hook 'before-save-hook #'gofmt-before-save)
 		:custom
-		(tab-width 2)
-		)
-	;  (add-hook 'before-save-hook #'gofmt-before-save))
+		(tab-width 2))
+	;;  (add-hook 'before-save-hook #'gofmt-before-save))
 #+end_src
 ** Mermaid
 Ensure that the NPM package =mermaid.cli= is installed globally
@@ -686,8 +681,7 @@ From https://github.com/pdorrell/rules-editing-mode.git
 	(defun fc/init-drools-mode ()
 		(setq
 		 drools-tab-indent 2
-		 indent-tabs-mode nil)
-		(yas-minor-mode))
+		 indent-tabs-mode nil))
 	(defun fc/setup-drools-mode ()
 		(add-to-list 'auto-mode-alist '("\\.drl\\'" . drools-mode))
 		(add-hook 'drools-mode-hook #'fc/init-drools-mode)
@@ -1107,18 +1101,19 @@ Force indents, offsets and disable tabs
   Enable Yasnippets to specific modes
 ** yas hook function
 #+begin_src emacs-lisp
-	(defun fc/add-yas-minor-mode ()
-		"Reload snippets and enable yasnippet minor mode"
-		(yas-reload-all)
-		(yas-minor-mode))
 	;; define list of modes to enable yas-minor-mode
 	(setq yas-modes
 				'(prog-mode-hook
 					conf-mode-hook
 					yaml-mode-hook
-					html-mode-hook))
+					html-mode-hook
+					go-mode-hook
+					restclient-mode-hook
+					drools-mode-hook
+					org-mode-hook))
 	;; load yas-minor-mode for each of the yas-modes
-	(mapc (lambda (hook) (add-hook hook #'fc/add-yas-minor-mode)) yas-modes)
+	(mapc (lambda (hook) (add-hook hook #'yas-minor-mode)) yas-modes)
+	(run-with-timer 2 nil #'yas-reload-all)
 #+end_src
 * Mode customizations
 ** Highlight elisp functions
