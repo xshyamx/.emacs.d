@@ -37,8 +37,12 @@ clone https://github.com/pdorrell/rules-editing-mode.git drools-mode
 clone https://github.com/xshyamx/fzf.el.git fzf
 clone https://github.com/pashky/restclient.el restclient
 clone https://github.com/ccod/dbd-mode dbdiagram-mode
+
 if ! grep "(provide" dbdiagram-mode/dbdiagram-mode.el > /dev/null; then
     echo "(provide 'dbdiagram-mode)" >> dbdiagram-mode/dbdiagram-mode.el
 fi
 
-clone https://github.com/emacsattic/gedcom.git
+clone https://github.com/xshyamx/gedcom.git gedcom
+clone https://github.com/xshyamx/openapi-mode openapi-mode
+
+
