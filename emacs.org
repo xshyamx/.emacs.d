@@ -173,6 +173,8 @@ not litter directories with the backup files
 				'((".*" . "~/.emacs.d/backups/")))
 	;; do not create lockfiles
 	(setq create-lockfiles nil)
+	;; use trash to delete
+	(setq delete-by-moving-to-trash t)
 #+end_src
 * +Position the Emacs frame+
 Already handled by desktop?
@@ -275,12 +277,12 @@ Causes LC_ENCODING issues with projectile-find-file
 		(which-key-mode))
 #+end_src
 ** Yasnippet
-#+begin_src emacs-lisp
+#+begin_example emacs-lisp
 	(use-package yasnippet
 		:ensure t
 		:init
 		(diminish 'yas-minor-mode '(:propertize " yas" face '(:foreground "coral"))))
-#+end_src
+#+end_example
 ** Dockerfile
 #+begin_src emacs-lisp
   (use-package dockerfile-mode
