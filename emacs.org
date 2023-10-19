@@ -745,6 +745,14 @@ From https://github.com/emacsattic/gedcom
      (graphviz-dot-indent-width 2 "set indent size to 2")
      (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
 #+end_src
+** OpenAPI
+#+begin_src emacs-lisp
+	(use-package openapi-mode
+		:load-path "site-lisp/openapi-mode"
+		:config
+		(require 'swagger-mode)
+		(require 'openapi-mode))
+#+end_src
 * Color Theme
 ** +Zenburn+
 #+begin_example emacs-lisp
