@@ -35,6 +35,7 @@
 ;;; load literate configuration
 (org-babel-load-file (locate-user-emacs-file "emacs.org"))
 
+(require 'post-init-local)
 
 (provide 'init)
 ;;; init.el -- Ends here
