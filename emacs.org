@@ -731,28 +731,12 @@ From https://github.com/emacsattic/gedcom
 ** Plantuml
 #+begin_src emacs-lisp
 	(use-package plantuml-mode
-		:load-path "site-lisp/plantuml-mode"
+		:load-path "site-lisp/simple-plantuml-mode"
 		:custom
-		(plantuml-default-exec-mode 'executable)
-		(plantuml-output-type 'png)
 		(plantuml-executable-path "/usr/local/bin/plantuml")
 		(plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-		(org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-		)
-	;(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-	;(org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+		(org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar"))
 #+end_src
-*** Plantuml jar path
-#+begin_example emacs-lisp
-	(defun fc/unbrew (src target)
-		"Expand the symbolic link to the brew target"
-		(let* ((brew-prefix "/usr/local")
-					 (plantuml-prefix (file-chase-links (format "%s/%s" brew-prefix src))))
-			(replace-regexp-in-string src target plantuml-prefix)))
-	(message (unbrew "bin/plantuml" "libexec/plantuml.jar"))
-
-	(custom-set-variables '(plantuml-jar-path (unbrew "bin/plantuml" "libexec/plantuml.jar")))
-#+end_example
 ** Graphviz
 #+begin_src emacs-lisp
   (use-package graphviz-dot-mode
@@ -1182,9 +1166,6 @@ Exclude ~.el.gz~ buffers when saving the desktop
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
-	(when (not (eq plantuml-output-type "png"))
-			(setq plantuml-output-type "png"))
-
 	(run-with-idle-timer 2 nil #'set-emacs-gc-threshold original-gc-cons-threshold)
 	(message "Loaded all from emacs.org")
 #+end_src
