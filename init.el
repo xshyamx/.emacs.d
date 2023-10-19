@@ -1,3 +1,5 @@
+;;; init.el --  -*- lexical-binding: t -*-
+
 (defun set-emacs-gc-threshold (value)
 	(message "Setting gc-cons-threshold to %d" value)
 	(setq original-gc-cons-threshold gc-cons-threshold)
@@ -32,3 +34,7 @@
 
 ;;; load literate configuration
 (org-babel-load-file (locate-user-emacs-file "emacs.org"))
+
+
+(provide 'init)
+;;; init.el -- Ends here

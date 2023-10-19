@@ -1083,6 +1083,17 @@ Force indents, offsets and disable tabs
 	(setq godoc-command (expand-file-name "bin/godoc" go-home))
 	(setq go-command (expand-file-name "bin/go" go-home))
 #+end_src
+* Auto-insert templates
+From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
+#+begin_src emacs-lisp
+	(auto-insert-mode)
+	(define-auto-insert '(emacs-lisp-mode . "Emacs lisp skeleton")
+		'("Template with header and footer : "
+			";;; " (file-name-nondirectory (buffer-file-name)) " --  -*- lexical-binding: t -*-"
+			"\n\n\n"
+			"(provide '" (file-name-sans-extension (file-name-base (buffer-file-name))) ")\n"
+			";;; " (file-name-nondirectory (buffer-file-name)) " -- Ends here\n"))
+#+end_src
 * Global key bindings
 #+begin_src emacs-lisp
 	;(global-set-key (kbd "C-c C-d") 'calendar)
