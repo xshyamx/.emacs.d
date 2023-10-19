@@ -203,49 +203,19 @@ Already handled by desktop?
 	(setq default-frame-alist
 				'((top . 34) (left . 646) (width . 110) (height . 50)))
 #+end_example
-* Update the exec-path
-** Update the emacs =exec-path=
+* Initialize Local configurations
 #+begin_src emacs-lisp
-	(setq
-	 exec-path
-	 (append
-		exec-path
-		'(
-			"/usr/local/bin"
-			"/Users/shyam/.arkade/bin"
-			"/Users/shyam/go/bin"
-			"/Users/shyam/Library/Python/2.7/bin"
-			"/Users/shyam/.nvm/versions/node/v16.4.2/bin"
-			)
-		)
-	 )
-#+end_src
+  ;; define functions used in init-local
+  (defun fc/add-to-path (paths)
+    "Returns a new `PATH' string with unique items fromt PATHS from
+  the environment variable `PATH'"
+    (let ((ps (split-string (getenv "PATH") ":")))
+      (string-join (seq-uniq (append ps paths)) ":")))
 
-** Update environment variable =PATH=
-#+begin_example emacs-lisp
-	(setenv
-	 "PATH"
-	 (concat
-		(getenv "PATH")
-		":"
-		(string-join
-		 '(
-			 "/usr/local/bin"
-			 "/Users/shyam/bin"
-			 "/Users/shyam/go/bin"
-			 "/Users/shyam/.yarn/bin"
-			 "/Users/shyam/.cargo/bin"
-			 "/Users/shyam/Library/Python/2.7/bin"
-			 )
-		 ":")
-		)
-	 )
-#+end_example
-** +Run in interactive shell+
-[[https://stackoverflow.com/questions/12224909/is-there-a-way-to-get-my-emacs-to-recognize-my-bash-aliases-and-custom-functions/12229404#12229404][Is there a way to get my emacs to recognize my bash aliases and custom functions when I run a shell command?]]
-#+begin_example emacs-lisp
-  (setq shell-command-switch "-ic")
-#+end_example
+  (add-to-list 'load-path (locate-user-emacs-file "lisp"))
+  ;; load
+  (require 'init-local)
+#+end_src
 * GNU/MELPA Packages
 ** Try
 #+begin_src emacs-lisp
@@ -545,13 +515,6 @@ Check if executable is in the path `(executable-find "gopls")`
 #+end_src
 *** Setup functions used by the hydra
 #+begin_src emacs-lisp
-	;; base directories
-	(setq
-	 dotfiles-home (expand-file-name "dotfiles" (getenv "HOME"))
-	 macbook-home (expand-file-name "shyam/macbook" (getenv "HOME"))
-	 projects-home (expand-file-name "projects" (getenv "HOME"))
-	 )
-
 
 	(defun fc/remove-prefix (name)
 		(replace-regexp-in-string
@@ -869,8 +832,6 @@ Set indentation level to 2 for most used modes
 * Org Mode
 #+begin_src emacs-lisp
 	(setq org-confirm-babel-evaluate nil)
-	(setq org-agenda-files
-				'("~/shyam/home/payments.org" "~/shyam/macbook/today.org" "~/shyam/macbook/buf.org"))
 	(org-babel-do-load-languages
 	 'org-babel-load-languages
 	 '((js . t)))
@@ -1159,9 +1120,7 @@ Force indents, offsets and disable tabs
 			 " | ")))
 		)
 	(define-key org-mode-map (kbd "C-c f") 'ff-link-org)
-	(setenv "FIREFOX_PROFILE" "/Users/shyam/Library/Application Support/Firefox/Profiles/sz5s61iv.default-release")
 #+end_src
-
 * Do not save .el.gz buffers
 Exclude ~.el.gz~ buffers when saving the desktop
 #+begin_src emacs-lisp
