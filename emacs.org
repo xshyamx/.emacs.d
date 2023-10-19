@@ -46,6 +46,12 @@
 	 view-read-only t					; use view-mode for readonly buffers
 	 )
 #+end_src
+*** System specific
+#+begin_src emacs-lisp
+	(pcase system-type
+		(darwin
+		 (setq dired-use-ls-dired nil)))		; do not pass --dired flag to ls
+#+end_src
 ** Flash modeline instead of visble bell
 #+begin_src emacs-lisp
 	;; flash mode line instead of beeping
