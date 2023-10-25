@@ -856,33 +856,30 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 		(not (string= lang "emacs-lisp")))
 	(setq org-confirm-babel-evaluate #'org-babel-allow-elisp)
 #+end_src
-** Keybindings for deleting src blocks & subtrees
+** Keybindings for killing src blocks
 #+begin_src emacs-lisp
-	(defun org-delete-block ()
-		"Deletecurrent block."
-		(interactive)
-		(let* ((case-fold-search t)
-		 (blockp (org-between-regexps-p "^[ \t]*#\\+begin_.*"
-						"^[ \t]*#\\+end_.*")))
-			(if blockp
-					(delete-region (car blockp) (cdr blockp))
-				(user-error "Not in a block"))))
+	(defun org-block-at-point ()
+		"Block at point"
+		(let ((case-fold-search t))
+			(org-between-regexps-p "^[ \t]*#\\+begin_.*"
+														 "^[ \t]*#\\+end_.*")))
 
-	(defun org-delete-subtree (&optional element)
-		"Delete the current subtree."
+	(defun org-kill-block ()
+		"Kill current block."
 		(interactive)
-		(let* ((heading (org-element-lineage
-												 (or element (org-element-at-point))
-												 '(headline) t))
-							 (end (org-element-property :end heading)))
-					(if (and heading end)
-							(delete-region (org-element-property :begin heading)
-																(if (= end (point-max))
-																		end (1- end)))
-						(signal 'outline-before-first-heading nil))))
+		(if-let ((blockp (org-block-at-point)))
+				(kill-region (car blockp) (cdr blockp))
+			(user-error "Not in a block")))
 
-	(define-key org-mode-map (kbd "C-c C-v C-k") #'org-delete-block)
-	(define-key org-mode-map (kbd "C-c C-k") #'org-delete-subtree)
+	(defun org-copy-block ()
+		"Copy current block."
+		(interactive)
+		(if-let ((blockp (org-block-at-point)))
+				(kill-ring-save (car blockp) (cdr blockp))
+			(user-error "Not in a block")))
+	pp
+	(define-key org-mode-map (kbd "C-c C-v C-w") #'org-kill-block)
+	(define-key org-mode-map (kbd "C-c C-v M-w") #'org-copy-block)
 #+end_src
 * Utility Functions
 ** Recreate scratch buffer
