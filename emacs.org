@@ -1107,7 +1107,7 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 #+begin_src emacs-lisp
 	(font-lock-add-keywords
 	 'emacs-lisp-mode
-	 '(("#'[^[:space:]]+\\>" . font-lock-function-name-face)))
+	 '(("#'[[:word:]-/]+\\>" . font-lock-function-name-face)))
 #+end_src
 * Open links in firefox
 #+begin_src emacs-lisp
