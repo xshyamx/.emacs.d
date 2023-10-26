@@ -881,6 +881,37 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 	(define-key org-mode-map (kbd "C-c C-v C-w") #'org-kill-block)
 	(define-key org-mode-map (kbd "C-c C-v M-w") #'org-copy-block)
 #+end_src
+** org-capture templates
+#+begin_src emacs-lisp
+	(defun add-daily-note ()
+		"Find heading to add daily note"
+		(buffer-file-name)
+		(goto-char (point-max))
+		(let ((ts (format-time-string "[%Y-%m-%d %a]"))
+					(tl (org-find-top-headline)))
+			;; create heading if it does not exist
+			(unless (string= ts tl)
+				(unless (bolp) (insert "\n"))
+				(insert "* " ts "\n"))
+			(unless (bolp) (insert "\n"))))
+
+	(global-set-key (kbd "C-x c") #'org-capture)
+
+	(defun add-daily-note-capture (filename)
+		(add-to-list 'org-capture-templates
+								 `("n" "Daily notes item" plain
+									 (file+function ,filename add-daily-note)
+									 "** %^{Title}\n%?" :jump-to-captured t)))
+
+	(defun add-note-capture (filename)
+		(add-to-list 'org-capture-templates
+								 `("b" "Buf note item" entry
+									 (file ,filename)
+									 "* %?" :jump-to-captured t)))
+	;; set variable to nil otherwise will get the following error
+	;; Symbol's value as variable is void: org-capture-templates
+	(setq org-capture-templates nil)
+#+end_src
 * Utility Functions
 ** Recreate scratch buffer
 #+begin_src emacs-lisp
