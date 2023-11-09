@@ -886,7 +886,6 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 #+begin_src emacs-lisp
 	(defun add-daily-note ()
 		"Find heading to add daily note"
-		(buffer-file-name)
 		(goto-char (point-max))
 		(let ((ts (format-time-string "[%Y-%m-%d %a]"))
 					(tl (org-find-top-headline)))
