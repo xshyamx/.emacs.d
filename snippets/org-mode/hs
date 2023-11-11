@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: hs
-# key: hs
-# expand-env: ((yas/indent-line 'fixed))
-# --
-#+html: <details><summary>$1</summary>
-$2
-#+html: </details>

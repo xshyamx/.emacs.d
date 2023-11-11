@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: sg
-# key: sg
-# expand-env: ((yas/indent-line 'fixed))
-# --
-subgraph cluster_$1 {
-  label="$2"
-  $3
-}

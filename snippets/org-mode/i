@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: i
-# key: i
-# --
-#+include: "./img/$2" src ${1:sh}

@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: bfg
-# key: bfg
-# --
-<div class="form-group">
-  <label for="$1">$2</label>
-  <input id="$1" name="$1" required type="text" class="form-control" ng-model="$3"/>
-  <p ng-show="$4.$1.$error.required && !$4.$1.$pristine" class="text-danger">$2 is required</p>
-</div>

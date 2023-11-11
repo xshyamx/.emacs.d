@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: fai
-# key: fai
-# --
-<span class="fa fa-$1" aria-hidden="true"></span>

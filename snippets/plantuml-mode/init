@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: !
-# key: !
-# --
-@start${1:$$(yas-choose-value '("uml" "mindmap" "gantt" "wbs" "json" "yaml" "salt"))}
-skinparam backgroundcolor transparent
-$0
-@end$1
