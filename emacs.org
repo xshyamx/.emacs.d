@@ -1,4 +1,5 @@
-#+STARTUP: content hideblocks
+#+title: Emacs Configuration
+#+startup: content hideblocks
 #+property: header-args :tangle (locate-user-emacs-file "emacs.el") :results silent
 #+property: org-babel-default-header-args :tangle yes
 * Init file
