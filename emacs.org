@@ -12,6 +12,17 @@
 		(message "Emacs loaded in %s seconds with %d garbage collection" (emacs-init-time "%.02f") gcs-done))
 	(add-hook 'emacs-startup-hook #'fc/print-startup-time)
 #+end_src
+** Remapped keys
+#+begin_src emacs-lisp
+	(defvar remapped-keys nil
+		"List of remapped keys from the global-map")
+
+	(defun global-remap-key (keys defn)
+		(when-let ((old (keymap-lookup global-map keys)))
+			(add-to-list 'remapped-keys
+								 (cons keys old)))
+		(define-key global-map (kbd keys) defn))
+#+end_src
 * Interface Tweaks
 ** Use y/p instead of yes/no
 #+begin_src emacs-lisp
@@ -70,7 +81,8 @@
 ** Replace BufferMenu with ibuffer
 #+begin_src emacs-lisp
 	;; user `ibuffer' for buffer listing
-	(global-set-key (kbd "C-x C-b") 'ibuffer)
+	(global-remap-key "C-x C-b" #'ibuffer)
+;	(global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
 ** Use fido vertical mode
 #+begin_src emacs-lisp
@@ -162,7 +174,8 @@
 ** imenu keybinding
 #+begin_src emacs-lisp
 	;; bind super-i to imenu
-	(define-key global-map (kbd "s-i") #'imenu)
+	(global-remap-key "s-i" #'imenu)
+	;(define-key global-map (kbd "s-i") #'imenu)
 #+end_src
 ** Hide mouse cursor while typing
 #+begin_src emacs-lisp
@@ -587,7 +600,8 @@ Check if executable is in the path `(executable-find "gopls")`
 		("P" (fc/find-project-notes) "Projects")
 		("q" nil "quit")
 		)
-	(global-set-key (kbd "s-g") #'common-org-files/body)
+	(global-remap-key "s-g" #'common-org-files/body)
+	;(global-set-key (kbd "s-g") #'common-org-files/body)
 #+end_src
 ** ace-window
 #+begin_src emacs-lisp
@@ -603,7 +617,7 @@ Check if executable is in the path `(executable-find "gopls")`
 #+end_src
 ** Avy
 #+begin_src emacs-lisp
-	(define-key global-map (kbd "s-l") nil)
+;	(define-key global-map (kbd "s-l") nil)
 	(use-package avy
 		:bind ("s-l" . avy-goto-line))
 #+end_src
@@ -896,7 +910,8 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 				(insert "* " ts "\n"))
 			(unless (bolp) (insert "\n"))))
 
-	(global-set-key (kbd "C-x c") #'org-capture)
+	(global-remap-key "C-x x" #'org-capture)
+	;(global-set-key (kbd "C-x c") #'org-capture)
 
 	(defun add-daily-note-capture (filename)
 		(add-to-list 'org-capture-templates
