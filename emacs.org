@@ -181,6 +181,16 @@
 #+begin_src emacs-lisp
 	(setq make-pointer-invisible t)
 #+end_src
+** Remap compose-email to switch-to-scratch
+#+begin_src emacs-lisp
+	(defun switch-to-scratch ()
+		(interactive)
+		(switch-to-buffer "*scratch*"))
+	(global-remap-key "C-x m" #'switch-to-scratch)
+	;; (let ((keys "C-x m"))
+	;; 	(setq old-c-x-m (keymap-lookup global-map keys))
+	;; 	(define-key global-map (kbd keys) #'switch-to-scratch))
+#+end_src
 * Autosave & Backups
 Change the backup directory to be inside .emacs.d so that it does
 not litter directories with the backup files
