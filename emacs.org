@@ -845,7 +845,11 @@ Set indentation level to 2 for most used modes
 #+begin_src emacs-lisp
 	(setq abbrev-file-name
 				(expand-file-name "~/.emacs.d/abbrev_defs"))
-	(setq save-abbrevs 'silent)
+	(setq save-abbrevs 'silently)
+	(let ((abbrev-modes '(org plantuml emacs-lisp)))
+		(mapc (lambda (name)
+						(add-hook (intern (concat (symbol-name name) "-mode-hook")) #'abbrev-mode))
+					abbrev-modes))
 #+end_src
 * Server
 #+begin_src emacs-lisp
