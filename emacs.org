@@ -752,6 +752,13 @@ From https://github.com/emacsattic/gedcom
 		(require 'swagger-mode)
 		(require 'openapi-mode))
 #+end_src
+** XPath query & XML format with XMLStarlet
+#+begin_src emacs-lisp
+	(use-package xmlstarlet-mode
+		:load-path "site-lisp/xmlstarlet-mode"
+		:config
+		(require 'xmlstarlet-mode))
+#+end_src
 * Color Theme
 ** +Zenburn+
 #+begin_example emacs-lisp
