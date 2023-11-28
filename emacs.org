@@ -191,6 +191,12 @@
 	;; 	(setq old-c-x-m (keymap-lookup global-map keys))
 	;; 	(define-key global-map (kbd keys) #'switch-to-scratch))
 #+end_src
+** Remove keybinding to suspend frame
+Always getting triggered by accident
+#+begin_src emacs-lisp
+	(dolist (keys '("C-z" "C-x C-z"))
+		(global-remap-key keys nil))
+#+end_src
 * Autosave & Backups
 Change the backup directory to be inside .emacs.d so that it does
 not litter directories with the backup files
