@@ -651,6 +651,15 @@ Check if executable is in the path `(executable-find "gopls")`
 			nil)
 		)
 #+end_src
+** Paredit
+#+begin_src emacs-lisp
+	(use-package paredit
+		:ensure t
+		:hook	(emacs-lisp-mode . paredit-mode)
+		:config
+		(define-key paredit-mode-map (kbd "C-j") nil t)
+		(define-key paredit-mode-map (kbd "M-s") nil t))
+#+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
 Add top-level directories under ~site-lisp~ to ~load-path~
@@ -842,6 +851,7 @@ Set indentation level to 2 for most used modes
 	(mapc #'fc/set-default-indent-offset offset-vars)
 #+end_src
 * Saving Abbreviations
+- Emacs Lisp abbreviations from https://github.com/malabarba/speed-of-thought-lisp
 #+begin_src emacs-lisp
 	(setq abbrev-file-name
 				(expand-file-name "~/.emacs.d/abbrev_defs"))
@@ -1199,6 +1209,16 @@ Exclude ~.el.gz~ buffers when saving the desktop
 					(seq bos "/" (* (not (any "/:"))) ":")
 					(seq "(ftp)" eos)
 					(seq ".el.gz" eos)))))
+#+end_src
+* Keybinding to evaluate elisp buffer
+#+begin_src emacs-lisp
+	(defun eval-buffer-notify ()
+		(interactive)
+		(eval-buffer)
+		(message "Evaluated buffer: %s" (propertize (buffer-name (current-buffer)) 'face 'font-lock-function-name-face)))
+
+	(dolist (mode-map '(emacs-lisp-mode-map lisp-interaction-mode-map))
+		(define-key (symbol-value mode-map) (kbd "C-c C-c") #'eval-buffer-notify))
 #+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
