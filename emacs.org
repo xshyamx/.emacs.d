@@ -84,6 +84,10 @@
 	(global-remap-key "C-x C-b" #'ibuffer)
 ;	(global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
+** Replace dabbrev expand with hippie-expand
+#+begin_src emacs-lisp
+	(global-remap-key "M-/" #'hippie-expand)
+#+end_src
 ** Use fido vertical mode
 #+begin_src emacs-lisp
 	;; list of available styles `completion-styles-alist'
@@ -229,7 +233,7 @@ Already handled by desktop?
 		 :height  (frame-height))
 		)
 #+end_example
-** Set the current position
+** +Set the current position+
 #+begin_example emacs-lisp
 	(setq default-frame-alist
 				'((top . 34) (left . 646) (width . 110) (height . 50)))
@@ -288,15 +292,15 @@ Causes LC_ENCODING issues with projectile-find-file
   (use-package dockerfile-mode
     :ensure t)
 #+end_src
-** Autocomplete
-#+begin_src emacs-lisp
+** +Autocomplete+
+#+begin_example emacs-lisp
 	(use-package auto-complete
 		:ensure t
 		:diminish
 		:init
 		(ac-config-default)									; enables global-auto-complete-mode
 		)
-#+end_src
+#+end_example
 ** Web Mode
 #+begin_src emacs-lisp
 	(use-package web-mode
@@ -445,6 +449,7 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
     )
 #+end_src
 ** [[https://github.com/pashky/restclient.el][REST Client]]
+*** +From package repository+
 #+begin_example emacs-lisp
   (use-package restclient
     :ensure t)
@@ -486,7 +491,7 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
   (use-package rust-mode
     :ensure t)
 #+end_src
-** LSP
+** +LSP+
 Check if executable is in the path `(executable-find "gopls")`
 #+begin_example emacs-lisp
 	(defun fc/lsp-deferred ()
@@ -508,7 +513,7 @@ Check if executable is in the path `(executable-find "gopls")`
 	(use-package lsp-ui
 		:ensure t)
 #+end_example
-** Company for text completion
+** +Company for text completion+
 #+begin_example emacs-lisp
   (use-package company
     :ensure t
@@ -772,7 +777,7 @@ From https://github.com/emacsattic/gedcom
 		(load-theme 'zenburn t)
 		)
 #+end_example
-** Set Font
+** +Set Font+
 #+begin_example emacs-lisp
 	(custom-set-faces
 	 ;; custom-set-faces was added by Custom.
@@ -822,7 +827,7 @@ From https://www.emacswiki.org/emacs/SetFonts
 	(put 'narrow-to-region 'disabled nil)
 #+end_src
 * Tabs & Indentation
-** Indenting
+** +Indenting+
 Set indentation level to 2 for most used modes
 #+begin_example emacs-lisp
   (indent-tab s-mode)
@@ -862,11 +867,15 @@ Set indentation level to 2 for most used modes
 #+begin_src emacs-lisp
 	(setq abbrev-file-name
 				(expand-file-name "~/.emacs.d/abbrev_defs"))
+	;; do not prompt to save abbreivations
 	(setq save-abbrevs 'silently)
+	;; enable for the following modes
 	(let ((abbrev-modes '(org plantuml emacs-lisp)))
 		(mapc (lambda (name)
 						(add-hook (intern (concat (symbol-name name) "-mode-hook")) #'abbrev-mode))
 					abbrev-modes))
+	;; `M-x ea' to edit abbreivations
+	(defalias 'ea #'edit-abbrevs "Edit abbreviations")
 #+end_src
 * Server
 #+begin_src emacs-lisp
