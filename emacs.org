@@ -657,13 +657,16 @@ Check if executable is in the path `(executable-find "gopls")`
 		)
 #+end_src
 ** Paredit
+Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]]
 #+begin_src emacs-lisp
 	(use-package paredit
 		:ensure t
 		:hook	(emacs-lisp-mode . paredit-mode)
 		:config
 		(define-key paredit-mode-map (kbd "C-j") nil t)
-		(define-key paredit-mode-map (kbd "M-s") nil t))
+		(define-key paredit-mode-map (kbd "M-s") nil t)
+		(define-key paredit-mode-map (kbd "M-?") nil t) ; rebind convolute
+		(define-key paredit-mode-map (kbd "C-M-?") #'paredit-convolute-sexp))
 #+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
