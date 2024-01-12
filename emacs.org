@@ -1234,10 +1234,62 @@ Exclude ~.el.gz~ buffers when saving the desktop
 	(defun eval-buffer-notify ()
 		(interactive)
 		(eval-buffer)
-		(message "Evaluated buffer: %s" (propertize (buffer-name (current-buffer)) 'face 'font-lock-function-name-face)))
+		(message "Evaluated buffer: %s"
+						 (propertize (buffer-name (current-buffer)) 'face 'font-lock-function-name-face)))
 
 	(dolist (mode-map '(emacs-lisp-mode-map lisp-interaction-mode-map))
 		(define-key (symbol-value mode-map) (kbd "C-c C-c") #'eval-buffer-notify))
+#+end_src
+* Toggle between default browser & firefox
+#+begin_src emacs-lisp
+	(defun toggle-browser ()
+		"Toggle between default browser and firefox"
+		(interactive)
+		(setq  browse-url-browser-function
+					 (if (eql browse-url-browser-function 'browse-url-default-browser)
+							 'browse-url-firefox
+						 'browse-url-default-browser))
+		(message (if (eql browse-url-browser-function 'browse-url-default-browser)
+								 "Using default browser"
+							 "Using firefox")))
+#+end_src
+* Generate email content from interview notes
+#+begin_src emacs-lisp
+	(defun interview-email ()
+		"Generate email content from interview notes in org mode"
+		(interactive)
+		(save-excursion
+			(let* ((el (org-element-at-point))
+						 (pl (cadr el))
+						 (pel (plist-get  pl :parent)))
+				(if (and
+						 (eq 'headline (org-element-type el))
+						 (string= "Interviews" (plist-get (cadr pel) :raw-value)))
+						(let* ((content
+										(buffer-substring-no-properties
+										 (plist-get pl :contents-begin)
+										 (plist-get pl :contents-end)))
+									 (fn (make-temp-file "org-export" nil ".html")))
+							(with-temp-buffer
+								(insert "#+EXPORT_FILE_NAME: " fn "\n")
+								(insert "#+html: <!doctype html>\n\n")
+								(insert "#+html: <style> body {font-family: sans-serif; font-size: 12pt;}</style>\n\n")
+								(insert "Hi,\n\nPlease find below my observations from my discussion with ")
+								(insert "*" (plist-get pl :raw-value) "*\n\n")
+								(insert content)
+								(goto-char (point-min))
+								(when (re-search-forward (rx bol "**** noexport") nil t)
+									(delete-region (match-beginning 0) (point-max))
+									(forward-line -2))
+								(when (re-search-forward (rx bol "- " (group (? "Not ") "Recommended")) nil t)
+									(replace-match "- *\\1*"))
+								(goto-char (point-max))
+								(insert "\n\nRegards,\n\nShyam")
+								(org-html-export-to-html nil nil nil t nil)
+								(browse-url fn)))
+					(user-error "Not under an \"Interviews\" heading")))))
+
+	(define-key org-mode-map (kbd "C-c o") #'interview-email)
 #+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
