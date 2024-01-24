@@ -84,10 +84,10 @@
 	(global-remap-key "C-x C-b" #'ibuffer)
 ;	(global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
-** Replace dabbrev expand with hippie-expand
-#+begin_src emacs-lisp
+** +Replace dabbrev expand with hippie-expand+
+#+begin_example emacs-lisp
 	(global-remap-key "M-/" #'hippie-expand)
-#+end_src
+#+end_example
 ** Use fido vertical mode
 #+begin_src emacs-lisp
 	;; list of available styles `completion-styles-alist'
@@ -410,8 +410,20 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 #+end_src
 ** CSV
 #+begin_src emacs-lisp
-  (use-package csv-mode
-    :ensure t)
+	(use-package csv-mode
+		:ensure t)
+
+	(defun csv-open-in-excel ()
+		"Open csv in MS Excel in Mac"
+		(interactive)
+		(let ((fn (if (buffer-file-name)
+									(buffer-file-name)
+								(make-temp-file "csv" nil ".csv" (buffer-string))))
+					(cmd '("open" "-a" "\"Microsoft Excel.app\"" "--args")))
+			(add-to-list 'cmd fn t)
+			(compilation-start (string-join cmd " "))))
+	;; add keybinding
+	(define-key csv-mode-map (kbd "C-c C-o") #'csv-open-in-excel)
 #+end_src
 ** Kotlin
 #+begin_src emacs-lisp
