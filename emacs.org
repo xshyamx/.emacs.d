@@ -1205,6 +1205,30 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 		'("Diagram skeleton: "
 			"@startuml\n" "  '" (file-name-base (buffer-file-name)) "\n  \n@enduml"))
 
+	;; Org mode
+	(define-auto-insert
+		'(org-mode . "Org file")
+		'("Org file skeleton: "
+			"#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
+			"#+author: " user-login-name " <" (string-trim (shell-command-to-string "git config user.email")) ">\n"
+			"# -*- org-export-use-babel: nil; -*-\n"
+			"#+options:  num:nil broken-links:mark\n"
+			"#+property: header-args :eval never-export\n"
+			"#+startup: overview hideblocks\n"
+			"#+html_head: <link rel=\"stylesheet\" href=\""
+			(file-relative-name
+			 (expand-file-name "org-includes/org.css" macbook-home) default-directory)
+			"\"></link>"
+			"#+html_head: <link rel=\"stylesheet\" href=\""
+			(file-relative-name
+			 (expand-file-name "org-includes/slideshow.css" macbook-home) default-directory)
+			"\"></link>\n"
+			"#+html_head: <script src=\""
+			(file-relative-name
+			 (expand-file-name "org-includes/slideshow.js" macbook-home) default-directory)
+			"\"></script>\n"
+			"* "
+			))
 #+end_src
 * Global key bindings
 #+begin_src emacs-lisp
