@@ -1225,6 +1225,10 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 			"\"></link>\n"
 			"#+html_head: <script src=\""
 			(file-relative-name
+			 (expand-file-name "org-includes/org.js" macbook-home) default-directory)
+			"\"></script>\n"
+			"#+html_head: <script src=\""
+			(file-relative-name
 			 (expand-file-name "org-includes/slideshow.js" macbook-home) default-directory)
 			"\"></script>\n"
 			"* "
