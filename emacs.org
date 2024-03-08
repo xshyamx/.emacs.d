@@ -1198,7 +1198,7 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 	(define-auto-insert
 		'(graphviz-dot-mode . "Graphviz diagram")
 		'("Diagram skeleton: "
-			"diagraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n  \n}"))
+			"digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n  \n}"))
 	;; PlantUML diagrams
 	(define-auto-insert
 		'(plantuml-mode . "PlantUML diagram")
