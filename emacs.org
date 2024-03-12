@@ -1145,33 +1145,37 @@ Force indents, offsets and disable tabs
 #+end_src
 ** Untabify files using prog mode hooks
 #+begin_src emacs-lisp
-  (defun fc/progmodes-hooks ()
-    "Hooks for programming modes"
-    (add-hook 'before-save-hook 'progmodes-write-hooks)
-    (message (format "Adding save hook for %s" major-mode)))
+	(defun fc/progmodes-hooks ()
+		"Hooks for programming modes"
+		(add-hook 'before-save-hook #'fc/progmodes-write-hooks)
+		(message (format "Adding save hook for %s" major-mode)))
 
-  (defun fc/progmodes-write-hooks ()
-    "Hooks which run on file write for programming modes"
-    (prog1 nil
-	 (if (member major-mode (list 'makefile-bsdmake-mode)
-		     (lambda ()
-		       (message (format "untabifying buffer %s" major-mode))
-		       (untabify-buffer)
-		       )
-		     (lambda ()
-		       (message (format "skipping for %s" major-mode))))
-	     ))
-    )
+	(defun fc/progmodes-write-hooks ()
+		"Hooks which run on file write for programming modes"
+		(prog1 nil
+			(if (member major-mode (list 'makefile-bsdmake-mode)
+									(lambda ()
+										(message (format "untabifying buffer %s" major-mode))
+										(untabify-buffer)
+										)
+									(lambda ()
+										(message (format "skipping for %s" major-mode))))
+					))
+		)
 
-  (add-hook 'sh-set-shell-hook 'fc/progmodes-hooks)
-  (add-hook 'python-mode-hook 'fc/progmodes-hooks)
-  (add-hook 'js-mode-hook 'fc/progmodes-hooks)
+	(add-hook 'sh-set-shell-hook #'fc/progmodes-hooks)
+	(add-hook 'python-mode-hook #'fc/progmodes-hooks)
+	(add-hook 'js-mode-hook #'fc/progmodes-hooks)
 #+end_src
 ** Show whitespace in makefiles
 #+begin_src emacs-lisp
-	(add-hook 'makefile-bsdmake-mode-hook 'whitespace-mode)
-	(add-hook 'makefile-bsdmake-mode-hook (lambda () (remove-hook 'sh-set-shell-hook 'progmodes-hooks t)))
-	(add-hook 'makefile-bsdmake-mode-hook (lambda () (message "removed untabify for makefile")))
+	(add-hook 'makefile-bsdmake-mode-hook #'whitespace-mode)
+	(add-hook 'makefile-bsdmake-mode-hook
+						(lambda ()
+							(remove-hook 'sh-set-shell-hook 'progmodes-hooks t)))
+	(add-hook 'makefile-bsdmake-mode-hook
+						(lambda ()
+							(message "removed untabify for makefile")))
 #+end_src
 ** Golang
 *** Setup GOPATH and variables for go-mode
