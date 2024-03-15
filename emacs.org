@@ -575,13 +575,19 @@ Check if executable is in the path `(executable-find "gopls")`
 		(cons (file-name-nondirectory path) path))
 
 	;; build list of projects and org files
-	(setq project-notes
-				(seq-map
-				 #'fc/make-pair
-				 (seq-map #'fc/remove-prefix
-									(directory-files-recursively projects-home  "-notes\\.org$"))))
+	(defvar project-notes nil
+		"Variable to hold org project notes as a list of pairs of the form (`basename' . `full-path') ")
+
+	(defun load-project-notes ()
+		(setq project-notes
+					(seq-map
+					 #'fc/make-pair
+					 (seq-map #'fc/remove-prefix
+										(directory-files-recursively projects-home  "-notes\\.org$")))))
+
+	(run-with-idle-timer 1 nil #'load-project-notes)
 	;; sort ?
-																					;(setq project-notes (seq-sort-by #'car #'string< project-notes))
+	;(setq project-notes (seq-sort-by #'car #'string< project-notes))
 
 	(defun fc/daily-notes-matcher (path)
 		"Match daily notes files"
@@ -616,6 +622,15 @@ Check if executable is in the path `(executable-find "gopls")`
 				(find-file (expand-file-name (cdr year) macbook-home)))
 			)
 		)
+#+end_src
+*** Setup common paths
+#+begin_src emacs-lisp
+	(defvar dotfiles-home nil
+		"Full path to the dotfiles repository")
+	(defvar macbook-home nil
+		"Full path to the directory holding all daily notes")
+	(defvar projects-home nil
+		"Full path to the top-level directory under which all project directories are present")
 #+end_src
 *** Commonly used org files
 #+begin_src emacs-lisp
