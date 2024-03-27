@@ -1222,12 +1222,12 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 	(define-auto-insert
 		'(graphviz-dot-mode . "Graphviz diagram")
 		'("Diagram skeleton: "
-			"digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n  \n}"))
+			"digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n" > _ "  \n}"))
 	;; PlantUML diagrams
 	(define-auto-insert
 		'(plantuml-mode . "PlantUML diagram")
 		'("Diagram skeleton: "
-			"@startuml\n" "' " (file-name-base (buffer-file-name)) "\n\n@enduml"))
+			"@startuml\n" "' " (file-name-base (buffer-file-name)) "\n" > _ "\n@enduml"))
 
 	;; Org mode
 	(define-auto-insert
@@ -1255,7 +1255,7 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 			(file-relative-name
 			 (expand-file-name "org-includes/slideshow.js" macbook-home) default-directory)
 			"\"></script>\n"
-			"* "
+			"* " > _
 			))
 #+end_src
 * Global key bindings
