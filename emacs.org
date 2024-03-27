@@ -998,6 +998,11 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 	;; Symbol's value as variable is void: org-capture-templates
 	(setq org-capture-templates nil)
 #+end_src
+** Disable archive keybindings
+#+begin_src emacs-lisp
+	(keymap-unset org-mode-map "C-c $" t)
+	(keymap-unset org-mode-map "C-c C-<tab>" t)
+#+end_src
 * Utility Functions
 ** Recreate scratch buffer
 #+begin_src emacs-lisp
