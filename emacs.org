@@ -1375,6 +1375,20 @@ Exclude ~.el.gz~ buffers when saving the desktop
 
 	(define-key org-mode-map (kbd "C-c o") #'interview-email)
 #+end_src
+* Extras
+#+begin_src emacs-lisp
+	;; load interview csv
+	(require 'interview-csv)
+
+	;; load org-insert-image
+	(require 'org-insert-image)
+
+	;; load org-insert-slideshow
+	(require 'org-insert-slideshow)
+
+	;; temp-buffer
+	(require 'temp-buffer)
+#+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
