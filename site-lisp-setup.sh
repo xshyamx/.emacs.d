@@ -45,4 +45,6 @@ fi
 clone https://github.com/xshyamx/gedcom.git gedcom
 clone https://github.com/xshyamx/openapi-mode openapi-mode
 
-
+# git modes
+clone https://github.com/rafl/git-commit-mode
+clone https://github.com/magit/git-modes

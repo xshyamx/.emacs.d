@@ -794,6 +794,14 @@ From https://github.com/emacsattic/gedcom
 		:config
 		(require 'xmlstarlet-mode))
 #+end_src
+** Git modes
+#+begin_src emacs-lisp
+	(use-package git-commit
+		:load-path "site-lisp/git-commit-mode")
+
+	(use-package git-modes
+		:load-path "site-lisp/git-modes")
+#+end_src
 * Color Theme
 ** +Zenburn+
 #+begin_example emacs-lisp
