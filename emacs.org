@@ -240,16 +240,16 @@ Already handled by desktop?
 #+end_example
 * Initialize Local configurations
 #+begin_src emacs-lisp
-  ;; define functions used in init-local
-  (defun fc/add-to-path (paths)
-    "Returns a new `PATH' string with unique items fromt PATHS from
-  the environment variable `PATH'"
-    (let ((ps (split-string (getenv "PATH") ":")))
-      (string-join (seq-uniq (append ps paths)) ":")))
+	;; define functions used in init-local
+	(defun fc/add-to-path (paths)
+		"Returns a new `PATH' string with unique items fromt PATHS from
+	the environment variable `PATH'"
+		(let ((ps (split-string (getenv "PATH") ":")))
+			(string-join (seq-uniq (append ps paths)) ":")))
 
-  (add-to-list 'load-path (locate-user-emacs-file "lisp"))
-  ;; load
-  (require 'init-local)
+	(add-to-list 'load-path (locate-user-emacs-file "lisp"))
+	;; load
+	(require 'init-local)
 #+end_src
 * GNU/MELPA Packages
 ** Try
