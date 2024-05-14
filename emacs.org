@@ -1215,6 +1215,10 @@ Force indents, offsets and disable tabs
 	(setq godoc-command (expand-file-name "bin/godoc" go-home))
 	(setq go-command (expand-file-name "bin/go" go-home))
 #+end_src
+** Prettify symbols for emacs lisp
+#+begin_src emacs-lisp
+	(add-hook 'emacs-lisp-mode-hook #'prettify-symbols-mode)
+#+end_src
 * Auto-insert templates
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
 #+begin_src emacs-lisp
@@ -1291,6 +1295,7 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 	 browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox")
 #+end_src
 * Get active tab in firefox as org link
+Find current profile directory from [[elisp:(browse-url-firefox "about:profiles")][about:profiles]]
 #+begin_src emacs-lisp
 	(defun ff-link-org ()
 		(interactive)
@@ -1336,6 +1341,7 @@ Exclude ~.el.gz~ buffers when saving the desktop
 		(message (if (eql browse-url-browser-function 'browse-url-default-browser)
 								 "Using default browser"
 							 "Using firefox")))
+	(defalias 'tb #'toggle-browser "Short alias for toggle browser")
 #+end_src
 * Generate email content from interview notes
 #+begin_src emacs-lisp
@@ -1374,6 +1380,18 @@ Exclude ~.el.gz~ buffers when saving the desktop
 					(user-error "Not under an \"Interviews\" heading")))))
 
 	(define-key org-mode-map (kbd "C-c o") #'interview-email)
+#+end_src
+* Copy buffer name
+#+begin_src emacs-lisp
+	(defun copy-buffer-name ()
+		(interactive)
+		(kill-new (buffer-name)))
+
+	(defalias 'cbn #'copy-buffer-name "copy buffer name")
+#+end_src
+* shorthand for [[elisp:(describe-function #'revert-buffer-quick)][revert-buffer-quick]]
+#+begin_src emacs-lisp
+	(defalias 'rb #'revert-buffer-quick "Quick revert buffer")
 #+end_src
 * Extras
 #+begin_src emacs-lisp
