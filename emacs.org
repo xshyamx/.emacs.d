@@ -1234,14 +1234,7 @@ Force indents, offsets and disable tabs
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
 #+begin_src emacs-lisp
 	(auto-insert-mode)
-	;; elisp files
-	(define-auto-insert '(emacs-lisp-mode . "Emacs lisp skeleton")
-		'("Template with header and footer : "
-			";;; " (file-name-nondirectory (buffer-file-name)) " --  -*- lexical-binding: t -*-"
-			"\n\n\n"
-			"(provide '" (file-name-sans-extension (file-name-base (buffer-file-name))) ")\n"
-			";;; " (file-name-nondirectory (buffer-file-name)) " -- Ends here\n"))
-	;; Graphviz diagrams
+#<buffer emacs.org>	;; Graphviz diagrams
 	(define-auto-insert
 		'(graphviz-dot-mode . "Graphviz diagram")
 		'("Diagram skeleton: "
@@ -1417,7 +1410,7 @@ Exclude ~.el.gz~ buffers when saving the desktop
 		'("*scratch*" "*Messages*" "*temp*")
 		"List of special buffers to skip")
 
-	(defun ibuffer-mark-special-buffers-with-ingores ()
+	(defun ibuffer-mark-special-buffers-with-ignores ()
 		(interactive)
 		(ibuffer-mark-on-buffer
 		 (lambda (buf) (and (string-match "^\\*.+\\*$" (buffer-name buf))
@@ -1425,7 +1418,7 @@ Exclude ~.el.gz~ buffers when saving the desktop
 												 (buffer-name buf)
 												 ibuffer-ignore-special-buffers-alist))))))
 
-	(defalias 'ibuffer-skip-special-buffers
+	(defalias 'ibuffer-mark-special-buffers
 		#'ibuffer-mark-special-buffers-with-ignores
 		"Do not mark special buffers specified by
 	`ibuffer-ignore-special-buffers-alist'")

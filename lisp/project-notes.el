@@ -22,8 +22,7 @@
 				(goto-char (point-min))
 				(when (re-search-forward
 							 (rx-to-string
-								`(seq bol "* " ,project-meeetings-headline eow)
-								t)
+								`(seq bol "* " ,project-meeetings-headline eow) t)
 							 nil t)
 					(org-narrow-to-subtree)
 					(goto-char (point-min))
