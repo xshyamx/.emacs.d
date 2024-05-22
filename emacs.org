@@ -195,11 +195,22 @@
 	;; 	(setq old-c-x-m (keymap-lookup global-map keys))
 	;; 	(define-key global-map (kbd keys) #'switch-to-scratch))
 #+end_src
+** Show messages buffer in other window
+#+begin_src emacs-lisp
+	(defun show-messages ()
+		(interactive)
+		(display-buffer "*Messages*" 'display-buffer-pop-up-window))
+	(keymap-global-set "C-x M" #'show-messages)
+#+end_src
 ** Remove keybinding to suspend frame
 Always getting triggered by accident
 #+begin_src emacs-lisp
 	(dolist (keys '("C-z" "C-x C-z"))
 		(global-remap-key keys nil))
+#+end_src
+** Display fill column indicator for prog modes
+#+begin_src emacs-lisp
+	(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 #+end_src
 * Autosave & Backups
 Change the backup directory to be inside .emacs.d so that it does
@@ -223,7 +234,6 @@ Already handled by desktop?
 1. Position the emacs window in the bottom right
 2. Find out the current width and height using =(frame-width)= & =(frame-height)= functions
 3. Find out the current position using =(frame-parameters (selected-frame))=
-
 #+begin_example emacs-lisp
 	(defun fc/emacs-frame-size-plist ()
 		(list
@@ -1381,17 +1391,43 @@ Exclude ~.el.gz~ buffers when saving the desktop
 
 	(define-key org-mode-map (kbd "C-c o") #'interview-email)
 #+end_src
-* Copy buffer name
+* Copy buffer name & path
 #+begin_src emacs-lisp
 	(defun copy-buffer-name ()
 		(interactive)
 		(kill-new (buffer-name)))
 
 	(defalias 'cbn #'copy-buffer-name "copy buffer name")
+
+	(defun copy-buffer-path ()
+		(interactive)
+		(when (buffer-file-name)
+			(kill-new (buffer-file-name))))
+
+	(defalias 'cbp #'copy-buffer-path "copy buffer file path")
 #+end_src
 * shorthand for [[elisp:(describe-function #'revert-buffer-quick)][revert-buffer-quick]]
 #+begin_src emacs-lisp
 	(defalias 'rb #'revert-buffer-quick "Quick revert buffer")
+#+end_src
+* Skip marking certain special buffers
+#+begin_src emacs-lisp
+	(defvar ibuffer-ignore-special-buffers-alist
+		'("*scratch*" "*Messages*" "*temp*")
+		"List of special buffers to skip")
+
+	(defun ibuffer-mark-special-buffers-with-ingores ()
+		(interactive)
+		(ibuffer-mark-on-buffer
+		 (lambda (buf) (and (string-match "^\\*.+\\*$" (buffer-name buf))
+									 (not (member
+												 (buffer-name buf)
+												 ibuffer-ignore-special-buffers-alist))))))
+
+	(defalias 'ibuffer-skip-special-buffers
+		#'ibuffer-mark-special-buffers-with-ignores
+		"Do not mark special buffers specified by
+	`ibuffer-ignore-special-buffers-alist'")
 #+end_src
 * Extras
 #+begin_src emacs-lisp
