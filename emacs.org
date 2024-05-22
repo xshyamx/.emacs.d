@@ -159,18 +159,6 @@
 
 	(add-hook 'emacs-lisp-mode-hook #'fc/eldoc-readonly)
 #+end_src
-** Open emacs lisp sources in ~outline-minor-mode~
-#+begin_src emacs-lisp
-	(defun elisp-setup-outline-minor-mode ()
-		(outline-minor-mode)
-		;; show only outline
-		(outline-hide-body)
-		;; M-[pn] to hide & show subtrees
-		(local-set-key (kbd "M-p") #'outline-hide-subtree)
-		(local-set-key (kbd "M-n") #'outline-show-subtree)
-		)
-	(add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
-#+end_src
 ** Remove trailing whitespace
 #+begin_src emacs-lisp
 	(add-hook 'before-save-hook #'delete-trailing-whitespace)
