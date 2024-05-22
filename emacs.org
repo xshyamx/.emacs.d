@@ -1442,6 +1442,9 @@ Exclude ~.el.gz~ buffers when saving the desktop
 
 	;; temp-buffer
 	(require 'temp-buffer)
+
+	;; project-notes
+	(require 'project-notes)
 #+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
