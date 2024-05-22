@@ -1222,7 +1222,7 @@ Force indents, offsets and disable tabs
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
 #+begin_src emacs-lisp
 	(auto-insert-mode)
-#<buffer emacs.org>	;; Graphviz diagrams
+	;; Graphviz diagrams
 	(define-auto-insert
 		'(graphviz-dot-mode . "Graphviz diagram")
 		'("Diagram skeleton: "
