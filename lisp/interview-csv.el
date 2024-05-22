@@ -18,11 +18,14 @@
 
 (defun element-bounds (el)
 	(list
-	 (or (org-element-property :contents-begin el) (org-element-property :begin el))
-	 (or (org-element-property :contents-end el) (org-element-property :end el))))
+	 (or (org-element-property :contents-begin el)
+			 (org-element-property :begin el))
+	 (or (org-element-property :contents-end el)
+			 (org-element-property :end el))))
 
 (defun element-contents (el)
-	(apply #'buffer-substring-no-properties (element-bounds el)))
+	(apply #'buffer-substring-no-properties
+				 (element-bounds el)))
 
 (defun narrow-to-element (el)
 	(apply #'narrow-to-region (element-bounds el)))
@@ -30,11 +33,17 @@
 (defun is-candidate ()
 	(let ((el (org-element-at-point)))
 		(when (and (eq 3 (org-element-property :level el))
-							 (string= "Interviews" (org-element-property :raw-value (org-element-property :parent el))))
+							 (string=
+								"Interviews"
+								(org-element-property
+								 :raw-value
+								 (org-element-property :parent el))))
 			el)))
 
 (defun get-interview-date (candidate)
-	(let ((parent (org-element-property :parent  (org-element-property :parent  candidate))))
+	(let ((parent (org-element-property
+								 :parent
+								 (org-element-property :parent  candidate))))
 		(replace-regexp-in-string
 		 " .*$"
 		 ""
@@ -52,9 +61,11 @@
 					 (pl (car (org-element-map tree 'plain-list #'identity)))
 					 (outcome (string-trim
 										 (element-contents
-											(car (org-element-map
-															 (car (last (org-element-map pl 'item #'identity)))
-															 'paragraph #'identity)))))
+											(car
+											 (org-element-map
+													 (car (last
+														 (org-element-map pl 'item #'identity)))
+													 'paragraph #'identity)))))
 					 (case-fold-search t))
 			(if (string-match-p "not recommended" outcome)
 					"Reject"
