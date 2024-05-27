@@ -577,12 +577,16 @@ Check if executable is in the path `(executable-find "gopls")`
 	(defvar project-notes nil
 		"Variable to hold org project notes as a list of pairs of the form (`basename' . `full-path') ")
 
+	(defvar project-notes-hook nil
+		"Hook for running things after `project-notes' has been loaded")
+
 	(defun load-project-notes ()
 		(setq project-notes
 					(seq-map
 					 #'fc/make-pair
 					 (seq-map #'fc/remove-prefix
-										(directory-files-recursively projects-home  "-notes\\.org$")))))
+										(directory-files-recursively projects-home  "-notes\\.org$"))))
+		(run-hooks 'project-notes-hook))
 
 	(run-with-idle-timer 1 nil #'load-project-notes)
 	;; sort ?
@@ -1398,6 +1402,7 @@ Exclude ~.el.gz~ buffers when saving the desktop
 		'("*scratch*" "*Messages*" "*temp*")
 		"List of special buffers to skip")
 
+	(require 'ibuf-ext)											; for `ibuffer-mark-on-buffer'
 	(defun ibuffer-mark-special-buffers-with-ignores ()
 		(interactive)
 		(ibuffer-mark-on-buffer
