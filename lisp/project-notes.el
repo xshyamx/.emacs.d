@@ -37,12 +37,27 @@
 				))
 		(goto-char target)))
 
-(defun add-project-meeting-note-capture (name file)
+(defun add-project-meeting-note-capture (key name file)
 	"Add a capture template for project meetings in the project notes"
 	(add-to-list 'org-capture-templates
-							 `("m" ,(format "%s: Meeting Notes" name) plain
+							 `(,key ,(format "%s: Meeting Notes" name) plain
 								 (file+function ,file add-project-meeting-note)
-								 "*** %?" :jump-to-captured t)))
+								 "*** %?
+**** Meeting Details                                                 :noexport:" :jump-to-captured t)))
+
+(defun setup-meeting-note-capture (key search-suffix project-shortname)
+	(add-hook
+	 'project-notes-hook
+	 `(lambda ()
+			(when-let
+					(current-project
+					 (seq-find
+						(lambda (p) (string-suffix-p ,search-suffix (car p)))
+						project-notes nil))
+				(add-project-meeting-note-capture
+				 ,key
+				 ,project-shortname
+				 (expand-file-name (cdr current-project) projects-home))))))
 
 (provide 'project-notes)
 ;;; project-notes.el -- Ends here
