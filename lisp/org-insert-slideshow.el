@@ -1,4 +1,4 @@
-;;; org-insert-slideshow.el --  -*- lexical-binding: t -*-
+;; org-insert-slideshow.el --  -*- lexical-binding: t -*-
 
 (defun slideshow--content (indent)
 	"Generate the slide format template with placeholders for caption
@@ -9,7 +9,7 @@ and filename with the initial indent from INDENT"
 %s[[./%%s]]
 %s#+html: </div>")
 				 (n (1- (length (split-string template "\n"))))
-				 (args (fill (number-sequence 0 n) prefix)))
+				 (args (cl-fill (number-sequence 0 n) prefix)))
 		(push template args)
 		(apply #'format args)))
 
@@ -70,8 +70,8 @@ invocation and close the opened dired buffer"
 									target-indent target-indent)
 			(keymap-local-set "C-c C-c" #'slideshow--insert-marked-files)
 			(keymap-local-set "C-c C-k" #'slideshow--abort))
-		(message "Use C-c C-c to insert & C-c C-k to abort")
-		(switch-to-buffer-other-window  dbuf)))
+		(switch-to-buffer-other-window  dbuf)
+		(message "Use C-c C-c to insert & C-c C-k to abort")))
 
 (keymap-set org-mode-map "C-c s" #'org-insert-slideshow)
 (provide 'org-insert-slideshow)
