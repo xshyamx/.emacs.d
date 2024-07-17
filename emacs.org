@@ -1226,6 +1226,29 @@ Force indents, offsets and disable tabs
 #+begin_src emacs-lisp
 	(add-hook 'emacs-lisp-mode-hook #'prettify-symbols-mode)
 #+end_src
+** Insert lambda for elisp
+#+begin_src emacs-lisp
+	(defun insert-lambda ()
+		(interactive)
+		(insert "(lambda (")
+		(setq p (point))
+		(insert "))")
+		(goto-char p))
+
+	(keymap-set emacs-lisp-mode-map "C-c C-l" #'insert-lambda)
+	(keymap-set lisp-interaction-mode-map "C-c C-l" #'insert-lambda)
+
+	(defun insert-let (prefix)
+		(interactive "p")
+		(message "insert-let : %d" prefix)
+		(insert "(let" (if (>= prefix 4) "*" "") " ((")
+		(setq p (point))
+		(insert ")))")
+		(goto-char p))
+
+	(keymap-set lisp-interaction-mode-map "C-c l" #'insert-let)
+	(keymap-set emacs-lisp-mode-map "C-c l" #'insert-let)
+#+end_src
 * Auto-insert templates
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
 #+begin_src emacs-lisp
@@ -1397,6 +1420,21 @@ Exclude ~.el.gz~ buffers when saving the desktop
 			(kill-new (buffer-file-name))))
 
 	(defalias 'cbp #'copy-buffer-path "copy buffer file path")
+
+	(defun scratch-with-this-buffer ()
+		"Insert `with-current-buffer' snippet with the current buffer"
+		(interactive)
+		(let ((bn (buffer-name)))
+			(with-current-buffer "*scratch*"
+				(goto-char (point-max))
+				(unless (bolp) (insert "\n"))
+				(insert "(with-current-buffer \"" bn "\"\n\t")
+				(setq p (point))
+				(insert ") ")
+				(switch-to-buffer (current-buffer))
+				(goto-char p))))
+
+	(defalias 'wcb #'scratch-with-this-buffer "Scratch with this buffer")
 #+end_src
 * shorthand for [[elisp:(describe-function #'revert-buffer-quick)][revert-buffer-quick]]
 #+begin_src emacs-lisp
