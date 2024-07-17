@@ -315,7 +315,7 @@ Causes LC_ENCODING issues with projectile-find-file
 		:hook (sgml-mode html-mode web-mode))
 #+end_src
 ** JSON
-Depends on [[JQ Mode]]
+Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
 #+begin_src emacs-lisp
 	(use-package json-mode
 		:mode "\\.\\(\\(babel\\|bower\\)rc\\|json\\)\\'"
@@ -466,14 +466,14 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
     :ensure t)
 #+end_example
 *** Latest from source to support jq
- Requires [[JQ Mode]]
- #+begin_src emacs-lisp
+Requires [[JQ Mode]]
+#+begin_src emacs-lisp
    (add-to-list
     'load-path
     (expand-file-name "~/.emacs.d/site-lisp/restclient"))
    (require 'restclient)
    (require 'restclient-jq)
- #+end_src
+#+end_src
 ** Ditaa
 #+begin_src emacs-lisp
 	;; this line activates ditaa for org mode
@@ -1325,7 +1325,9 @@ Exclude ~.el.gz~ buffers when saving the desktop
 						 (propertize (buffer-name (current-buffer)) 'face 'font-lock-function-name-face)))
 
 	(dolist (mode-map '(emacs-lisp-mode-map lisp-interaction-mode-map))
-		(define-key (symbol-value mode-map) (kbd "C-c C-c") #'eval-buffer-notify))
+		(keymap-set (symbol-value mode-map) "C-c C-c" #'eval-buffer-notify)
+		(keymap-set (symbol-value mode-map) "C-c C-p" #'pp-eval-last-sexp))
+
 #+end_src
 * Toggle between default browser & firefox
 #+begin_src emacs-lisp
