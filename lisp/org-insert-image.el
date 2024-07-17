@@ -29,7 +29,7 @@
 		 bd)))
 
 (defun org-insert-image--target-file (org-insert-image--target-dir slug &optional suffix)
-	(setq suffix (or suffix ".plantuml"))
+	(setq suffix (or suffix org-insert-plantuml-file-extension))
 	(let ((i 1)
 				(tfn (expand-file-name (concat slug suffix) org-insert-image--target-dir)))
 		(while (file-exists-p tfn)
@@ -39,18 +39,36 @@
 			(setq i (1+ i)))
 		tfn))
 
-(defun org-insert-image--execute (slug ext)
+(defun org-insert-image--execute (slug ext &optional prefix)
 	"Insert an image with the preview extension in the org file and
 open a new buffer to SLUG.EXT"
 	(let* ((itd (org-insert-image--target-dir (buffer-file-name) projects-home))
-				 (itf (org-insert-image--target-file itd slug ext))
-				 (ci (current-indentation))
+				 (itf (if (eql 4 prefix)
+									(expand-file-name (concat slug ext) itd)
+									(org-insert-image--target-file itd slug ext)))
+				 (ci (make-string (current-indentation) ? ))
 				 (png (concat
 							 "./"
 							 (file-relative-name
 								(concat (file-name-sans-extension itf) org-insert-preview-extension)
+								(file-name-directory (buffer-file-name)))))
+				 (map (concat
+							 "./"
+							 (file-relative-name
+								(concat (file-name-sans-extension itf) ".cmapx")
 								(file-name-directory (buffer-file-name))))))
-		(insert (format "#+caption: %s\n%s[[%s]]" slug (make-string ci ? ) png))
+		(insert
+		 (format "#+caption: %s\n%s[[%s]]\n"
+						 slug
+						 (if (file-exists-p map)
+								 (format
+									"%s#+attr_html: :usemap #%s_map\n%s"
+									ci slug ci)
+							 ci)
+						 png))
+		(when (file-exists-p map)
+			(insert (format
+							 "%s#+include: %s export html\n" ci map)))
 		(find-file itf)))
 
 (defun org-insert-image (prefix slug)
@@ -59,11 +77,10 @@ open a new buffer to SLUG.EXT"
 	(message "org-insert-image %d %s" prefix slug)
 	(org-insert-image--execute
 	 slug
-	 (if (eql 4 prefix)
-			 org-insert-graphviz-file-extension
-		 org-insert-plantuml-file-extension)))
+	 org-insert-plantuml-file-extension
+	 prefix))
 
-(keymap-set org-mode-map "C-c i" #'org-insert-image)
+(keymap-set org-mode-map "C-c i i" #'org-insert-image)
 
 (provide 'org-insert-image)
 ;;; org-insert-image.el -- Ends here
