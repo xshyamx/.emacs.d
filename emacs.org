@@ -1186,13 +1186,13 @@ Force indents, offsets and disable tabs
 	(defun fc/progmodes-write-hooks ()
 		"Hooks which run on file write for programming modes"
 		(prog1 nil
-			(if (member major-mode (list 'makefile-bsdmake-mode)
-									(lambda ()
-										(message (format "untabifying buffer %s" major-mode))
-										(untabify-buffer)
-										)
-									(lambda ()
-										(message (format "skipping for %s" major-mode))))
+			(if (member major-mode (list 'makefile-bsdmake-mode))
+					(lambda ()
+						(message (format "untabifying buffer %s" major-mode))
+						(untabify-buffer)
+						)
+					(lambda ()
+						(message (format "skipping for %s" major-mode)))
 					))
 		)
 
