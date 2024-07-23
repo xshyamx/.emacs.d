@@ -1343,15 +1343,26 @@ Exclude ~.el.gz~ buffers when saving the desktop
 #+end_src
 * Keybinding to evaluate elisp buffer
 #+begin_src emacs-lisp
+	(defun eval-last-sexp-yank ()
+		(interactive)
+		(let ((sexp (thing-at-point 'sexp t)) (p))
+			(kill-new
+			 (with-temp-buffer
+				 (insert sexp)
+				 (setq p (point))
+				 (eval-last-sexp t)
+				 (buffer-substring-no-properties p (point-max))))))
+
+	;; C-c C-e already does it !!
 	(defun eval-buffer-notify ()
 		(interactive)
 		(eval-buffer)
 		(message "Evaluated buffer: %s"
 						 (propertize (buffer-name (current-buffer)) 'face 'font-lock-function-name-face)))
 
-	(dolist (mode-map '(emacs-lisp-mode-map lisp-interaction-mode-map))
-		(keymap-set (symbol-value mode-map) "C-c C-c" #'eval-buffer-notify)
-		(keymap-set (symbol-value mode-map) "C-c C-p" #'pp-eval-last-sexp))
+	(dolist (mode-map (mapcar #'symbol-value '(emacs-lisp-mode-map lisp-interaction-mode-map)))
+		(keymap-set mode-map "C-x C-w" #'eval-last-sexp-yank)
+		(keymap-set mode-map "C-c C-p" #'pp-eval-last-sexp))
 
 #+end_src
 * Toggle between default browser & firefox
