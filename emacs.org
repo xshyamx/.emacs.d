@@ -1330,7 +1330,7 @@ Find current profile directory from [[elisp:(browse-url-firefox "about:profiles"
 				 "tr -d '\n'")
 			 " | ")))
 		)
-	(define-key org-mode-map (kbd "C-c f") 'ff-link-org)
+	(define-key org-mode-map (kbd "C-c i f") 'ff-link-org)
 #+end_src
 * Do not save .el.gz buffers
 Exclude ~.el.gz~ buffers when saving the desktop

@@ -73,6 +73,6 @@ invocation and close the opened dired buffer"
 		(switch-to-buffer-other-window  dbuf)
 		(message "Use C-c C-c to insert & C-c C-k to abort")))
 
-(keymap-set org-mode-map "C-c s" #'org-insert-slideshow)
+(keymap-set org-mode-map "C-c i s" #'org-insert-slideshow)
 (provide 'org-insert-slideshow)
 ;;; org-insert-slideshow.el -- Ends here
