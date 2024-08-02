@@ -1471,6 +1471,32 @@ Exclude ~.el.gz~ buffers when saving the desktop
 		"Do not mark special buffers specified by
 	`ibuffer-ignore-special-buffers-alist'")
 #+end_src
+* Quote selected lines
+#+begin_src emacs-lisp
+	(defun quote-string (s)
+		"Quote string by escaping `\"' with `\\\"'"
+		(concat
+		 "\""
+		 (string-replace "\"" "\\\"" s)
+		 "\""))
+
+	(defun quote-lines-in-region (start end)
+		"Quote all lines in the region"
+		(interactive "r")
+		(when (use-region-p)
+			(let ((s (buffer-substring-no-properties start end)))
+				(delete-region start end)
+				(insert (mapconcat
+								 #'quote-string
+								 (seq-filter
+									(lambda (s) (> (length s) 0))
+									(split-string s "\n"))
+								 "\n"))
+				(when (string-suffix-p "\n" s)
+					(insert "\n")))))
+
+	(keymap-global-set "C-c \"" #'quote-lines)
+#+end_src
 * Extras
 #+begin_src emacs-lisp
 	;; load interview csv
