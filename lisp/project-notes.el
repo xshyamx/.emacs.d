@@ -134,5 +134,6 @@ DAYS specified"
 		(forward-line)
 		(when (re-search-forward "generated at: \\(.*\\)$")
 			(> (time-to-number-of-days (time-since (match-string-no-properties 1))) days))))
+
 (provide 'project-notes)
 ;;; project-notes.el -- Ends here
