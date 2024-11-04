@@ -31,6 +31,7 @@
 ;; mainly `package-selected-packages' & `fixed-pitch' font
 (setq custom-file (locate-user-emacs-file "customizations.el"))
 (load-file custom-file)
+(add-to-list 'load-path (locate-user-emacs-file "lisp"))
 
 ;;; load literate configuration
 (org-babel-load-file (locate-user-emacs-file "emacs.org"))

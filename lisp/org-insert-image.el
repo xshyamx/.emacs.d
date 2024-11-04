@@ -80,7 +80,19 @@ open a new buffer to SLUG.EXT"
 	 org-insert-plantuml-file-extension
 	 prefix))
 
+(defun org-insert-existing-image (prefix)
+	(interactive "p")
+	(when-let ((file (read-file-name
+										"Insert image: "
+										"./img/" nil t nil
+										(lambda (f) (string-suffix-p ".png" f))))
+						 (ci (make-string (current-indentation) ? )))
+		(insert "#+caption: " (file-name-base file) "\n")
+		(insert ci
+						"[[./img/" (file-name-nondirectory file) "]]\n")))
+
 (keymap-set org-mode-map "C-c i i" #'org-insert-image)
+(keymap-set org-mode-map "C-c i e" #'org-insert-existing-image)
 
 (provide 'org-insert-image)
 ;;; org-insert-image.el -- Ends here
