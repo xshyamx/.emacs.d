@@ -141,6 +141,7 @@
 					(fc/filtered-holidays work-holidays-2020)
 					(fc/filtered-holidays work-holidays-2022)
 					(fc/filtered-holidays work-holidays-2023)
+					(fc/filtered-holidays work-holidays-2024)
 					))
 #+end_src
 ** Open emacs sources in readonly view mode

@@ -1,3 +1,9 @@
+(defconst work-holidays-2024
+	'(((4 9 2024) "Gudi Padva / Ugadi")
+		((4 11 2024) "Id-ul-Fitr / Ramzan")
+		((10 31 2024) "Deepavali"))
+	"List of holidays in 2023")
+
 (defconst work-holidays-2023
 	'(((3 22 2023) "Gudi Padva / Ugadi")
 		((6 29 2023) "Id-ul-Zuha/ Bakrid")
