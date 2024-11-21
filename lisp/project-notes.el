@@ -135,5 +135,39 @@ DAYS specified"
 		(when (re-search-forward "generated at: \\(.*\\)$")
 			(> (time-to-number-of-days (time-since (match-string-no-properties 1))) days))))
 
+(defun project-notes-home-relative-path (file)
+	"Get the relative path to the home directory from FILE"
+	(let ((rp (file-relative-name file (getenv "HOME"))))
+		(mapconcat
+		 (lambda (s) "..")
+		 (butlast (file-name-split rp))
+		 "/")))
+
+(defun project-notes-clean-relative-path (path)
+	"Remove any `..' in the PATH"
+	(string-join
+	 (seq-filter
+		(lambda (s) (not (string= s "..")))
+		(file-name-split path))
+	 "/"))
+
+(defun project-notes-fix-paths ()
+	"Fix the paths in `#+html_head' to be relative"
+	(interactive)
+	(when (buffer-file-name)
+		(let ((prefix (project-notes-home-relative-path (buffer-file-name))))
+			(save-excursion
+				(goto-char 0)
+				(while (re-search-forward
+								(rx bol "#+html_head:"
+										(group (*? any))
+										(group bow (or "href" "src") "=")
+										"\"" (group (+ (not "\""))) "\""
+										(group (* any))
+										eol)
+								nil t)
+					(replace-match
+					 (concat prefix "/" (project-notes-clean-relative-path (match-string-no-properties 3)))
+					 t t nil 3))))))
 (provide 'project-notes)
 ;;; project-notes.el -- Ends here
