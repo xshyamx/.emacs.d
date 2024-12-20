@@ -345,6 +345,17 @@ https://geeksocket.in/posts/emacs-lsp-go/
 		:custom
 		(tab-width 2))
 	;;  (add-hook 'before-save-hook #'gofmt-before-save))
+	(setq go-command (executable-find "go"))
+	(defun go-set-compile-command ()
+		(interactive)
+		(setq-local compile-command
+								(string-join
+								 (list
+									go-command
+									"build")
+								 " ")))
+	(add-hook 'go-mode-hook #'go-set-compile-command)
+	(keymap-set go-mode-map "C-c C-c" #'compile)
 #+end_src
 ** Mermaid
 Ensure that the NPM package =mermaid.cli= is installed globally
@@ -923,7 +934,7 @@ Set indentation level to 2 for most used modes
 	;; do not prompt to save abbreivations
 	(setq save-abbrevs 'silently)
 	;; enable for the following modes
-	(let ((abbrev-modes '(org plantuml emacs-lisp)))
+	(let ((abbrev-modes '(org plantuml emacs-lisp go-mode)))
 		(mapc (lambda (name)
 						(add-hook (intern (concat (symbol-name name) "-mode-hook")) #'abbrev-mode))
 					abbrev-modes))
@@ -1267,15 +1278,19 @@ Force indents, offsets and disable tabs
 						(lambda ()
 							(message "removed untabify for makefile")))
 #+end_src
+** Make file with shebang executable
+#+begin_src emacs-lisp
+	(add-hook 'after-save-hook
+						'executable-make-buffer-file-executable-if-script-p)
+#+end_src
 ** Golang
 *** Setup GOPATH and variables for go-mode
 #+begin_src emacs-lisp
-	(setq go-home "/usr/local/go")
-	(setq go-path (expand-file-name "go" (getenv "HOME")))
-	(setq godef-command (expand-file-name "bin/godef" go-path))
-	(setq gofmt-command (expand-file-name "bin/goimports" go-path))
-	(setq godoc-command (expand-file-name "bin/godoc" go-home))
-	(setq go-command (expand-file-name "bin/go" go-home))
+	(setq go-path (expand-file-name "go" (getenv "HOME"))
+				godef-command (executable-find "godef")
+				gofmt-command (executable-find "gofmt")
+				godoc-command (executable-find "godoc")
+				go-command (executable-find "go"))
 #+end_src
 ** Prettify symbols for emacs lisp
 #+begin_src emacs-lisp
