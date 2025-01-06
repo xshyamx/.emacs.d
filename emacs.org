@@ -40,23 +40,24 @@
 ** UI tweaks
 - From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-file-in-a-new-buffer-not-frame-and-be-activated-com][Do not allow new buffer frames]]
 #+begin_src emacs-lisp
-	(tool-bar-mode -1)				; hide toolbar
-	(menu-bar-mode t)					; show menubar
-	(scroll-bar-mode -1)			; hide scrollbar
+	(tool-bar-mode -1)		; hide toolbar
+	(menu-bar-mode t)		; show menubar
+	(scroll-bar-mode -1)		; hide scrollbar
 	(electric-pair-mode t)		; auto-close parenthesis everywhere
-	(desktop-save-mode t)			; save all emacs buffers
+	(desktop-save-mode t)		; save all emacs buffers
 
 	(setq
 	 inhibit-startup-screen t	; do not show startup screen
 	 size-indication-mode t		; show human readable file size in modeline
-	 column-number-mode t			; show column numbers
-	 ns-pop-up-frames nil			; do not allow new frames
-	 pop-up-frames nil				; do not allow new frames
+	 column-number-mode t		; show column numbers
+	 ns-pop-up-frames nil		; do not allow new frames
+	 pop-up-frames nil		; do not allow new frames
 	 global-hl-line-mode nil	; do not highlight current line
-	 savehist-mode 1					; persist minibuffer history across sessions
-	 save-place-mode 1				; save the place when last visited
-	 view-read-only t					; use view-mode for readonly buffers
-	 use-dialog-box nil				; disable using dialog boxes
+	 savehist-mode 1		; persist minibuffer history across sessions
+	 save-place-mode 1		; save the place when last visited
+	 view-read-only t		; use view-mode for readonly buffers
+	 use-dialog-box nil		; disable using dialog boxes
+	 desktop-save t			; always save desktop
 	 )
 #+end_src
 *** System specific
@@ -240,18 +241,22 @@ Already handled by desktop?
 #+end_example
 * Initialize Local configurations
 #+begin_src emacs-lisp
-	;; define functions used in init-local
-	(defun fc/add-to-path (paths)
-		"Returns a new `PATH' string with unique items fromt PATHS from
-	the environment variable `PATH'"
-		(let ((ps (split-string (getenv "PATH") ":")))
-			(string-join (seq-uniq (append ps paths)) ":")))
+  ;; define functions used in init-local
+  (defun fc/add-to-path (paths)
+	  "Returns a new `PATH' string with unique items fromt PATHS from
+  the environment variable `PATH'"
+	  (let ((ps (split-string (getenv "PATH") ":")))
+		  (string-join (seq-uniq (append ps paths)) ":")))
 
-	(add-to-list 'load-path (locate-user-emacs-file "lisp"))
-	;; load
-	(require 'init-local)
+  (add-to-list 'load-path (locate-user-emacs-file "lisp"))
+  ;; load
+  (require 'init-local nil t)
 #+end_src
 * GNU/MELPA Packages
+** Compat
+#+begin_src emacs-lisp
+	(use-package compat)
+#+end_src
 ** Try
 #+begin_src emacs-lisp
 	(use-package try)
@@ -283,6 +288,13 @@ Causes LC_ENCODING issues with projectile-find-file
 		:diminish
 		:config
 		(which-key-mode))
+#+end_src
+** ace-window
+#+begin_src emacs-lisp
+	(use-package ace-window
+		:bind ("C-x o" . ace-window)
+		:custom
+		(aw-dispatch-always nil))
 #+end_src
 ** Dockerfile
 #+begin_src emacs-lisp
@@ -525,17 +537,6 @@ Check if executable is in the path `(executable-find "gopls")`
     (setq company-idle-delay 0)
     (setq company-minimum-prefix-length 1))
 #+end_example
-** [[https://github.com/hakimel/reveal.js][Reveal.js]] & [[https://github.com/yjwen/org-reveal][ox-reveal]]
-#+begin_src emacs-lisp
-	(use-package ox-reveal
-		:ensure t
-		:config
-		(setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
-
-	; htmlize dependency
-	(use-package htmlize
-		:ensure t)
-#+end_src
 ** Rego
 #+begin_src emacs-lisp
 	(use-package rego-mode)
@@ -547,9 +548,14 @@ Check if executable is in the path `(executable-find "gopls")`
 		:config (rainbow-mode))
 #+end_src
 ** Hydra
+*** Setup common paths
 #+begin_src emacs-lisp
-	(use-package hydra
-		:ensure t)
+	(defvar dotfiles-home nil
+		"Full path to the dotfiles repository")
+	(defvar macbook-home nil
+		"Full path to the directory holding all daily notes")
+	(defvar projects-home nil
+		"Full path to the top-level directory under which all project directories are present")
 #+end_src
 *** Setup functions used by the hydra
 #+begin_src emacs-lisp
@@ -572,17 +578,18 @@ Check if executable is in the path `(executable-find "gopls")`
 		"Hook for running things after `project-notes' has been loaded")
 
 	(defun load-project-notes ()
-		(setq project-notes
-					(seq-map
-					 #'fc/make-pair
-					 (seq-map #'fc/remove-prefix
-										(directory-files-recursively projects-home  "-notes\\.org$"))))
+		(when (and projects-home (file-exists-p projects-home))
+			(setq project-notes
+						(seq-map
+						 #'fc/make-pair
+						 (seq-map #'fc/remove-prefix
+											(directory-files-recursively projects-home  "-notes\\.org$")))))
 		(message "Loaded %d project notes" (length project-notes))
 		(run-hooks 'project-notes-hook))
 
 	(run-with-idle-timer 1 nil #'load-project-notes)
 	;; sort ?
-	;(setq project-notes (seq-sort-by #'car #'string< project-notes))
+						;(setq project-notes (seq-sort-by #'car #'string< project-notes))
 
 	(defun fc/daily-notes-matcher (path)
 		"Match daily notes files"
@@ -592,18 +599,20 @@ Check if executable is in the path `(executable-find "gopls")`
 		(cons (replace-regexp-in-string "daily-log-" "" (file-name-base path)) path))
 	;; build list of daily notes
 	(setq daily-notes
-				(seq-map #'fc/daily-make-pair
-								 (directory-files macbook-home nil "daily-log-[[:digit:]]\\{4\\}\\.org$")
-								 ))
+	(if macbook-home
+			(seq-map #'fc/daily-make-pair
+				 (directory-files macbook-home nil "daily-log-[[:digit:]]\\{4\\}\\.org$")
+				 )
+		nil))
 
 	(defun fc/find-project-notes ()
 		"Select a project from `project-notes' and open it"
 		(interactive "i")
 		(let ((proj (assoc
-								 (completing-read "Select project: " (seq-map #'car project-notes))
-								 project-notes)))
+		 (completing-read "Select project: " (seq-map #'car project-notes))
+		 project-notes)))
 			(when proj
-				(find-file (expand-file-name (cdr proj) projects-home)))
+	(find-file (expand-file-name (cdr proj) projects-home)))
 			)
 		)
 
@@ -611,48 +620,37 @@ Check if executable is in the path `(executable-find "gopls")`
 		"Select a year from `daily-notes' and open it"
 		(interactive "i")
 		(let ((year (assoc
-								 (completing-read "Select year: " (seq-map #'car daily-notes))
-								 daily-notes)))
+		 (completing-read "Select year: " (seq-map #'car daily-notes))
+		 daily-notes)))
 			(when year
-				(find-file (expand-file-name (cdr year) macbook-home)))
+	(find-file (expand-file-name (cdr year) macbook-home)))
 			)
 		)
-#+end_src
-*** Setup common paths
-#+begin_src emacs-lisp
-	(defvar dotfiles-home nil
-		"Full path to the dotfiles repository")
-	(defvar macbook-home nil
-		"Full path to the directory holding all daily notes")
-	(defvar projects-home nil
-		"Full path to the top-level directory under which all project directories are present")
 #+end_src
 *** Commonly used org files
 #+begin_src emacs-lisp
 	(global-unset-key (kbd "s-g"))
-	(defhydra common-org-files (:exit t)
-		"goto"
-		("a" (find-file (expand-file-name "../profile/asset.org" macbook-home)) "asset.org")
-		("b" (find-file (expand-file-name "buf.org" macbook-home)) "buf.org")
-		("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
-		("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") macbook-home)) "daily-log-2024.org")
-		("D" (fc/find-daily-notes) "Daily Notes")
-		("e" (find-file (expand-file-name "emacs/.emacs.d/emacs.org" dotfiles-home)) "emacs.org")
-		("i" (find-file (expand-file-name "emacs/.emacs.d/init.el" dotfiles-home)) "init.el")
-		("t" (find-file (expand-file-name "today.org" macbook-home)) "today.org")
-		("l" (find-file (expand-file-name "laptop-config.org" macbook-home)) "laptop-config.org")
-		("P" (fc/find-project-notes) "Projects")
-		("q" nil "quit")
-		)
 	(global-remap-key "s-g" #'common-org-files/body)
 	;(global-set-key (kbd "s-g") #'common-org-files/body)
 #+end_src
-** ace-window
+*** Setup Hydra
 #+begin_src emacs-lisp
-	(use-package ace-window
-		:bind ("C-x o" . ace-window)
-		:custom
-		(aw-dispatch-always nil))
+	(use-package hydra
+		:config
+		(defhydra common-org-files (:exit t)
+							"goto"
+							("a" (find-file (expand-file-name "../profile/asset.org" macbook-home)) "asset.org")
+							("b" (find-file (expand-file-name "buf.org" macbook-home)) "buf.org")
+							("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
+							("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") macbook-home)) "daily-log-2024.org")
+							("D" (fc/find-daily-notes) "Daily Notes")
+							("e" (find-file (expand-file-name "emacs/.emacs.d/emacs.org" dotfiles-home)) "emacs.org")
+							("i" (find-file (expand-file-name "emacs/.emacs.d/init.el" dotfiles-home)) "init.el")
+							("t" (find-file (expand-file-name "today.org" macbook-home)) "today.org")
+							("l" (find-file (expand-file-name "laptop-config.org" macbook-home)) "laptop-config.org")
+							("P" (fc/find-project-notes) "Projects")
+							("q" nil "quit")
+							))
 #+end_src
 ** eglot
 #+begin_src emacs-lisp
@@ -737,26 +735,32 @@ From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emac
 ** +Drools+
 From https://github.com/pdorrell/rules-editing-mode.git
 #+begin_src emacs-lisp
-	(add-to-list
-	 'load-path
-	 (expand-file-name "site-lisp/drools-mode" user-emacs-directory))
-	(defun fc/init-drools-mode ()
-		(setq
-		 drools-tab-indent 2
-		 indent-tabs-mode nil))
-	(defun fc/setup-drools-mode ()
-		(add-to-list 'auto-mode-alist '("\\.drl\\'" . drools-mode))
-		(add-hook 'drools-mode-hook #'fc/init-drools-mode)
-		)
-	(require 'drools-mode)
-	(eval-after-load "drools-mode"
-		#'fc/setup-drools-mode)
+  (defun fc/init-drools-mode ()
+    (setq
+     drools-tab-indent 2
+     indent-tabs-mode nil))
+
+  (defun fc/setup-drools-mode ()
+    (add-to-list 'auto-mode-alist '("\\.drl\\'" . drools-mode))
+    (add-hook 'drools-mode-hook #'fc/init-drools-mode))
+
+  (package-repo-install
+   'drools-mode
+   "https://github.com/pdorrell/rules-editing-mode"
+   nil
+   "drools-mode.el")
+  (eval-after-load "drools-mode"
+      #'fc/setup-drools-mode)
 #+end_src
 ** [[https://github.com/holistics/dbml][DBML]]
 From https://github.com/ccod/dbd-mode
 #+begin_src emacs-lisp
-	(use-package dbdiagram-mode
-		:load-path "site-lisp/dbdiagram-mode")
+  (package-repo-install
+   'dbdiagram-mode
+   "https://github.com/ccod/dbd-mode"
+   nil
+   "dbdiagram-mode.el")
+
 #+end_src
 *** Old way
 #+begin_example emacs-lisp
@@ -765,11 +769,11 @@ From https://github.com/ccod/dbd-mode
 ** gedcom
 From https://github.com/emacsattic/gedcom
 #+begin_src emacs-lisp
-	(use-package gedcom
-		:mode ("\\.ged\\'" . gedcom-mode)
-		:custom
-		(gedcom-startup-message nil)
-		:load-path "site-lisp/gedcom")
+  (use-package gedcom
+    :mode ("\\.ged\\'" . gedcom-mode)
+    :custom
+    (gedcom-startup-message nil)
+    :load-path "site-lisp/gedcom")
 #+end_src
 *** Old way
 #+begin_example emacs-lisp
@@ -777,49 +781,58 @@ From https://github.com/emacsattic/gedcom
 #+end_example
 ** Plantuml
 #+begin_src emacs-lisp
-	(use-package plantuml-mode
-		:load-path "site-lisp/simple-plantuml-mode"
-		:custom
-		(plantuml-executable-path "/usr/local/bin/plantuml")
-		(plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-		(org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar"))
+  (package-repo-install 'plantuml-mode "https://github.com/xshyamx/simple-plantuml-mode")
+  (use-package plantuml-mode
+    :load-path "site-lisp/simple-plantuml-mode"
+    :custom
+    (plantuml-executable-path "/usr/local/bin/plantuml")
+    (plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
+    (org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar"))
 #+end_src
 ** Graphviz
 #+begin_src emacs-lisp
+  (package-repo-install 'graphviz-dot-mode "https://github.com/xshyamx/graphviz-dot-mode")
   (use-package graphviz-dot-mode
-		:load-path "site-lisp/graphviz-dot-mode"
+    :load-path "site-lisp/graphviz-dot-mode"
     :custom
-     (graphviz-dot-indent-width 2 "set indent size to 2")
-     (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
+    (graphviz-dot-indent-width 2 "set indent size to 2")
+    (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
 #+end_src
 ** OpenAPI
 #+begin_src emacs-lisp
-	(use-package openapi-mode
-		:load-path "site-lisp/openapi-mode"
-		:config
-		(require 'swagger-mode)
-		(require 'openapi-mode))
+  (package-repo-install 'openapi-mode "https://github.com/xshyamx/openapi-mode")
+  (use-package openapi-mode
+    :load-path "site-lisp/openapi-mode"
+    :config
+    (require 'swagger-mode)
+    (require 'openapi-mode))
 #+end_src
 ** XPath query & XML format with XMLStarlet
 #+begin_src emacs-lisp
-	(use-package xmlstarlet-mode
-		:load-path "site-lisp/xmlstarlet-mode"
-		:config
-		(require 'xmlstarlet-mode))
+  (package-repo-install 'xmlstarlet-mode "https://github.com/xshyamx/xmlstarlet-mode")
+  (use-package xmlstarlet-mode
+    :load-path "site-lisp/xmlstarlet-mode"
+    :config
+    (require 'xmlstarlet-mode))
 #+end_src
 ** Git modes
 #+begin_src emacs-lisp
+	(require 'cl)
+	(package-repo-install 'git-commit "https://github.com/rafl/git-commit-mode")
 	(use-package git-commit
-		:load-path "site-lisp/git-commit-mode")
+		:init
+		:load-path "site-lisp/git-commit")
 
-	(use-package git-modes
-		:load-path "site-lisp/git-modes")
+	(with-eval-after-load "compat"
+		(require 'compat)
+		(package-repo-install 'git-modes "https://github.com/magit/git-modes")
+		(use-package git-modes
+			:load-path "site-lisp/git-modes"))
 #+end_src
 * Color Theme
 ** +Zenburn+
 #+begin_example emacs-lisp
 	(use-package zenburn-theme
-		:ensure t
 		:init
 		;; pop the icomplete selected item :D
 		(custom-set-faces
@@ -1044,6 +1057,12 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 							(find-file file)))))))
 
 	(keymap-set org-mode-map "C-c o" #'org-find-image-src)
+#+end_src
+** [[https://github.com/hakimel/reveal.js][Reveal.js]] & [[https://github.com/yjwen/org-reveal][ox-reveal]]
+#+begin_src emacs-lisp
+  (use-package ox-reveal
+    :config
+    (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
 #+end_src
 * Utility Functions
 ** Recreate scratch buffer

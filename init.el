@@ -8,6 +8,11 @@
 (message "Increase gc-cons-threshold")
 (set-emacs-gc-threshold (* 50 (* 1024 1024))) ; 50MB
 
+(let ((messages "*Messages*"))
+	(switch-to-buffer messages)
+	(with-current-buffer messages
+		(delete-other-windows)))
+
 ;;; Initialize package
 (require 'package)
 ;; Add melpa repository
@@ -33,13 +38,15 @@
 ;; Move customizations to separate file
 ;; mainly `package-selected-packages' & `fixed-pitch' font
 (setq custom-file (locate-user-emacs-file "customizations.el"))
-(load-file custom-file)
+(when (file-exists-p custom-file)
+  (load custom-file t))
 (add-to-list 'load-path (locate-user-emacs-file "lisp"))
 
 ;;; load literate configuration
-(org-babel-load-file (locate-user-emacs-file "emacs.org"))
+(let ((literate-config (locate-user-emacs-file "emacs.org")))
+	(org-babel-load-file literate-config))
 
-(require 'post-init-local)
+(require 'post-init-local nil t)
 
 (provide 'init)
 ;;; init.el -- Ends here
