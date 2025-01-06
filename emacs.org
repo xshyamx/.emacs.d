@@ -254,13 +254,11 @@ Already handled by desktop?
 * GNU/MELPA Packages
 ** Try
 #+begin_src emacs-lisp
-	(use-package try
-		:ensure t)
+	(use-package try)
 #+end_src
 ** Diminish
 #+begin_src emacs-lisp
-	(use-package diminish
-		:ensure t)
+	(use-package diminish)
 #+end_src
 ** +Set exec-path from shell+
 Causes LC_ENCODING issues with projectile-find-file
@@ -282,20 +280,17 @@ Causes LC_ENCODING issues with projectile-find-file
 ** Which Key
 #+begin_src emacs-lisp
 	(use-package which-key
-		:ensure t
 		:diminish
 		:config
 		(which-key-mode))
 #+end_src
 ** Dockerfile
 #+begin_src emacs-lisp
-  (use-package dockerfile-mode
-    :ensure t)
+	(use-package dockerfile-mode)
 #+end_src
 ** +Autocomplete+
 #+begin_example emacs-lisp
 	(use-package auto-complete
-		:ensure t
 		:diminish
 		:init
 		(ac-config-default)									; enables global-auto-complete-mode
@@ -312,13 +307,11 @@ Causes LC_ENCODING issues with projectile-find-file
 		:mode "\\.\\(?:aspx?\\|djhtml\\|erb\\|h\\(?:bs\\|tml\\)\\|jsp\\|mustache\\|phtml\\|tpl\\.php\\)\\'"
 		:custom
 		(web-mode-enable-current-element-highlight t "Highlight current tag")
-		:hook setup-compile-html
-		:ensure t)
+		:hook setup-compile-html)
 #+end_src
 ** Emmet
 #+begin_src emacs-lisp
 	(use-package emmet-mode
-		:ensure t
 		:hook (sgml-mode html-mode web-mode))
 #+end_src
 ** JSON
@@ -326,7 +319,6 @@ Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
 #+begin_src emacs-lisp
 	(use-package json-mode
 		:mode "\\.\\(\\(babel\\|bower\\)rc\\|json\\)\\'"
-		:ensure t
 		:bind (:map json-mode-map
 			 ("C-c C-j" . 'jq-interactively))
 		:custom
@@ -337,15 +329,6 @@ Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
 https://geeksocket.in/posts/emacs-lsp-go/
 #+begin_src emacs-lisp
 	;; Go - lsp-mode
-	;; Set up before-save hooks to format buffer and add/delete imports.
-	(use-package go-mode
-		:ensure t
-		:config
-		(add-hook 'before-save-hook #'gofmt-before-save)
-		:custom
-		(tab-width 2))
-	;;  (add-hook 'before-save-hook #'gofmt-before-save))
-	(setq go-command (executable-find "go"))
 	(defun go-set-compile-command ()
 		(interactive)
 		(setq-local compile-command
@@ -354,14 +337,22 @@ https://geeksocket.in/posts/emacs-lsp-go/
 									go-command
 									"build")
 								 " ")))
-	(add-hook 'go-mode-hook #'go-set-compile-command)
-	(keymap-set go-mode-map "C-c C-c" #'compile)
+	;; Set up before-save hooks to format buffer and add/delete imports.
+	(use-package go-mode
+		:bind (:map go-mode-map
+								("C-c C-c" . #'compile))
+		:config
+		(add-hook 'before-save-hook #'gofmt-before-save)
+		(add-hook 'go-mode-hook #'go-set-compile-command)
+		:custom
+		(tab-width 2)
+		(go-command (executable-find "go")))
+	;;  (add-hook 'before-save-hook #'gofmt-before-save))
 #+end_src
 ** Mermaid
 Ensure that the NPM package =mermaid.cli= is installed globally
 #+begin_src emacs-lisp
   (use-package mermaid-mode
-    :ensure t
     :custom
     (mermaid-mmdc-location "/usr/bin/env mmdc")
     (mermaid-output-format ".png")
@@ -370,7 +361,6 @@ Ensure that the NPM package =mermaid.cli= is installed globally
 ** Yaml
 #+begin_src emacs-lisp
 	(use-package yaml-mode
-		:ensure t
 		:hook whitespace-mode
 		:config
 		(setq indent-tabs-mode nil)
@@ -383,52 +373,46 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 #+end_src
 #+begin_src emacs-lisp
 	(use-package markdown-mode
-		:ensure t
 		:custom
 		(markdown-command "~/go/bin/mdtool +h +ta +l")
 		)
 #+end_src
 *** Edit indirect for editing code blocks (Still need to figure out how it works)
 #+begin_src emacs-lisp
-	(use-package edit-indirect
-		:ensure t)
+	(use-package edit-indirect)
 #+end_src
 ** Asciidoc
 #+begin_src emacs-lisp
 	(use-package adoc-mode
-		:ensure t
 		:init
 		(add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
 #+end_src
 ** Cypher
 #+begin_src emacs-lisp
-	(use-package cypher-mode
-		:ensure t)
+	(use-package cypher-mode)
 #+end_src
 ** Terraform
 #+begin_src emacs-lisp
-  (use-package terraform-mode
-    :ensure t
-    :init
-    (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
+	(use-package terraform-mode
+		:init
+		(add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
 #+end_src
 ** Groovy
 #+begin_src emacs-lisp
 	(use-package groovy-mode
-		:mode "\\(^Jenkinsfile|\\.groovy\\)\\'"
-		:ensure t)
+		:mode "\\(^Jenkinsfile|\\.groovy\\)\\'")
 #+end_src
 ** vlf
 #+begin_src emacs-lisp
 	(use-package vlf
-		:ensure t
 		:config
 		(require 'vlf-setup))
 #+end_src
 ** CSV
 #+begin_src emacs-lisp
 	(use-package csv-mode
-		:ensure t)
+		;; add keybinding
+		:bind (:map csv-mode-map ("C-c C-o" . #'csv-open-in-excel)))
 
 	(defun csv-open-in-excel ()
 		"Open csv in MS Excel in Mac"
@@ -439,38 +423,31 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 					(cmd '("open" "-a" "\"Microsoft Excel.app\"" "--args")))
 			(add-to-list 'cmd fn t)
 			(compilation-start (string-join cmd " "))))
-	;; add keybinding
-	(define-key csv-mode-map (kbd "C-c C-o") #'csv-open-in-excel)
+
 #+end_src
 ** Kotlin
 #+begin_src emacs-lisp
-  (use-package kotlin-mode
-    :ensure t)
+	(use-package kotlin-mode)
 #+end_src
 ** CQL Mode
 #+begin_src emacs-lisp
-  (use-package cql-mode
-    :ensure t)
+	(use-package cql-mode)
 #+end_src
 ** Powershell
 #+begin_src emacs-lisp
-  (use-package powershell
-    :ensure t)
+	(use-package powershell)
 #+end_src
 ** Typescript
 #+begin_src emacs-lisp
-  (use-package typescript-mode
-    :ensure t)
+	(use-package typescript-mode)
 #+end_src
 ** Web Sequence Diagrams
 #+begin_src emacs-lisp
-  (use-package wsd-mode
-    :ensure t)
+	(use-package wsd-mode)
 #+end_src
 ** [[https://github.com/ljos/jq-mode][JQ Mode]]
 #+begin_src emacs-lisp
   (use-package jq-mode
-    :ensure t
     :init
     (add-to-list 'auto-mode-alist '("\\.jq" . jq-mode))
     :custom
@@ -480,18 +457,21 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 ** [[https://github.com/pashky/restclient.el][REST Client]]
 *** +From package repository+
 #+begin_example emacs-lisp
-  (use-package restclient
-    :ensure t)
+	(use-package restclient)
 #+end_example
 *** Latest from source to support jq
 Requires [[JQ Mode]]
-#+begin_src emacs-lisp
-   (add-to-list
-    'load-path
-    (expand-file-name "~/.emacs.d/site-lisp/restclient"))
-   (require 'restclient)
-   (require 'restclient-jq)
-#+end_src
+#+begin_example emacs-lisp
+  (unless (package-installed-p 'restclient)
+    (package-vc-install 'restclient nil "https://github.com/pashky/restclient.el"))
+  ;; (add-to-list
+  ;;  'load-path
+  ;;  (expand-file-name "~/.emacs.d/site-lisp/restclient"))
+  (require 'restclient)
+  (unless (package-installed-p 'restclient-jq)
+      (package-vc-install 'restclient nil "https://github.com/pashky/restclient.el"))
+  (require 'restclient-jq)
+#+end_example
 ** Ditaa
 #+begin_src emacs-lisp
 	;; this line activates ditaa for org mode
@@ -510,15 +490,13 @@ Requires [[JQ Mode]]
 #+end_src
 ** JSX Support
 #+begin_src emacs-lisp
-  (use-package rjsx-mode
-    :ensure t)
-  (add-to-list 'auto-mode-alist '("\.tsx\\'" . rjsx-mode))
-  (add-to-list 'auto-mode-alist '("\.jsx\\'" . rjsx-mode))
+	(use-package rjsx-mode)
+	(add-to-list 'auto-mode-alist '("\.tsx\\'" . rjsx-mode))
+	(add-to-list 'auto-mode-alist '("\.jsx\\'" . rjsx-mode))
 #+end_src
 ** Rust
 #+begin_src emacs-lisp
-  (use-package rust-mode
-    :ensure t)
+	(use-package rust-mode)
 #+end_src
 ** +LSP+
 Check if executable is in the path `(executable-find "gopls")`
@@ -529,7 +507,6 @@ Check if executable is in the path `(executable-find "gopls")`
 		(lsp-deferred))
 
 	(use-package lsp-mode
-		:ensure t
 		:config
 		(setq lsp-log-io nil) ; only enable for debugging
 		(add-hook 'go-mode-hook #'fc/lsp-deferred)
@@ -539,13 +516,11 @@ Check if executable is in the path `(executable-find "gopls")`
 		(setq lsp-rust-rls-server-command (concat (getenv "HOME") "/.cargo/bin/rust-analyzer"))
 		(add-hook 'rust-mode-hook #'fc/lsp-deferred)
 		)
-	(use-package lsp-ui
-		:ensure t)
+	(use-package lsp-ui)
 #+end_example
 ** +Company for text completion+
 #+begin_example emacs-lisp
   (use-package company
-    :ensure t
     :config
     (setq company-idle-delay 0)
     (setq company-minimum-prefix-length 1))
@@ -563,15 +538,13 @@ Check if executable is in the path `(executable-find "gopls")`
 #+end_src
 ** Rego
 #+begin_src emacs-lisp
-	(use-package rego-mode
-		:ensure t)
+	(use-package rego-mode)
 #+end_src
 ** Rainbow colors
 #+begin_src emacs-lisp
 	;; use `M-x rainbow-mode' to fontify colors
 	(use-package rainbow-mode
-		:ensure t
-		:init (rainbow-mode))
+		:config (rainbow-mode))
 #+end_src
 ** Hydra
 #+begin_src emacs-lisp
@@ -683,8 +656,7 @@ Check if executable is in the path `(executable-find "gopls")`
 #+end_src
 ** eglot
 #+begin_src emacs-lisp
-	(use-package eglot
-		:ensure t)
+	(use-package eglot)
 #+end_src
 ** Avy
 #+begin_src emacs-lisp
@@ -699,9 +671,8 @@ Check if executable is in the path `(executable-find "gopls")`
 #+begin_src emacs-lisp
 	;; add advice so that golden ratio is called
 	(use-package golden-ratio
-		:ensure t
 		:diminish
-		:init
+		:config
 		(golden-ratio-mode 1)
 		(define-advice select-window
 				(:after (window &optional no-record) golden-ratio-resize-window)
@@ -713,7 +684,6 @@ Check if executable is in the path `(executable-find "gopls")`
 Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]]
 #+begin_src emacs-lisp
 	(use-package paredit
-		:ensure t
 		:hook	(emacs-lisp-mode . paredit-mode)
 		:config
 		(define-key paredit-mode-map (kbd "C-j") nil t)
@@ -733,6 +703,23 @@ Add top-level directories under ~site-lisp~ to ~load-path~
 		(normal-top-level-add-to-load-path (seq-map parent-mapper dirs))
 		)
 #+end_example
+Function to install from git repository
+#+begin_src emacs-lisp
+  (defun package-repo-install (package-name package-url &optional branch load-filepath)
+    (let ((package-dir (expand-file-name
+			(concat "site-lisp/" (symbol-name package-name))
+			user-emacs-directory)))
+      (require 'vc)
+      (unless (file-exists-p package-dir)
+	(vc-clone
+	 package-url
+	 'Git package-dir branch))
+      (if load-filepath
+	  (load-file (expand-file-name load-filepath package-dir))
+	(progn
+	  (add-to-list 'load-path package-dir t)
+	  (require package-name)))))
+#+end_src
 ** Visual Basic Mode
 From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
 #+begin_src emacs-lisp
@@ -961,8 +948,7 @@ Set indentation level to 2 for most used modes
 #+end_src
 ** Install htmlize from elpa
 #+begin_src emacs-lisp
-	(use-package htmlize
-		:ensure t)
+	(use-package htmlize)
 #+end_src
 ** Always open files in emacs
 From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files with C-c C-o inside Emacs]]

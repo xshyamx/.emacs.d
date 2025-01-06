@@ -23,6 +23,9 @@
   (package-install 'use-package))
 
 ;; (setq use-package-verbose t)
+(require 'use-package-ensure)
+;; no need to use `:ensure'
+(setq use-package-always-ensure t)
 
 ;;; have this as early as possible
 (setq vc-follow-symlinks t)
