@@ -642,7 +642,7 @@ Check if executable is in the path `(executable-find "gopls")`
 							("a" (find-file (expand-file-name "../profile/asset.org" macbook-home)) "asset.org")
 							("b" (find-file (expand-file-name "buf.org" macbook-home)) "buf.org")
 							("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
-							("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") macbook-home)) "daily-log-2024.org")
+							("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") macbook-home)) (format-time-string "daily-log-%Y.org"))
 							("D" (fc/find-daily-notes) "Daily Notes")
 							("e" (find-file (expand-file-name "emacs/.emacs.d/emacs.org" dotfiles-home)) "emacs.org")
 							("i" (find-file (expand-file-name "emacs/.emacs.d/init.el" dotfiles-home)) "init.el")
