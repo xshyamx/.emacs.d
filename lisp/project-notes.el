@@ -9,7 +9,7 @@
 
 ;;; Code
 
-(defvar project-meeetings-headline "Meetings"
+(defvar project-meetings-headline "Meetings"
 	"Headline for the meetings top-level heading")
 
 (defun project-info (file)
@@ -46,7 +46,7 @@
 				(goto-char (point-min))
 				(when (re-search-forward
 							 (rx-to-string
-								`(seq bol "* " ,project-meeetings-headline eow) t)
+								`(seq bol "* " ,project-meetings-headline eow) t)
 							 nil t)
 					(org-narrow-to-subtree)
 					(goto-char (point-min))
