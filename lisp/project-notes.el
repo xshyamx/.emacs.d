@@ -12,6 +12,9 @@
 (defvar project-meetings-headline "Meetings"
 	"Headline for the meetings top-level heading")
 
+(defvar project-notes-file (locate-user-emacs-file "project-notes")
+	"File to cache the contents of `project-notes'")
+
 (defun project-info (file)
 	(let ((fn (expand-file-name file projects-home))
 				(m))
@@ -112,17 +115,17 @@
 				 ,template)))))
 
 (defun write-project-notes ()
-	"Write `project-notes' value to file"
+	"Write `project-notes' value to `project-notes-file'"
 	(with-temp-buffer
 		(insert ";;; -*- coding: utf-8; mode: lisp-data -*-\n")
 		(insert ";;; Automatically generated at: " (format-time-string "%FT%T%z") "\n")
 		(pp project-notes (current-buffer))
-		(write-region (point-min) (point-max) (locate-user-emacs-file "project-notes"))))
+		(write-region (point-min) (point-max) project-notes-file)))
 
 (defun read-project-notes ()
-	"Read value of `project-notes' from file"
+	"Read value of `project-notes' from `project-notes-file'"
 	(with-temp-buffer
-		(insert-file-contents (locate-user-emacs-file "project-notes"))
+		(insert-file-contents project-notes-file)
 		(read (current-buffer))))
 
 (defun project-notes-updated-since (days)
