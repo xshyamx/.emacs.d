@@ -8,4 +8,6 @@ debug:
 clean:
 	rm -fr emacs.el eln-cache site-lisp elpa \
 	customizations.el \
-	.emacs.desktop
+	.emacs.desktop \
+	auto-save-list \
+	etc var
