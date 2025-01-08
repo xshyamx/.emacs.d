@@ -1,0 +1,7 @@
+<map id="flowchart_map" name="flowchart_map">
+<area shape="rect" id="id1" href="init.el" title="init.el" alt="" coords="111,75,141,91"/>
+<area shape="rect" id="id2" href="local-init.el" title="local-init.el" alt="" coords="161,273,221,289"/>
+<area shape="rect" id="id3" href="early-init.el" title="early-init.el" alt="" coords="95,18,157,35"/>
+<area shape="rect" id="id4" href="emacs.org" title="emacs.org" alt="" coords="14,112,84,131"/>
+<area shape="rect" id="id5" href="post-init-local.el" title="post-init-local.el" alt="" coords="82,470,170,487"/>
+</map>

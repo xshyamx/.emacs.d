@@ -1,0 +1,15 @@
+@startuml
+' flowchart
+skinparam defaultTextAlignment center
+:[[early-init.el]];
+:[[init.el]];
+partition "[[emacs.org]]" {
+  :Interface tweaks;
+  :Setup variables used;
+  :Initialize variables with [[local-init.el]];
+  :Load & configure packages;
+  :Tweaks & extras from ""lisp""
+    and everything else;
+}
+:[[post-init-local.el]];
+@enduml
