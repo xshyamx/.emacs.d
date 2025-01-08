@@ -247,8 +247,6 @@ Already handled by desktop?
   the environment variable `PATH'"
 	  (let ((ps (split-string (getenv "PATH") ":")))
 		  (string-join (seq-uniq (append ps paths)) ":")))
-
-  (add-to-list 'load-path (locate-user-emacs-file "lisp"))
   ;; load
   (require 'init-local nil t)
 #+end_src
