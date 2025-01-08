@@ -548,12 +548,12 @@ Check if executable is in the path `(executable-find "gopls")`
 ** Hydra
 *** Setup common paths
 #+begin_src emacs-lisp
-	(defvar dotfiles-home nil
-		"Full path to the dotfiles repository")
-	(defvar macbook-home nil
-		"Full path to the directory holding all daily notes")
-	(defvar projects-home nil
-		"Full path to the top-level directory under which all project directories are present")
+  (defvar dotfiles-home nil
+    "Full path to the dotfiles repository")
+  (defvar daily-home nil
+    "Full path to the directory holding all daily notes")
+  (defvar projects-home nil
+    "Full path to the top-level directory under which all project directories are present")
 #+end_src
 *** Setup functions used by the hydra
 #+begin_src emacs-lisp
@@ -591,15 +591,15 @@ Check if executable is in the path `(executable-find "gopls")`
 
 	(defun fc/daily-notes-matcher (path)
 		"Match daily notes files"
-		(and (string-prefix-p (concat macbook-home "/daily-log-") path) (string-suffix-p ".org" path)))
+		(and (string-prefix-p (concat daily-home "/daily-log-") path) (string-suffix-p ".org" path)))
 	(defun fc/daily-make-pair (path)
 		"Create a pair with the year & filename"
 		(cons (replace-regexp-in-string "daily-log-" "" (file-name-base path)) path))
 	;; build list of daily notes
 	(setq daily-notes
-	(if macbook-home
+	(if daily-home
 			(seq-map #'fc/daily-make-pair
-				 (directory-files macbook-home nil "daily-log-[[:digit:]]\\{4\\}\\.org$")
+				 (directory-files daily-home nil "daily-log-[[:digit:]]\\{4\\}\\.org$")
 				 )
 		nil))
 
@@ -621,7 +621,7 @@ Check if executable is in the path `(executable-find "gopls")`
 		 (completing-read "Select year: " (seq-map #'car daily-notes))
 		 daily-notes)))
 			(when year
-	(find-file (expand-file-name (cdr year) macbook-home)))
+	(find-file (expand-file-name (cdr year) daily-home)))
 			)
 		)
 #+end_src
@@ -633,22 +633,22 @@ Check if executable is in the path `(executable-find "gopls")`
 #+end_src
 *** Setup Hydra
 #+begin_src emacs-lisp
-	(use-package hydra
-		:config
-		(defhydra common-org-files (:exit t)
-							"goto"
-							("a" (find-file (expand-file-name "../profile/asset.org" macbook-home)) "asset.org")
-							("b" (find-file (expand-file-name "buf.org" macbook-home)) "buf.org")
-							("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
-							("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") macbook-home)) (format-time-string "daily-log-%Y.org"))
-							("D" (fc/find-daily-notes) "Daily Notes")
-							("e" (find-file (expand-file-name "emacs/.emacs.d/emacs.org" dotfiles-home)) "emacs.org")
-							("i" (find-file (expand-file-name "emacs/.emacs.d/init.el" dotfiles-home)) "init.el")
-							("t" (find-file (expand-file-name "today.org" macbook-home)) "today.org")
-							("l" (find-file (expand-file-name "laptop-config.org" macbook-home)) "laptop-config.org")
-							("P" (fc/find-project-notes) "Projects")
-							("q" nil "quit")
-							))
+  (use-package hydra
+    :config
+    (defhydra common-org-files (:exit t)
+	      "goto"
+	      ("a" (find-file (expand-file-name "../profile/asset.org" daily-home)) "asset.org")
+	      ("b" (find-file (expand-file-name "buf.org" daily-home)) "buf.org")
+	      ("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
+	      ("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
+	      ("D" (fc/find-daily-notes) "Daily Notes")
+	      ("e" (find-file (expand-file-name "emacs/.emacs.d/emacs.org" dotfiles-home)) "emacs.org")
+	      ("i" (find-file (expand-file-name "emacs/.emacs.d/init.el" dotfiles-home)) "init.el")
+	      ("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
+	      ("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
+	      ("P" (fc/find-project-notes) "Projects")
+	      ("q" nil "quit")
+	      ))
 #+end_src
 ** eglot
 #+begin_src emacs-lisp
@@ -1336,63 +1336,61 @@ Force indents, offsets and disable tabs
 * Auto-insert templates
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
 #+begin_src emacs-lisp
-	;; do not ask for confirmation to include
-	(setq auto-insert-query nil)
-	(auto-insert-mode)
-	;; Graphviz diagrams
-	(define-auto-insert
-		'(graphviz-dot-mode . "Graphviz diagram")
-		'("Diagram skeleton: "
-			"digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n" > _ "  \n}"))
-	;; PlantUML diagrams
-	(define-auto-insert
-		'(plantuml-mode . "PlantUML diagram")
-		'("Diagram skeleton: "
-			"@startuml\n"
-			"' " (file-name-base (buffer-file-name)) "\n"
-			"title "
-			(string-join
-			 (mapcar #'capitalize
-							 (split-string (file-name-base (buffer-file-name)) "-"))
-			 " ")
-			"\n"
-			> _
-			"\nskinparam defaultTextAlignment right\n"
-			"footer " (format-time-string "%Y-%m-%d") "\n"
-			"@enduml"))
+  ;; do not ask for confirmation to include
+  (setq auto-insert-query nil)
+  (auto-insert-mode)
+  ;; Graphviz diagrams
+  (define-auto-insert
+    '(graphviz-dot-mode . "Graphviz diagram")
+    '("Diagram skeleton: "
+      "digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n" > _ "  \n}"))
+  ;; PlantUML diagrams
+  (define-auto-insert
+    '(plantuml-mode . "PlantUML diagram")
+    '("Diagram skeleton: "
+      "@startuml\n"
+      "' " (file-name-base (buffer-file-name)) "\n"
+      "title "
+      (string-join
+       (mapcar #'capitalize
+	       (split-string (file-name-base (buffer-file-name)) "-"))
+       " ")
+      "\n"
+      > _
+      "\nskinparam defaultTextAlignment right\n"
+      "footer " (format-time-string "%Y-%m-%d") "\n"
+      "@enduml"))
 
-	;; Org mode
-	(define-auto-insert
-		'(org-mode . "Org file")
-		'("Org file skeleton: "
-			"#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
-			"#+author: " user-login-name " <" user-mail-address ">\n"
-			"# -*- org-export-use-babel: nil; -*-\n"
-			"#+year: " (format-time-string "%Y") "\n"
-			"#+created: " (format-time-string "%Y-%m-%d") "\n"
-			"#+options:  num:nil broken-links:mark\n"
-			"#+property: header-args :eval never-export\n"
-			"#+startup: overview hideblocks\n"
-			"#+html_head: <link rel=\"stylesheet\" href=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/org.css" macbook-home) default-directory)
-			"\"></link>\n"
-			"#+html_head: <link rel=\"stylesheet\" href=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/slideshow.css" macbook-home) default-directory)
-			"\"></link>\n"
-			"#+html_head: <script src=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/org.js" macbook-home) default-directory)
-			"\"></script>\n"
-			"#+html_head: <script src=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/slideshow.js" macbook-home) default-directory)
-			"\"></script>\n"
-			"* " > _
-			))
-#+end_src
-* Global key bindings
+  ;; Org mode
+  (define-auto-insert
+    '(org-mode . "Org file")
+    '("Org file skeleton: "
+      "#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
+      "#+author: " user-login-name " <" user-mail-address ">\n"
+      "# -*- org-export-use-babel: nil; -*-\n"
+      "#+year: " (format-time-string "%Y") "\n"
+      "#+created: " (format-time-string "%Y-%m-%d") "\n"
+      "#+options:  num:nil broken-links:mark\n"
+      "#+property: header-args :eval never-export\n"
+      "#+startup: overview hideblocks\n"
+      "#+html_head: <link rel=\"stylesheet\" href=\""
+      (file-relative-name
+       (expand-file-name "org-includes/org.css" daily-home) default-directory)
+      "\"></link>\n"
+      "#+html_head: <link rel=\"stylesheet\" href=\""
+      (file-relative-name
+       (expand-file-name "org-includes/slideshow.css" daily-home) default-directory)
+      "\"></link>\n"
+      "#+html_head: <script src=\""
+      (file-relative-name
+       (expand-file-name "org-includes/org.js" daily-home) default-directory)
+      "\"></script>\n"
+      "#+html_head: <script src=\""
+      (file-relative-name
+       (expand-file-name "org-includes/slideshow.js" daily-home) default-directory)
+      "\"></script>\n"
+      "* " > _
+      ))
 #+begin_src emacs-lisp
 	;(global-set-key (kbd "C-c C-d") 'calendar)
 	;(global-unset-key (kbd "C-c C-d"))
