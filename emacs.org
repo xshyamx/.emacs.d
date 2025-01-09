@@ -207,17 +207,22 @@ Always getting triggered by accident
 Change the backup directory to be inside .emacs.d so that it does
 not litter directories with the backup files
 #+begin_src emacs-lisp
-	(setq auto-save-default nil)
-	;; configure autosaves to folder
-	(setq auto-save-file-name-transforms
-				'(("." "~/.emacs.d/autosaves/\\1" t)))
-	;; move backups to different folder
-	(setq backup-directory-alist
-				'((".*" . "~/.emacs.d/backups/")))
-	;; do not create lockfiles
-	(setq create-lockfiles nil)
-	;; use trash to delete
-	(setq delete-by-moving-to-trash t)
+	(let ((autosave-dir (no-littering-expand-var-file-name "auto-save"))
+				(backup-dir (no-littering-expand-var-file-name "backups")))
+		(setq
+		;; configure autosaves to folder
+		 auto-save-default nil
+		 auto-save-file-name-transforms (list (list "." autosave-dir t))
+
+		 ;; move backups to different folder
+		 backup-directory-alist (list (cons ".*"  backup-dir))
+
+		 ;; do not create lockfiles
+		 create-lockfiles nil
+
+		 ;; use trash to delete
+		 delete-by-moving-to-trash t))
+
 #+end_src
 * +Position the Emacs frame+
 Already handled by desktop?
@@ -943,7 +948,7 @@ Set indentation level to 2 for most used modes
 #+begin_src emacs-lisp
 	;; start the server !!
 	(load "server")
-	(setq server-socket-dir "~/.emacs.d/server")
+	(setq server-socket-dir (no-littering-expand-var-file-name "server"))
 	(server-start)
 	(unless (server-running-p) (server-start))
 	(message "started server")
@@ -1061,6 +1066,10 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
   (use-package ox-reveal
     :config
     (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
+#+end_src
+** Update diary file for using calendar
+#+begin_src emacs-lisp
+	(setq diary-file (no-littering-expand-var-file-name "diary"))
 #+end_src
 * Utility Functions
 ** Recreate scratch buffer
@@ -1544,7 +1553,7 @@ Exclude ~.el.gz~ buffers when saving the desktop
 
 	(defalias 'wcb #'scratch-with-this-buffer "Scratch with this buffer")
 #+end_src
-* shorthand for [[elisp:(describe-function #'revert-buffer-quick)][revert-buffer-quick]]
+* Shorthand for [[elisp:(describe-function #'revert-buffer-quick)][revert-buffer-quick]]
 #+begin_src emacs-lisp
 	(defalias 'rb #'revert-buffer-quick "Quick revert buffer")
 #+end_src

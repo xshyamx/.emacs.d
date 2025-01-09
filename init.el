@@ -15,9 +15,15 @@
 		      suffix)))
     (write-region (point-min) (point-max) custom-file)))
 
-;; add `lisp' to path
-(add-to-list 'load-path (locate-user-emacs-file "lisp"))
-(add-to-list 'load-path (locate-user-emacs-file "site-lisp"))
+;; add to load-path
+;; lisp       - Functional modules
+;; site-lisp  - Packages with customizations / in development
+;; site-local - Files relevant for current host/site
+(let ((paths '("lisp" "site-lisp" "site-local")))
+	(dolist (path (mapcar #'locate-user-emacs-file paths))
+		(when (file-exists-p path)
+			(add-to-list 'load-path path))))
+
 
 ;;; load literate configuration
 (let ((literate-config (locate-user-emacs-file "emacs.org")))
