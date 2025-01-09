@@ -15,35 +15,18 @@
 
 ;;; have this as early as possible
 (setq vc-follow-symlinks t)
-
-;;; Initialize package
-(require 'package)
-;; Add melpa repository
-(add-to-list
- 'package-archives
- '("melpa" . "http://melpa.org/packages/")
- t)
-(package-initialize)
-
-;; install use-package
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package)
-  )
-
-;; (setq use-package-verbose t)
-(require 'use-package-ensure)
-;; no need to use `:ensure'
-(setq use-package-always-ensure t)
+(let ((paths (mapcar #'locate-user-emacs-file '("site-lisp/compat" "site-lisp/no-littering"))))
+	(dolist (path paths)
+		(when (file-exists-p path)
+			(add-to-list 'load-path path))))
 
 ;; setup no littering
-(use-package no-littering
-  :config
-  (require 'no-littering)
-  (when (and (fboundp 'startup-redirect-eln-cache)
-             (fboundp 'native-comp-available-p)
-             (native-comp-available-p))
-    (startup-redirect-eln-cache
-     (convert-standard-filename
-      (expand-file-name  "var/eln-cache/" user-emacs-directory)))))
+(require 'no-littering)
+(when (and (fboundp 'startup-redirect-eln-cache)
+           (fboundp 'native-comp-available-p)
+           (native-comp-available-p))
+  (startup-redirect-eln-cache
+   (convert-standard-filename
+    (expand-file-name  "var/eln-cache/" user-emacs-directory))))
 
 ;;; early-init.el -- Ends here

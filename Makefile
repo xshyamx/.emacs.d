@@ -1,8 +1,8 @@
-.phony: clean start debug
-start:
+.phony: clean start debug prepare
+start: prepare
 	emacs --init-directory=.
 
-debug:
+debug: prepare
 	emacs --debug-init --init-directory=.
 
 clean:
@@ -11,3 +11,11 @@ clean:
 	.emacs.desktop \
 	auto-save-list \
 	etc var
+
+prepare: site-lisp/compat site-lisp/no-littering
+
+site-lisp/compat:
+	git clone https://github.com/emacs-compat/compat site-lisp/compat
+
+site-lisp/no-littering:
+	git clone https://github.com/emacscollective/no-littering site-lisp/no-littering

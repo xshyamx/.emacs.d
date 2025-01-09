@@ -1,5 +1,24 @@
 ;;; init.el --  -*- lexical-binding: t -*-
 
+;;; Initialize package
+(require 'package)
+;; Add melpa repository
+(add-to-list
+ 'package-archives
+ '("melpa" . "http://melpa.org/packages/")
+ t)
+(package-initialize)
+
+;; install use-package
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package)
+  )
+
+;; (setq use-package-verbose t)
+(require 'use-package-ensure)
+;; no need to use `:ensure'
+(setq use-package-always-ensure t)
+
 ;; Move customizations to separate file
 ;; mainly `package-selected-packages' & `fixed-pitch' font
 (setq custom-file (no-littering-expand-var-file-name "customizations.el"))
