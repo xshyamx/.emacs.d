@@ -1345,61 +1345,63 @@ Force indents, offsets and disable tabs
 * Auto-insert templates
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
 #+begin_src emacs-lisp
-  ;; do not ask for confirmation to include
-  (setq auto-insert-query nil)
-  (auto-insert-mode)
-  ;; Graphviz diagrams
-  (define-auto-insert
-    '(graphviz-dot-mode . "Graphviz diagram")
-    '("Diagram skeleton: "
-      "digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n" > _ "  \n}"))
-  ;; PlantUML diagrams
-  (define-auto-insert
-    '(plantuml-mode . "PlantUML diagram")
-    '("Diagram skeleton: "
-      "@startuml\n"
-      "' " (file-name-base (buffer-file-name)) "\n"
-      "title "
-      (string-join
-       (mapcar #'capitalize
-	       (split-string (file-name-base (buffer-file-name)) "-"))
-       " ")
-      "\n"
-      > _
-      "\nskinparam defaultTextAlignment right\n"
-      "footer " (format-time-string "%Y-%m-%d") "\n"
-      "@enduml"))
+	;; do not ask for confirmation to include
+	(setq auto-insert-query nil)
+	(auto-insert-mode)
+	;; Graphviz diagrams
+	(define-auto-insert
+		'(graphviz-dot-mode . "Graphviz diagram")
+		'("Diagram skeleton: "
+			"digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n" > _ "  \n}"))
+	;; PlantUML diagrams
+	(define-auto-insert
+		'(plantuml-mode . "PlantUML diagram")
+		'("Diagram skeleton: "
+			"@startuml\n"
+			"' " (file-name-base (buffer-file-name)) "\n"
+			"title "
+			(string-join
+			 (mapcar #'capitalize
+				 (split-string (file-name-base (buffer-file-name)) "-"))
+			 " ")
+			"\n"
+			> _
+			"\nskinparam defaultTextAlignment right\n"
+			"footer " (format-time-string "%Y-%m-%d") "\n"
+			"@enduml"))
 
-  ;; Org mode
-  (define-auto-insert
-    '(org-mode . "Org file")
-    '("Org file skeleton: "
-      "#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
-      "#+author: " user-login-name " <" user-mail-address ">\n"
-      "# -*- org-export-use-babel: nil; -*-\n"
-      "#+year: " (format-time-string "%Y") "\n"
-      "#+created: " (format-time-string "%Y-%m-%d") "\n"
-      "#+options:  num:nil broken-links:mark\n"
-      "#+property: header-args :eval never-export\n"
-      "#+startup: overview hideblocks\n"
-      "#+html_head: <link rel=\"stylesheet\" href=\""
-      (file-relative-name
-       (expand-file-name "org-includes/org.css" daily-home) default-directory)
-      "\"></link>\n"
-      "#+html_head: <link rel=\"stylesheet\" href=\""
-      (file-relative-name
-       (expand-file-name "org-includes/slideshow.css" daily-home) default-directory)
-      "\"></link>\n"
-      "#+html_head: <script src=\""
-      (file-relative-name
-       (expand-file-name "org-includes/org.js" daily-home) default-directory)
-      "\"></script>\n"
-      "#+html_head: <script src=\""
-      (file-relative-name
-       (expand-file-name "org-includes/slideshow.js" daily-home) default-directory)
-      "\"></script>\n"
-      "* " > _
-      ))
+	;; Org mode
+	(define-auto-insert
+		'(org-mode . "Org file")
+		'("Org file skeleton: "
+			"#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
+			"#+author: " user-login-name " <" user-mail-address ">\n"
+			"# -*- org-export-use-babel: nil; -*-\n"
+			"#+year: " (format-time-string "%Y") "\n"
+			"#+created: " (format-time-string "%Y-%m-%d") "\n"
+			"#+options:  num:nil broken-links:mark\n"
+			"#+property: header-args :eval never-export\n"
+			"#+startup: overview hideblocks\n"
+			"#+html_head: <link rel=\"stylesheet\" href=\""
+			(file-relative-name
+			 (expand-file-name "org-includes/org.css" daily-home) default-directory)
+			"\"></link>\n"
+			"#+html_head: <link rel=\"stylesheet\" href=\""
+			(file-relative-name
+			 (expand-file-name "org-includes/slideshow.css" daily-home) default-directory)
+			"\"></link>\n"
+			"#+html_head: <script src=\""
+			(file-relative-name
+			 (expand-file-name "org-includes/org.js" daily-home) default-directory)
+			"\"></script>\n"
+			"#+html_head: <script src=\""
+			(file-relative-name
+			 (expand-file-name "org-includes/slideshow.js" daily-home) default-directory)
+			"\"></script>\n"
+			"* " > _
+			))
+#+end_src
+* Global key bindings
 #+begin_src emacs-lisp
 	;(global-set-key (kbd "C-c C-d") 'calendar)
 	;(global-unset-key (kbd "C-c C-d"))
