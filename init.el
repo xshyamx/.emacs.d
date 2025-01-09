@@ -17,6 +17,7 @@
 
 ;; add `lisp' to path
 (add-to-list 'load-path (locate-user-emacs-file "lisp"))
+(add-to-list 'load-path (locate-user-emacs-file "site-lisp"))
 
 ;;; load literate configuration
 (let ((literate-config (locate-user-emacs-file "emacs.org")))

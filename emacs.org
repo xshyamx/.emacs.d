@@ -119,7 +119,7 @@
 				holiday-solar-holidays			nil)
 
 	;; load work holidays
-	(load-file (locate-user-emacs-file "work-holidays.el"))
+	(load-file (locate-user-emacs-file "lisp/work-holidays.el"))
 	;; list of holidays filter by if calendar is visible
 	(defun fc/filtered-holidays (holidays)
 		"Returns a list of HOLIDAYS that ar within the visible calendar range"
