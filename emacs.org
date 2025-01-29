@@ -1025,6 +1025,19 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 									 (file+function ,filename add-daily-note)
 									 "** %^{Title}\n%?" :jump-to-captured t)))
 
+	(defun add-interview-capture (filename)
+		(add-to-list 'org-capture-templates
+								 `("i" "Interview" plain
+									 (file+function ,filename add-daily-note)
+										,(string-join
+											`("** Interviews"
+											 "*** %^{Candidate Name}"
+											 "- %?"
+											 ,(concat "*** %\\1" (make-string 54 ? ) ":noexport:")
+											 "DEADLINE: %^{Interview Time}T")
+											"\n")
+										:jump-to-captured t)))
+
 	(defun add-note-capture (filename)
 		(add-to-list 'org-capture-templates
 								 `("b" "Buf note item" entry
@@ -1070,6 +1083,12 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 ** Update diary file for using calendar
 #+begin_src emacs-lisp
 	(setq diary-file (no-littering-expand-var-file-name "diary"))
+#+end_src
+** Do not split headings & respect content
+#+begin_src emacs-lisp
+	(setq
+	 org-M-RET-may-split-line '((default . nil))
+	 org-insert-heading-respect-content t)
 #+end_src
 * Utility Functions
 ** Recreate scratch buffer
@@ -1400,6 +1419,32 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 			"\"></script>\n"
 			"* " > _
 			))
+
+	(define-auto-insert
+		'("\\.el\\'" . "Emacs Lisp header")
+		'("Short description: "
+		 ";;; " (file-name-nondirectory (buffer-file-name))	" --- " str
+		 (make-string	(max 2
+											 (- fill-column (current-column) 27))
+									32)
+		 "-*- lexical-binding: t; -*-"
+		 '(setq lexical-binding t)
+		 "
+
+	;; Author: " (user-login-name)
+		 '(end-of-line 1)
+		 "
+	;;; Commentary:
+
+	;; " _ "
+
+	;;; Code:
+
+
+
+	(provide '" (file-name-base	(buffer-file-name)) ")
+	;;; " (file-name-nondirectory	(buffer-file-name))) " ends here
+	")
 #+end_src
 * Global key bindings
 #+begin_src emacs-lisp
