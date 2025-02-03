@@ -1033,7 +1033,7 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 											`("** Interviews"
 											 "*** %^{Candidate Name}"
 											 "- %?"
-											 ,(concat "*** %\\1" (make-string 54 ? ) ":noexport:")
+											 ,(concat "**** %\\1 / Interview notes" (make-string 24 ? ) ":noexport:")
 											 "DEADLINE: %^{Interview Time}T")
 											"\n")
 										:jump-to-captured t)))
@@ -1089,6 +1089,110 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 	(setq
 	 org-M-RET-may-split-line '((default . nil))
 	 org-insert-heading-respect-content t)
+#+end_src
+** Reset the dates on a meeting list heading
+#+begin_src emacs-lisp
+	(defun org-reset-day (bc)
+		(with-temp-buffer
+			(insert bc)
+			;; Set the date to current date
+			(goto-char 0)
+			(while (re-search-forward
+							(rx bow (repeat 4 digit)
+									"-" (repeat 2 digit)
+									"-" (repeat 2 digit)
+									(+ space)
+									(or "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"))
+							nil t)
+				(replace-match (format-time-string "%Y-%m-%d %a")))
+			;; remove CLOSED tags
+			(goto-char 0)
+			(while (re-search-forward
+							(rx bol "CLOSED: [" (+ (not "]")) "]" (+ space))
+							nil t)
+				(replace-match ""))
+			;; remove DONE
+			(goto-char 0)
+			(while (re-search-forward (rx (+ space) "DONE" eow) nil t)
+				(replace-match ""))
+			;; Remove meeting notes
+			(goto-char 0)
+			(while (re-search-forward (rx bol "DEADLINE" eow) nil t)
+				(forward-line)
+				(while (not (looking-at (rx bol (+ "*") (+ space))))
+					(delete-line)))
+			(buffer-substring-no-properties (point-min) (point-max))))
+
+	(defun org-reset-meeting-dates ()
+		(interactive)
+		(save-excursion
+			(save-restriction
+				(when-let ((level (org-outline-level))
+									 (heading (org-element-at-point)))
+					;; if at the appropriate heading level
+					(when (eq 2 level)
+						(org-narrow-to-subtree heading)))
+				(let ((day-contents (buffer-substring-no-properties (point-min) (point-max))))
+					;; replace narrowed region with processed content
+					(delete-region (point-min) (point-max))
+					(insert (org-reset-day day-contents))))))
+
+	(keymap-set org-mode-map "C-c r m" #'org-reset-meeting-dates)
+#+end_src
+** Generate email content from interview notes
+#+begin_src emacs-lisp
+	(defun interview-email ()
+		"Generate email content from interview notes in org mode"
+		(interactive)
+		(save-excursion
+			(let* ((el (org-element-at-point))
+						 (pl (cadr el))
+						 (pel (plist-get  pl :parent)))
+				(if (and
+						 (eq 'headline (org-element-type el))
+						 (string= "Interviews" (plist-get (cadr pel) :raw-value)))
+						(let* ((content
+										(buffer-substring-no-properties
+										 (plist-get pl :contents-begin)
+										 (plist-get pl :contents-end)))
+									 (fn (make-temp-file "org-export" nil ".html")))
+							(with-temp-buffer
+								(insert "#+EXPORT_FILE_NAME: " fn "\n")
+								(insert "#+html: <!doctype html>\n\n")
+								(insert "#+html: <style> body {font-family: sans-serif; font-size: 12pt;}</style>\n\n")
+								(insert "Hi,\n\nPlease find below my observations from my discussion with ")
+								(insert "*" (plist-get pl :raw-value) "*\n\n")
+								(insert content)
+								(goto-char (point-min))
+								(when (re-search-forward (rx bol (+ "*") (+ space) (*? any) ":noexport:") nil t)
+									(delete-region (match-beginning 0) (point-max))
+									(forward-line -2))
+								(when (re-search-forward (rx bol "- " (group (? "Not ") "Recommended")) nil t)
+									(replace-match "- *\\1*"))
+								(goto-char (point-max))
+								(insert "\n\nRegards,\n\nShyam")
+								(org-html-export-to-html nil nil nil t nil)
+								(browse-url fn)
+
+								))
+					(user-error "Not under an \"Interviews\" heading")))))
+
+	(define-key org-mode-map (kbd "C-c e") #'interview-email)
+#+end_src
+** Get active tab in firefox as org link
+Find current profile directory from [[elisp:(browse-url-firefox "about:profiles")][about:profiles]]
+#+begin_src emacs-lisp
+	(defun ff-link-org ()
+		(interactive)
+		(insert
+		 (shell-command-to-string
+			(string-join
+			 '("lz4jsoncat \"$FIREFOX_PROFILE/sessionstore-backups/recovery.jsonlz4\""
+				 "jq -r '.windows[0].tabs | sort_by(.lastAccessed)[-1] | .entries[.index-1] | \"[[\" + (.url) + \"][\" + (.title) + \"]]\"'"
+				 "tr -d '\n'")
+			 " | ")))
+		)
+	(define-key org-mode-map (kbd "C-c i f") 'ff-link-org)
 #+end_src
 * Utility Functions
 ** Recreate scratch buffer
@@ -1470,21 +1574,6 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 	 browse-url-browser-function 'browse-url-firefox
 	 browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox")
 #+end_src
-* Get active tab in firefox as org link
-Find current profile directory from [[elisp:(browse-url-firefox "about:profiles")][about:profiles]]
-#+begin_src emacs-lisp
-	(defun ff-link-org ()
-		(interactive)
-		(insert
-		 (shell-command-to-string
-			(string-join
-			 '("lz4jsoncat \"$FIREFOX_PROFILE/sessionstore-backups/recovery.jsonlz4\""
-				 "jq -r '.windows[0].tabs | sort_by(.lastAccessed)[-1] | .entries[.index-1] | \"[[\" + (.url) + \"][\" + (.title) + \"]]\"'"
-				 "tr -d '\n'")
-			 " | ")))
-		)
-	(define-key org-mode-map (kbd "C-c i f") 'ff-link-org)
-#+end_src
 * Do not save .el.gz buffers
 Exclude ~.el.gz~ buffers when saving the desktop
 #+begin_src emacs-lisp
@@ -1531,44 +1620,6 @@ Exclude ~.el.gz~ buffers when saving the desktop
 								 "Using default browser"
 							 "Using firefox")))
 	(defalias 'tb #'toggle-browser "Short alias for toggle browser")
-#+end_src
-* Generate email content from interview notes
-#+begin_src emacs-lisp
-	(defun interview-email ()
-		"Generate email content from interview notes in org mode"
-		(interactive)
-		(save-excursion
-			(let* ((el (org-element-at-point))
-						 (pl (cadr el))
-						 (pel (plist-get  pl :parent)))
-				(if (and
-						 (eq 'headline (org-element-type el))
-						 (string= "Interviews" (plist-get (cadr pel) :raw-value)))
-						(let* ((content
-										(buffer-substring-no-properties
-										 (plist-get pl :contents-begin)
-										 (plist-get pl :contents-end)))
-									 (fn (make-temp-file "org-export" nil ".html")))
-							(with-temp-buffer
-								(insert "#+EXPORT_FILE_NAME: " fn "\n")
-								(insert "#+html: <!doctype html>\n\n")
-								(insert "#+html: <style> body {font-family: sans-serif; font-size: 12pt;}</style>\n\n")
-								(insert "Hi,\n\nPlease find below my observations from my discussion with ")
-								(insert "*" (plist-get pl :raw-value) "*\n\n")
-								(insert content)
-								(goto-char (point-min))
-								(when (re-search-forward (rx bol "**** noexport") nil t)
-									(delete-region (match-beginning 0) (point-max))
-									(forward-line -2))
-								(when (re-search-forward (rx bol "- " (group (? "Not ") "Recommended")) nil t)
-									(replace-match "- *\\1*"))
-								(goto-char (point-max))
-								(insert "\n\nRegards,\n\nShyam")
-								(org-html-export-to-html nil nil nil t nil)
-								(browse-url fn)))
-					(user-error "Not under an \"Interviews\" heading")))))
-
-	(define-key org-mode-map (kbd "C-c e") #'interview-email)
 #+end_src
 * Copy buffer name & path
 #+begin_src emacs-lisp
