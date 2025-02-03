@@ -692,6 +692,11 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
 		(define-key paredit-mode-map (kbd "M-?") nil t) ; rebind convolute
 		(define-key paredit-mode-map (kbd "C-M-?") #'paredit-convolute-sexp))
 #+end_src
+** Aggressive Indent
+#+begin_src emacs-lisp
+	(use-package aggressive-indent
+		:hook (emacs-lisp-mode . aggresive-indent))
+#+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
 Add top-level directories under ~site-lisp~ to ~load-path~
@@ -1358,6 +1363,17 @@ From https://gist.github.com/inouetmhr/4116307
 				)
 			)
 		)
+#+end_src
+** Crux
+#+begin_src emacs-lisp
+	;; From https://github.com/bbatsov/crux
+	(defun crux-eval-and-replace ()
+		"Replace the preceding sexp with its value."
+		(interactive)
+		(let ((value (eval (elisp--preceding-sexp))))
+			(backward-kill-sexp)
+			(insert (format "%S" value))))
+	(keymap-global-set "M-g e" #'crux-eval-and-replace)
 #+end_src
 * File Mode Specific
 ** Ruby mode for Vagrantfile
