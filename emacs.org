@@ -20,8 +20,8 @@
 	(defun global-remap-key (keys defn)
 		(when-let ((old (keymap-lookup global-map keys)))
 			(add-to-list 'remapped-keys
-								 (cons keys old)))
-		(define-key global-map (kbd keys) defn))
+									 (cons keys old)))
+		(keymap-global-set keys defn))
 #+end_src
 * Interface Tweaks
 ** Use y/p instead of yes/no
@@ -687,15 +687,14 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
 	(use-package paredit
 		:hook	(emacs-lisp-mode . paredit-mode)
 		:config
-		(define-key paredit-mode-map (kbd "C-j") nil t)
-		(define-key paredit-mode-map (kbd "M-s") nil t)
-		(define-key paredit-mode-map (kbd "M-?") nil t) ; rebind convolute
-		(define-key paredit-mode-map (kbd "C-M-?") #'paredit-convolute-sexp))
+		(keymap-set paredit-mode-map "C-j" nil)
+		(keymap-set paredit-mode-map "M-s" nil) ; rebind convolute
+		(keymap-set paredit-mode-map "C-M-?" #'paredit-convolute-sexp))
 #+end_src
 ** Aggressive Indent
 #+begin_src emacs-lisp
 	(use-package aggressive-indent
-		:hook (emacs-lisp-mode . aggresive-indent))
+		:hook (emacs-lisp-mode . aggressive-indent-mode))
 #+end_src
 * Packages not in ELPA/MELPA
 ** +Fix ~load-path~+
@@ -1005,8 +1004,8 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 				(kill-ring-save (car blockp) (cdr blockp))
 			(user-error "Not in a block")))
 
-	(define-key org-mode-map (kbd "C-c C-v C-w") #'org-kill-block)
-	(define-key org-mode-map (kbd "C-c C-v M-w") #'org-copy-block)
+	(keymap-set org-mode-map "C-c C-v C-w" #'org-kill-block)
+	(keymap-set org-mode-map "C-c C-v M-w" #'org-copy-block)
 #+end_src
 ** org-capture templates
 #+begin_src emacs-lisp
@@ -1182,7 +1181,7 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 								))
 					(user-error "Not under an \"Interviews\" heading")))))
 
-	(define-key org-mode-map (kbd "C-c e") #'interview-email)
+	(keymap-set org-mode-map "C-c e" #'interview-email)
 #+end_src
 ** Get active tab in firefox as org link
 Find current profile directory from [[elisp:(browse-url-firefox "about:profiles")][about:profiles]]
@@ -1197,7 +1196,7 @@ Find current profile directory from [[elisp:(browse-url-firefox "about:profiles"
 				 "tr -d '\n'")
 			 " | ")))
 		)
-	(define-key org-mode-map (kbd "C-c i f") 'ff-link-org)
+	(keymap-set org-mode-map "C-c i f" #'ff-link-org)
 #+end_src
 * Utility Functions
 ** Recreate scratch buffer
