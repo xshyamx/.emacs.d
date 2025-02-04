@@ -1763,6 +1763,9 @@ Exclude ~.el.gz~ buffers when saving the desktop
 
 	;; reset-frame
 	(require 'reset-frame)
+
+	;; prefix-find-file
+	(require 'prefix-find-file)
 #+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
