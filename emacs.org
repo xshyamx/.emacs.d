@@ -1539,20 +1539,27 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 			"* " > _
 			))
 
+	;; remove existing entry
+	(setq auto-insert-alist
+				(seq-filter (lambda (l) (not (and (listp (car l))
+																		 (stringp (cdar l))
+																		 (string= "Emacs Lisp header" (cdar l)))))
+										auto-insert-alist))
+
 	(define-auto-insert
 		'("\\.el\\'" . "Emacs Lisp header")
 		'("Short description: "
-		 ";;; " (file-name-nondirectory (buffer-file-name))	" --- " str
-		 (make-string	(max 2
-											 (- fill-column (current-column) 27))
-									32)
-		 "-*- lexical-binding: t; -*-"
-		 '(setq lexical-binding t)
-		 "
+			";;; " (file-name-nondirectory (buffer-file-name))	" --- " str
+			(make-string	(max 2
+												 (- fill-column (current-column) 27))
+										32)
+			"-*- lexical-binding: t; -*-"
+			'(setq lexical-binding t)
+			"
 
 	;; Author: " (user-login-name)
-		 '(end-of-line 1)
-		 "
+			'(end-of-line 1)
+			"
 	;;; Commentary:
 
 	;; " _ "
