@@ -123,9 +123,8 @@
 	;; list of holidays filter by if calendar is visible
 	(defun fc/filtered-holidays (holidays)
 		"Returns a list of HOLIDAYS that ar within the visible calendar range"
-			(seq-filter (lambda (x) (calendar-date-is-visible-p (car x))) holidays)
-			)
-
+		(seq-filter (lambda (x) (calendar-date-is-visible-p (car x))) holidays)
+		)
 
 	;; set displayable holidays
 	(setq holiday-local-holidays
@@ -143,6 +142,7 @@
 					(fc/filtered-holidays work-holidays-2022)
 					(fc/filtered-holidays work-holidays-2023)
 					(fc/filtered-holidays work-holidays-2024)
+					(fc/filtered-holidays work-holidays-2025)
 					))
 #+end_src
 ** Open emacs sources in readonly view mode

@@ -1,3 +1,12 @@
+(defconst work-holidays-2025
+	'(((1 14 2025) "Pongal")
+		((3 30 2025) "Gudi Padva / Ugadi")
+		((3 31 2025) "Ramzan / Id-ul-Fitr")
+		((4 14 2025) "Dr. Ambedkar Jayanti / Tamil New year")
+		((8 27 2025) "Vinayaka Chaturthi")
+		((10 20 2025) "Deepavali"))
+	"List of holidays in 2023")
+
 (defconst work-holidays-2024
 	'(((4 9 2024) "Gudi Padva / Ugadi")
 		((4 11 2024) "Id-ul-Fitr / Ramzan")
