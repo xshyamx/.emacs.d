@@ -632,8 +632,8 @@ Check if executable is in the path `(executable-find "gopls")`
 #+end_src
 *** Commonly used org files
 #+begin_src emacs-lisp
-	(global-unset-key (kbd "s-g"))
-	(global-remap-key "s-g" #'common-org-files/body)
+	(global-unset-key (kbd "M-g o"))
+	(global-remap-key "M-g o" #'common-org-files/body)
 	;(global-set-key (kbd "s-g") #'common-org-files/body)
 #+end_src
 *** Setup Hydra
