@@ -1658,16 +1658,17 @@ Exclude ~.el.gz~ buffers when saving the desktop
 
 	(defalias 'cbp #'copy-buffer-path "copy buffer file path")
 
-	(defun scratch-with-this-buffer ()
+	(defun scratch-with-this-buffer (prefix)
 		"Insert `with-current-buffer' snippet with the current buffer"
-		(interactive)
-		(let ((bn (buffer-name)))
+		(interactive "p")
+		(let ((bn (buffer-name)) (bp (point)))
 			(with-current-buffer "*scratch*"
 				(goto-char (point-max))
 				(unless (bolp) (insert "\n"))
 				(insert "(with-current-buffer \"" bn "\"\n\t")
+				(when (> prefix 1) (insert (format "(goto-char %d)\n\t" bp)))
 				(setq p (point))
-				(insert ") ")
+				(insert "\n)")
 				(switch-to-buffer (current-buffer))
 				(goto-char p))))
 
