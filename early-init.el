@@ -16,9 +16,9 @@
 ;;; have this as early as possible
 (setq vc-follow-symlinks t)
 (let ((paths (mapcar #'locate-user-emacs-file '("site-lisp/compat" "site-lisp/no-littering"))))
-	(dolist (path paths)
-		(when (file-exists-p path)
-			(add-to-list 'load-path path))))
+  (dolist (path paths)
+    (when (file-exists-p path)
+      (add-to-list 'load-path path))))
 
 ;; setup no littering
 (require 'no-littering)

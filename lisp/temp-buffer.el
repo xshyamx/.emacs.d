@@ -2,11 +2,11 @@
 
 ;; Open temp buffer
 (defun temp-buffer ()
-	"Switch to `*temp*' buffer.
+  "Switch to `*temp*' buffer.
 If buffer does not exist, create it first."
-	(interactive)
-	(switch-to-buffer
-	 (get-buffer-create "*temp*")))
+  (interactive)
+  (switch-to-buffer
+   (get-buffer-create "*temp*")))
 
 (keymap-global-set "C-x t" #'temp-buffer)
 
