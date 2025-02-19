@@ -1501,6 +1501,7 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 		'("Diagram skeleton: "
 			"@startuml\n"
 			"' " (file-name-base (buffer-file-name)) "\n"
+			"header Draft\n"
 			"title "
 			(string-join
 			 (mapcar #'capitalize
@@ -1508,7 +1509,6 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 			 " ")
 			"\n"
 			> _
-			"\nskinparam defaultTextAlignment right\n"
 			"footer " (format-time-string "%Y-%m-%d") "\n"
 			"@enduml"))
 
