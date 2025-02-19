@@ -1438,6 +1438,14 @@ Force indents, offsets and disable tabs
 				godoc-command (executable-find "godoc")
 				go-command (executable-find "go"))
 #+end_src
+** HTML
+#+begin_src emacs-lisp
+	(defun setup-compile-html ()
+		(when (buffer-file-name)
+			(setq-local compile-command (concat "vnu " (file-name-nondirectory (buffer-file-name))))))
+	;; install vnu from brew
+	(add-hook 'html-mode-hook #'setup-compile-html)
+#+end_src
 ** Prettify symbols for emacs lisp
 #+begin_src emacs-lisp
 	(add-hook 'emacs-lisp-mode-hook #'prettify-symbols-mode)
