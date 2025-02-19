@@ -1361,13 +1361,14 @@ From https://gist.github.com/inouetmhr/4116307
 ** Crux
 #+begin_src emacs-lisp
 	;; From https://github.com/bbatsov/crux
-	(defun crux-eval-and-replace ()
+	(defun crux-eval-and-replace (prefix)
 		"Replace the preceding sexp with its value."
-		(interactive)
+		(interactive "p")
 		(let ((value (eval (elisp--preceding-sexp))))
 			(backward-kill-sexp)
-			(insert (format "%S" value))))
-	(keymap-global-set "M-g e" #'crux-eval-and-replace)
+			(insert (format (if (> prefix 1) "%s" "%S") value))))
+
+	(keymap-global-set "C-c e" #'crux-eval-and-replace)
 #+end_src
 * File Mode Specific
 ** Ruby mode for Vagrantfile
