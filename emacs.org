@@ -1112,13 +1112,15 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 				(replace-match ""))
 			;; remove DONE
 			(goto-char 0)
-			(while (re-search-forward (rx (+ space) "DONE" eow) nil t)
-				(replace-match ""))
+			(while (re-search-forward
+							(rx bol (repeat 3 "*") (+ space) (? "DONE" eow (+ space))) nil t)
+				(replace-match "*** TODO "))
 			;; Remove meeting notes
 			(goto-char 0)
 			(while (re-search-forward (rx bol "DEADLINE" eow) nil t)
 				(forward-line)
-				(while (not (looking-at (rx bol (+ "*") (+ space))))
+				(while (not (or (eobp)
+												(looking-at (rx bol (+ "*") (+ space)))))
 					(delete-line)))
 			(buffer-substring-no-properties (point-min) (point-max))))
 
