@@ -311,19 +311,14 @@ Causes LC_ENCODING issues with projectile-find-file
 		(ac-config-default)									; enables global-auto-complete-mode
 		)
 #+end_example
-** Web Mode
-#+begin_src emacs-lisp
-	(defun setup-compile-html ()
-		(when (buffer-file-name)
-			(setq-local compile-command (concat "vnu " (file-name-nondirectory (buffer-file-name))))))
-	;; install vnu from brew
-
+** +Web Mode+
+#+begin_example emacs-lisp
 	(use-package web-mode
 		:mode "\\.\\(?:aspx?\\|djhtml\\|erb\\|h\\(?:bs\\|tml\\)\\|jsp\\|mustache\\|phtml\\|tpl\\.php\\)\\'"
 		:custom
 		(web-mode-enable-current-element-highlight t "Highlight current tag")
 		:hook setup-compile-html)
-#+end_src
+#+end_example
 ** Emmet
 #+begin_src emacs-lisp
 	(use-package emmet-mode
