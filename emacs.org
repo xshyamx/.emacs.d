@@ -1665,7 +1665,8 @@ Exclude ~.el.gz~ buffers when saving the desktop
 	(defun scratch-with-this-buffer (prefix)
 		"Insert `with-current-buffer' snippet with the current buffer"
 		(interactive "p")
-		(let ((bn (buffer-name)) (bp (point)))
+		(let ((bn (buffer-name))
+					(p (point)))
 			(with-current-buffer "*scratch*"
 				(goto-char (point-max))
 				(unless (bolp) (insert "\n"))
