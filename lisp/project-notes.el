@@ -65,16 +65,17 @@
     (goto-char target)))
 
 (defun add-project-meeting-note-capture (key name file)
-  "Add a capture template for project meetings in the project notes"
-  (let ((template (concat
-		   "*** %?\n"
-		   "**** Meeting Details" (format "%56s" ":noexport:")
-		   "\n")))
-    (add-to-list 'org-capture-templates
-		 `(,key ,(format "%s: Meeting Notes" name) plain
-			(file+function ,file add-project-meeting-note)
-			,template
-			:jump-to-captured t))))
+	"Add a capture template for project meetings in the project notes"
+	(let ((template (concat
+									 "*** TODO %?\n"
+									 "DEADLINE: %^{Meeting Time}T\n"
+									 "**** Meeting Details" (format "%56s" ":noexport:")
+									 "\n")))
+		(add-to-list 'org-capture-templates
+								 `(,key ,(format "%s: Meeting Notes" name) plain
+												(file+function ,file add-project-meeting-note)
+												,template
+												:jump-to-captured t))))
 
 (defun setup-meeting-note-capture (key search-suffix project-shortname)
   (add-hook
