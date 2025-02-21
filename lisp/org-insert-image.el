@@ -83,13 +83,16 @@ open a new buffer to SLUG.EXT"
 (defun org-insert-existing-image (prefix)
 	(interactive "p")
 	(when-let ((file (read-file-name
-										"Insert image: "
-										"./img/" nil t nil
-										(lambda (f) (string-suffix-p ".png" f))))
-						 (ci (make-string (current-indentation) ? )))
+										"Insert image: " "img/"
+										nil t nil
+										(lambda (f) (or
+														(string-suffix-p "/" f)
+														(string-suffix-p ".png" f)))))
+						 (ci (make-string (current-indentation) ? ))
+						 (basedir (file-name-directory (buffer-file-name))))
 		(insert "#+caption: " (file-name-base file) "\n")
 		(insert ci
-						"[[./img/" (file-name-nondirectory file) "]]\n")))
+						"[[./" (file-relative-name file basedir) "]]\n")))
 
 (keymap-set org-mode-map "C-c i i" #'org-insert-image)
 (keymap-set org-mode-map "C-c i e" #'org-insert-existing-image)
