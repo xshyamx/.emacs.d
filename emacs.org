@@ -1631,7 +1631,7 @@ Exclude ~.el.gz~ buffers when saving the desktop
 						 (propertize (buffer-name (current-buffer)) 'face 'font-lock-function-name-face)))
 
 	(dolist (mode-map (mapcar #'symbol-value '(emacs-lisp-mode-map lisp-interaction-mode-map)))
-		(keymap-set mode-map "C-x C-w" #'eval-last-sexp-yank)
+		(keymap-set mode-map "C-c C-w" #'eval-last-sexp-yank)
 		(keymap-set mode-map "C-c C-p" #'pp-eval-last-sexp))
 
 #+end_src
