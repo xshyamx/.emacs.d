@@ -1454,37 +1454,33 @@ Force indents, offsets and disable tabs
 #+end_src
 ** Insert lambda for elisp
 #+begin_src emacs-lisp
-	(defun insert-lambda ()
-		(interactive)
-		(insert "(lambda (")
-		(setq p (point))
-		(insert "))")
-		(goto-char p))
+  (require 'skeleton)
+  (define-skeleton insert-lambda
+    "Insert a lambda function"
+    "Skeleton"
+    "(lambda (" _ "))")
 
-	(keymap-set emacs-lisp-mode-map "C-c C-l" #'insert-lambda)
-	(keymap-set lisp-interaction-mode-map "C-c C-l" #'insert-lambda)
+  (keymap-set emacs-lisp-mode-map "C-c C-l" #'insert-lambda)
+  (keymap-set lisp-interaction-mode-map "C-c C-l" #'insert-lambda)
 
-	(defun insert-let (prefix)
-		(interactive "p")
-		(message "insert-let : %d" prefix)
-		(insert "(let" (if (>= prefix 4) "*" "") " ((")
-		(setq p (point))
-		(insert ")))")
-		(goto-char p))
+  (defun insert-let (prefix)
+	  (interactive "p")
+	  (message "insert-let : %d" prefix)
+	  (insert "(let" (if (>= prefix 4) "*" "") " ((")
+	  (setq p (point))
+	  (insert ")))")
+	  (goto-char p))
 
-	(keymap-set lisp-interaction-mode-map "C-c l" #'insert-let)
-	(keymap-set emacs-lisp-mode-map "C-c l" #'insert-let)
+  (keymap-set lisp-interaction-mode-map "C-c l" #'insert-let)
+  (keymap-set emacs-lisp-mode-map "C-c l" #'insert-let)
 
-	(defun insert-format ()
-		(interactive)
-		(let ((p))
-			(insert "(insert (format \"")
-			(setq p (point))
-			(insert  "\"))")
-			(goto-char p)))
+  (define-skeleton insert-format
+    "Insert a formatted insert"
+    "Skeleton"
+    "(insert (format \"" _ "\"))")
 
-	(keymap-set lisp-interaction-mode-map "C-c i" #'insert-format)
-	(keymap-set emacs-lisp-mode-map "C-c i" #'insert-format)
+  (keymap-set lisp-interaction-mode-map "C-c i" #'insert-format)
+  (keymap-set emacs-lisp-mode-map "C-c i" #'insert-format)
 #+end_src
 * Auto-insert templates
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
