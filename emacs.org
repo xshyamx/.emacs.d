@@ -1485,94 +1485,98 @@ Force indents, offsets and disable tabs
 * Auto-insert templates
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
 #+begin_src emacs-lisp
-	;; do not ask for confirmation to include
-	(setq auto-insert-query nil)
-	(auto-insert-mode)
-	;; Graphviz diagrams
-	(define-auto-insert
-		'(graphviz-dot-mode . "Graphviz diagram")
-		'("Diagram skeleton: "
-			"digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n" > _ "  \n}"))
-	;; PlantUML diagrams
-	(define-auto-insert
-		'(plantuml-mode . "PlantUML diagram")
-		'("Diagram skeleton: "
-			"@startuml\n"
-			"' " (file-name-base (buffer-file-name)) "\n"
-			"header Draft\n"
-			"title "
-			(string-join
-			 (mapcar #'capitalize
-				 (split-string (file-name-base (buffer-file-name)) "-"))
-			 " ")
-			"\n"
-			> _
-			"footer " (format-time-string "%Y-%m-%d") "\n"
-			"@enduml"))
+  ;; do not ask for confirmation to include
+  (setq auto-insert-query nil)
+  (auto-insert-mode)
+  ;; Graphviz diagrams
+  (define-auto-insert
+    '(graphviz-dot-mode . "Graphviz diagram")
+    '("Diagram skeleton: "
+      "digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n" > _ "  \n}"))
 
-	;; Org mode
-	(define-auto-insert
-		'(org-mode . "Org file")
-		'("Org file skeleton: "
-			"#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
-			"#+author: " user-login-name " <" user-mail-address ">\n"
-			"# -*- org-export-use-babel: nil; -*-\n"
-			"#+year: " (format-time-string "%Y") "\n"
-			"#+created: " (format-time-string "%Y-%m-%d") "\n"
-			"#+options:  num:nil broken-links:mark\n"
-			"#+property: header-args :eval never-export\n"
-			"#+startup: overview hideblocks\n"
-			"#+html_head: <link rel=\"stylesheet\" href=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/org.css" daily-home) default-directory)
-			"\"></link>\n"
-			"#+html_head: <link rel=\"stylesheet\" href=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/slideshow.css" daily-home) default-directory)
-			"\"></link>\n"
-			"#+html_head: <script src=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/org.js" daily-home) default-directory)
-			"\"></script>\n"
-			"#+html_head: <script src=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/slideshow.js" daily-home) default-directory)
-			"\"></script>\n"
-			"* " > _
-			))
+  ;; PlantUML diagrams
+  (define-auto-insert
+    '(plantuml-mode . "PlantUML diagram")
+    '("Diagram skeleton: "
+      "@startuml\n"
+      "' " (file-name-base (buffer-file-name)) "\n"
+      "header Draft\n"
+      "title "
+      (string-join
+       (mapcar #'capitalize
+	       (split-string (file-name-base (buffer-file-name)) "-"))
+       " ")
+      "\n"
+      > _
+      "footer " (format-time-string "%Y-%m-%d") "\n"
+      "@enduml"))
 
-	;; remove existing entry
-	(setq auto-insert-alist
-				(seq-filter (lambda (l) (not (and (listp (car l))
-																		 (stringp (cdar l))
-																		 (string= "Emacs Lisp header" (cdar l)))))
-										auto-insert-alist))
+  ;; Org mode
+  (define-auto-insert
+    '(org-mode . "Org file")
+    '("Org file skeleton: "
+      "#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
+      "#+author: " user-login-name " <" user-mail-address ">\n"
+      "# -*- org-export-use-babel: nil; -*-\n"
+      "#+year: " (format-time-string "%Y") "\n"
+      "#+created: " (format-time-string "%Y-%m-%d") "\n"
+      "#+options:  num:nil broken-links:mark\n"
+      "#+property: header-args :eval never-export\n"
+      "#+startup: overview hideblocks\n"
+      "#+html_head: <link rel=\"stylesheet\" href=\""
+      (file-relative-name
+       (expand-file-name "org-includes/org.css" daily-home) default-directory)
+      "\"></link>\n"
+      "#+html_head: <link rel=\"stylesheet\" href=\""
+      (file-relative-name
+       (expand-file-name "org-includes/slideshow.css" daily-home) default-directory)
+      "\"></link>\n"
+      "#+html_head: <script src=\""
+      (file-relative-name
+       (expand-file-name "org-includes/org.js" daily-home) default-directory)
+      "\"></script>\n"
+      "#+html_head: <script src=\""
+      (file-relative-name
+       (expand-file-name "org-includes/slideshow.js" daily-home) default-directory)
+      "\"></script>\n"
+      "* " > _
+      ))
 
-	(define-auto-insert
-		'("\\.el\\'" . "Emacs Lisp header")
-		'("Short description: "
-			";;; " (file-name-nondirectory (buffer-file-name))	" --- " str
-			(make-string	(max 2
-												 (- fill-column (current-column) 27))
-										32)
-			"-*- lexical-binding: t; -*-"
-			'(setq lexical-binding t)
-			"
+  ;; remove existing entry
+  (setq auto-insert-alist
+	(seq-filter
+	 (lambda (l) (not
+		 (and
+		  (listp (car l))
+		  (stringp (cdar l))
+		  (string= "Emacs Lisp header" (cdar l)))))
+	 auto-insert-alist))
 
-	;; Author: " (user-login-name)
-			'(end-of-line 1)
-			"
-	;;; Commentary:
+  (define-auto-insert
+    '("\\.el\\'" . "Emacs Lisp header")
+    '("Short description: "
+      ";;; " (file-name-nondirectory (buffer-file-name))	" --- " str
+      (make-string	(max 2
+			       (- fill-column (current-column) 27))
+			  32)
+      "-*- lexical-binding: t; -*-"
+      '(setq lexical-binding t)
+      "
 
-	;; " _ "
+  ;; Author: " (user-login-name)
+      '(end-of-line 1)
+      "
+  ;;; Commentary:
 
-	;;; Code:
+  ;; " _ "
+
+  ;;; Code:
 
 
 
-	(provide '" (file-name-base	(buffer-file-name)) ")
-	;;; " (file-name-nondirectory	(buffer-file-name))) " ends here
-	")
+  (provide '" (file-name-base	(buffer-file-name)) ")
+  ;;; " (file-name-nondirectory	(buffer-file-name))) " ends here
+  ")
 #+end_src
 * Global key bindings
 #+begin_src emacs-lisp
