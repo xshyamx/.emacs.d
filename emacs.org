@@ -390,7 +390,7 @@ Ensure that the NPM package =mermaid.cli= is installed globally
 		)
 #+end_src
 ** Markdown
-Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is installed via go get
+Ensure that [[https://gitlab.com/golang-commonmark/mdtool][mdtool]] is installed via go get
 #+begin_src sh :tangle no
   go get -u gitlab.com/golang-commonmark/mdtool
 #+end_src
@@ -469,6 +469,7 @@ Ensure that =[[https://gitlab.com/golang-commonmark/mdtool][mdtool]]= is install
 	(use-package wsd-mode)
 #+end_src
 ** [[https://github.com/ljos/jq-mode][JQ Mode]]
+Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/gojq][gojq]] (Pure go implementation of jq)
 #+begin_src emacs-lisp
   (use-package jq-mode
     :init
@@ -782,7 +783,7 @@ From https://github.com/ccod/dbd-mode
 	(load-file (locate-user-emacs-file "site-lisp/dbdiagram-mode/dbdiagram-mode.el"))
 #+end_example
 ** gedcom
-From https://github.com/emacsattic/gedcom
+Forked from https://github.com/emacsattic/gedcom
 #+begin_src emacs-lisp
   (use-package gedcom
     :mode ("\\.ged\\'" . gedcom-mode)
@@ -795,6 +796,7 @@ From https://github.com/emacsattic/gedcom
 	(load-file (locate-user-emacs-file "site-lisp/gedcom/gedcom.el"))
 #+end_example
 ** Plantuml
+Install from [[https://plantuml.com/][PlantUML]]
 #+begin_src emacs-lisp
   (package-repo-install 'plantuml-mode "https://github.com/xshyamx/simple-plantuml-mode")
   (use-package plantuml-mode
@@ -805,6 +807,7 @@ From https://github.com/emacsattic/gedcom
     (org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar"))
 #+end_src
 ** Graphviz
+Install [[https://graphviz.org/][Graphviz]]
 #+begin_src emacs-lisp
   (package-repo-install 'graphviz-dot-mode "https://github.com/xshyamx/graphviz-dot-mode")
   (use-package graphviz-dot-mode
@@ -823,6 +826,7 @@ From https://github.com/emacsattic/gedcom
     (require 'openapi-mode))
 #+end_src
 ** XPath query & XML format with XMLStarlet
+Install [[https://xmlstar.sourceforge.net/download.php][XMLStarlet]]
 #+begin_src emacs-lisp
   (package-repo-install 'xmlstarlet-mode "https://github.com/xshyamx/xmlstarlet-mode")
   (use-package xmlstarlet-mode
@@ -1310,31 +1314,32 @@ From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-
 				(push-mark)
 				(insert repl))))
 #+end_src
-** base64 url encode & decode
+** +base64 url encode & decode+
+Can be replaced with [[help:base64-decode-string][base64-decode-string]] with 2nd argument
 From https://gist.github.com/inouetmhr/4116307
-#+begin_src emacs-lisp
-	(defun fc/base64-to-base64url (str)
-		(setq str (replace-regexp-in-string "=+$" "" str))
-		(setq str (replace-regexp-in-string "+" "-" str))
-		(setq str (replace-regexp-in-string "/" "_" str)))
+#+begin_example emacs-lisp
+  (defun fc/base64-to-base64url (str)
+  	(setq str (replace-regexp-in-string "=+$" "" str))
+  	(setq str (replace-regexp-in-string "+" "-" str))
+  	(setq str (replace-regexp-in-string "/" "_" str)))
 
-	(defun fc/base64url-to-base64 (str)
-		(setq str (replace-regexp-in-string "-" "+" str))
-		(setq str (replace-regexp-in-string "_" "/" str))
-		(let ((mod (% (length str) 4)))
-			(cond
-			 ((= mod 1) (concat str "==="))
-			 ((= mod 2) (concat str "=="))
-			 ((= mod 3) (concat str "="))
-			 (t str))))
+  (defun fc/base64url-to-base64 (str)
+  	(setq str (replace-regexp-in-string "-" "+" str))
+  	(setq str (replace-regexp-in-string "_" "/" str))
+  	(let ((mod (% (length str) 4)))
+  		(cond
+  		 ((= mod 1) (concat str "==="))
+  		 ((= mod 2) (concat str "=="))
+  		 ((= mod 3) (concat str "="))
+  		 (t str))))
 
-	(defun fc/base64url-encode-string (str)
-		(base64-to-base64url (base64-encode-string str t)))
+  (defun fc/base64url-encode-string (str)
+  	(base64-to-base64url (base64-encode-string str t)))
 
-	(defun fc/base64url-decode-string (str)
-		(base64-decode-string (base64url-to-base64 str)))
+  (defun fc/base64url-decode-string (str)
+  	(base64-decode-string (base64url-to-base64 str)))
 
-#+end_src
+#+end_example
 ** Toggle proxy
 #+begin_src emacs-lisp
 	(defun fc/toggle-proxy (&optional force)
