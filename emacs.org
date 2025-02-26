@@ -355,12 +355,11 @@ https://geeksocket.in/posts/emacs-lsp-go/
 	;; Go - lsp-mode
 	(defun go-set-compile-command ()
 		(interactive)
-		(setq-local compile-command
-								(string-join
-								 (list
-									go-command
-									"build")
-								 " ")))
+		(setq-local
+		 compile-command
+		 (string-join
+			`(,go-command "build")
+			" ")))
 	;; Set up before-save hooks to format buffer and add/delete imports.
 	(use-package go-mode
 		:bind (:map go-mode-map
@@ -555,9 +554,9 @@ Check if executable is in the path `(executable-find "gopls")`
 #+end_src
 ** Rainbow colors
 #+begin_src emacs-lisp
-	;; use `M-x rainbow-mode' to fontify colors
-	(use-package rainbow-mode
-		:config (rainbow-mode))
+  ;; use `M-x rainbow-mode' to fontify colors
+  (use-package rainbow-mode
+  	:config (rainbow-mode))
 #+end_src
 ** Hydra
 *** Setup common paths
@@ -1310,16 +1309,6 @@ From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-
 				(delete-region begin end)
 				(push-mark)
 				(insert repl))))
-#+end_src
-** Align Declarations
-#+begin_src emacs-lisp
-	(fset 'align-decl
-				(lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217848 97 108 105 103 110 45 114 101 103 101 120 112 return 61 return 24 24 134217848 114 101 112 108 97 99 101 45 114 101 103 101 120 112 return 92 40 91 94 32 6 43 92 41 92 40 32 43 92 41 32 61 return 92 50 92 49 32 61 return] 0 "%d")) arg)))
-#+end_src
-** dos2unix
-#+begin_src emacs-lisp
-	(fset 'dos2unix
-		 (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([201326629 17 13 return return 33] 0 "%d")) arg)))
 #+end_src
 ** base64 url encode & decode
 From https://gist.github.com/inouetmhr/4116307
