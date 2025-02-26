@@ -1506,18 +1506,19 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
   (define-auto-insert
     '(plantuml-mode . "PlantUML diagram")
     '("Diagram skeleton: "
-      "@startuml\n"
-      "' " (file-name-base (buffer-file-name)) "\n"
-      "header Draft\n"
+      "@startuml" \n
+      "' " (file-name-base (buffer-file-name)) \n
+      "header Draft" \n
       "title "
       (string-join
        (mapcar #'capitalize
-	       (split-string (file-name-base (buffer-file-name)) "-"))
+  						 (split-string (file-name-base (buffer-file-name)) "-"))
        " ")
-      "\n"
+  		\n
+  		"footer " (format-time-string "%Y-%m-%d") \n
+      \n
       > _
-      "footer " (format-time-string "%Y-%m-%d") "\n"
-      "@enduml"))
+      \n "@enduml"))
 
   ;; Org mode
   (define-auto-insert
@@ -1552,21 +1553,21 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 
   ;; remove existing entry
   (setq auto-insert-alist
-	(seq-filter
-	 (lambda (l) (not
-		 (and
-		  (listp (car l))
-		  (stringp (cdar l))
-		  (string= "Emacs Lisp header" (cdar l)))))
-	 auto-insert-alist))
+  (seq-filter
+   (lambda (l) (not
+  	 (and
+  	  (listp (car l))
+  	  (stringp (cdar l))
+  	  (string= "Emacs Lisp header" (cdar l)))))
+   auto-insert-alist))
 
   (define-auto-insert
     '("\\.el\\'" . "Emacs Lisp header")
     '("Short description: "
       ";;; " (file-name-nondirectory (buffer-file-name))	" --- " str
       (make-string	(max 2
-			       (- fill-column (current-column) 27))
-			  32)
+  		       (- fill-column (current-column) 27))
+  		  32)
       "-*- lexical-binding: t; -*-"
       '(setq lexical-binding t)
       "
