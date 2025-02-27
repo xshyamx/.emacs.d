@@ -100,17 +100,18 @@
 #+end_src
 ** Completion preview mode
 #+begin_src emacs-lisp
-  (add-hook
-   'prog-mode-hook
-   #'completion-preview-mode)
+	(when (fboundp 'completion-preview-mode)
+		(add-hook
+		 'prog-mode-hook
+		 #'completion-preview-mode)
 
-  (with-eval-after-load 'completion-preview
-    (keymap-set
-     completion-preview-active-mode-map
-     "M-n" #'completion-preview-next-candidate)
-    (keymap-set
-     completion-preview-active-mode-map
-     "M-p" #'completion-preview-prev-candidate))
+		(with-eval-after-load 'completion-preview
+			(keymap-set
+			 completion-preview-active-mode-map
+			 "M-n" #'completion-preview-next-candidate)
+			(keymap-set
+			 completion-preview-active-mode-map
+			 "M-p" #'completion-preview-prev-candidate)))
 #+end_src
 ** Set calendar options
 #+begin_src emacs-lisp
@@ -837,7 +838,7 @@ Install [[https://xmlstar.sourceforge.net/download.php][XMLStarlet]]
 ** Git modes
 #+begin_src emacs-lisp
 	(require 'cl)
-	(package-repo-install 'git-commit "https://github.com/rafl/git-commit-mode")
+	(package-repo-install 'git-commit "https://github.com/xshyamx/git-commit-mode")
 	(use-package git-commit
 		:init
 		:load-path "site-lisp/git-commit")

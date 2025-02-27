@@ -1,8 +1,8 @@
 ;;; plantuml-archimate.el --- Archimate helpers for PlantUML  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2024  S. Shyam Sundar
+;; Copyright (C) 2024  shyam
 
-;; Author: S. Shyam Sundar
+;; Author: shyam
 ;; Keywords: convenience
 
 

@@ -1,8 +1,8 @@
 ;;; reset-frame.el --- Reset frame to preferred size  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2024  S. Shyam Sundar
+;; Copyright (C) 2024  shyam
 
-;; Author: S. Shyam Sundar <shyamsundar.shanmugam@wipro.com>
+;; Author: shyam
 ;; Keywords: frames
 
 ;;; Commentary:
