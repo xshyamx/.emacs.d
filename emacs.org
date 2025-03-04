@@ -100,18 +100,21 @@
 #+end_src
 ** Completion preview mode
 #+begin_src emacs-lisp
-	(when (fboundp 'completion-preview-mode)
-		(add-hook
-		 'prog-mode-hook
-		 #'completion-preview-mode)
+  (when (fboundp 'completion-preview-mode)
+  	(add-hook
+  	 'prog-mode-hook
+  	 #'completion-preview-mode)
 
-		(with-eval-after-load 'completion-preview
-			(keymap-set
-			 completion-preview-active-mode-map
-			 "M-n" #'completion-preview-next-candidate)
-			(keymap-set
-			 completion-preview-active-mode-map
-			 "M-p" #'completion-preview-prev-candidate)))
+  	(with-eval-after-load 'completion-preview
+  		(keymap-set
+  		 completion-preview-active-mode-map
+  		 "RET" #'completion-preview-insert)
+  		(keymap-set
+  		 completion-preview-active-mode-map
+  		 "M-n" #'completion-preview-next-candidate)
+  		(keymap-set
+  		 completion-preview-active-mode-map
+  		 "M-p" #'completion-preview-prev-candidate)))
 #+end_src
 ** Set calendar options
 #+begin_src emacs-lisp
@@ -694,12 +697,13 @@ Check if executable is in the path `(executable-find "gopls")`
 ** Paredit
 Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]]
 #+begin_src emacs-lisp
-	(use-package paredit
-		:hook	(emacs-lisp-mode . paredit-mode)
-		:config
-		(keymap-set paredit-mode-map "C-j" nil)
-		(keymap-set paredit-mode-map "M-s" nil) ; rebind convolute
-		(keymap-set paredit-mode-map "C-M-?" #'paredit-convolute-sexp))
+  (use-package paredit
+  	:hook	(emacs-lisp-mode . paredit-mode)
+  	:config
+  	(keymap-set paredit-mode-map "C-j" nil)
+  	(keymap-set paredit-mode-map "RET" nil)
+  	(keymap-set paredit-mode-map "M-s" nil) ; rebind convolute
+  	(keymap-set paredit-mode-map "C-M-?" #'paredit-convolute-sexp))
 #+end_src
 ** Aggressive Indent
 #+begin_src emacs-lisp
