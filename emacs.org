@@ -1383,7 +1383,7 @@ From https://gist.github.com/inouetmhr/4116307
 			(backward-kill-sexp)
 			(insert (format (if (> prefix 1) "%s" "%S") value))))
 
-	(keymap-global-set "C-c e" #'crux-eval-and-replace)
+;	(keymap-global-set "C-c e" #'crux-eval-and-replace)
 #+end_src
 * File Mode Specific
 ** Ruby mode for Vagrantfile
@@ -1405,30 +1405,30 @@ Force indents, offsets and disable tabs
                     tab-width 2
                     indent-tabs-mode nil)))
 #+end_src
-** Untabify files using prog mode hooks
-#+begin_src emacs-lisp
-	(defun fc/progmodes-hooks ()
-		"Hooks for programming modes"
-		(add-hook 'before-save-hook #'fc/progmodes-write-hooks)
-		(message (format "Adding save hook for %s" major-mode)))
+** +Untabify files using prog mode hooks+
+#+begin_example emacs-lisp
+  (defun fc/progmodes-hooks ()
+  	"Hooks for programming modes"
+  	(add-hook 'before-save-hook #'fc/progmodes-write-hooks)
+  	(message (format "Adding save hook for %s" major-mode)))
 
-	(defun fc/progmodes-write-hooks ()
-		"Hooks which run on file write for programming modes"
-		(prog1 nil
-			(if (member major-mode (list 'makefile-bsdmake-mode))
-					(lambda ()
-						(message (format "untabifying buffer %s" major-mode))
-						(untabify-buffer)
-						)
-					(lambda ()
-						(message (format "skipping for %s" major-mode)))
-					))
-		)
+  (defun fc/progmodes-write-hooks ()
+  	"Hooks which run on file write for programming modes"
+  	(prog1 nil
+  		(if (member major-mode (list 'makefile-bsdmake-mode))
+  				(lambda ()
+  					(message (format "untabifying buffer %s" major-mode))
+  					(untabify-buffer)
+  					)
+  				(lambda ()
+  					(message (format "skipping for %s" major-mode)))
+  				))
+  	)
 
-	(add-hook 'sh-set-shell-hook #'fc/progmodes-hooks)
-	(add-hook 'python-mode-hook #'fc/progmodes-hooks)
-	(add-hook 'js-mode-hook #'fc/progmodes-hooks)
-#+end_src
+  (add-hook 'sh-set-shell-hook #'fc/progmodes-hooks)
+  (add-hook 'python-mode-hook #'fc/progmodes-hooks)
+  (add-hook 'js-mode-hook #'fc/progmodes-hooks)
+#+end_example
 ** Show whitespace in makefiles
 #+begin_src emacs-lisp
 	(add-hook 'makefile-bsdmake-mode-hook #'whitespace-mode)
