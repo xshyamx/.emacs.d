@@ -651,22 +651,22 @@ Check if executable is in the path `(executable-find "gopls")`
 #+end_src
 *** Setup Hydra
 #+begin_src emacs-lisp
-  (use-package hydra
-    :config
-    (defhydra common-org-files (:exit t)
-	      "goto"
-	      ("a" (find-file (expand-file-name "../profile/asset.org" daily-home)) "asset.org")
-	      ("b" (find-file (expand-file-name "buf.org" daily-home)) "buf.org")
-	      ("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
-	      ("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
-	      ("D" (fc/find-daily-notes) "Daily Notes")
-	      ("e" (find-file (expand-file-name "emacs/.emacs.d/emacs.org" dotfiles-home)) "emacs.org")
-	      ("i" (find-file (expand-file-name "emacs/.emacs.d/init.el" dotfiles-home)) "init.el")
-	      ("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
-	      ("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
-	      ("P" (fc/find-project-notes) "Projects")
-	      ("q" nil "quit")
-	      ))
+	(use-package hydra
+		:config
+		(defhydra common-org-files (:exit t)
+			"goto"
+			("a" (find-file (expand-file-name "../profile/asset.org" daily-home)) "asset.org")
+			("b" (find-file (expand-file-name "buf.org" daily-home)) "buf.org")
+			("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
+			("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
+			("D" (fc/find-daily-notes) "Daily Notes")
+			("e" (find-file (locate-user-emacs-file "emacs.org")) "emacs.org")
+			("i" (find-file (locate-user-emacs-file "init.el")) "init.el")
+			("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
+			("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
+			("P" (fc/find-project-notes) "Projects")
+			("q" nil "quit")
+			))
 #+end_src
 ** eglot
 #+begin_src emacs-lisp
