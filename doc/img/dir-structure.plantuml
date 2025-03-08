@@ -1,0 +1,18 @@
+@startsalt
+' dir-structure
+header Draft
+title Directory Structure
+footer 2025-03-08
+{
+{T
++ "".emacs.d/""   | Emacs configuration root
+++ ""site-local/"" | Host specific files
++++ ""*-local.el""
+++ ""site-lisp/"" | Packages not in package repository or personal forks
+++ ""elpa/"" | Packages from elpa / melpa
+++ ""lisp/"" | My own packages
+++ ""var/"" | no-littering cache directory
+}
+}
+
+@endsalt

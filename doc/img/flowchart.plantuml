@@ -1,5 +1,7 @@
 @startuml
 ' flowchart
+title Emacs Initialization: Flowchart
+footer 2025-01-08
 skinparam defaultTextAlignment center
 :[[early-init.el]];
 :[[init.el]];
