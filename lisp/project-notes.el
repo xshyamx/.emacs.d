@@ -12,7 +12,7 @@
 (defvar project-meetings-headline "Meetings"
   "Headline for the meetings top-level heading")
 
-(defvar project-notes-file (locate-user-emacs-file "project-notes")
+(defvar project-notes-file nil
   "File to cache the contents of `project-notes'")
 
 (defun project-info (file)

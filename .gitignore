@@ -1,0 +1,8 @@
+.*
+!.gitignore
+/emacs.el
+/*-local.el
+/elpa
+/var
+/site-lisp
+/site-local

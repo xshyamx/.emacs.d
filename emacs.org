@@ -1769,26 +1769,29 @@ Exclude ~.el.gz~ buffers when saving the desktop
 #+end_src
 * Extras
 #+begin_src emacs-lisp
-	;; load interview csv
-	(require 'interview-csv)
+  ;; load interview csv
+  (require 'interview-csv)
 
-	;; load org-insert-image
-	(require 'org-insert-image)
+  ;; load org-insert-image
+  (require 'org-insert-image)
 
-	;; load org-insert-slideshow
-	(require 'org-insert-slideshow)
+  ;; load org-insert-slideshow
+  (require 'org-insert-slideshow)
 
-	;; temp-buffer
-	(require 'temp-buffer)
+  ;; temp-buffer
+  (require 'temp-buffer)
 
-	;; project-notes
-	(require 'project-notes)
+  ;; project-notes
+  (require 'project-notes)
+  (setq project-notes-file
+  			(no-littering-expand-var-file-name "project-notes.eld"))
 
-	;; reset-frame
-	(require 'reset-frame)
 
-	;; prefix-find-file
-	(require 'prefix-find-file)
+  ;; reset-frame
+  (require 'reset-frame)
+
+  ;; prefix-find-file
+  (require 'prefix-find-file)
 #+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
