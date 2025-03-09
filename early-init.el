@@ -15,6 +15,15 @@
 
 ;;; have this as early as possible
 (setq vc-follow-symlinks t)
+(let ((repos '("https://github.com/emacs-compat/compat"
+							 "https://github.com/emacscollective/no-littering")))
+	(dolist (repo repos)
+		(setq dir (locate-user-emacs-file
+							 (concat "site-lisp/" (file-name-nondirectory repo))))
+		(unless (file-exists-p dir)
+			(message "Cloning %s" (file-name-nondirectory repo))
+			(shell-command-to-string (format  "git clone %s %s" repo dir)))))
+
 (let ((paths (mapcar #'locate-user-emacs-file '("site-lisp/compat" "site-lisp/no-littering"))))
   (dolist (path paths)
     (when (file-exists-p path)
