@@ -90,12 +90,43 @@ open a new buffer to SLUG.EXT"
 														(string-suffix-p ".png" f)))))
 						 (ci (make-string (current-indentation) ? ))
 						 (basedir (file-name-directory (buffer-file-name))))
-		(insert "#+caption: " (file-name-base file) "\n")
+		(insert "#+caption: "
+						(or (extract-plantuml-title file)
+								(file-name-base file))
+						"\n")
 		(insert ci
 						"[[./" (file-relative-name file basedir) "]]\n")))
 
+(defun extract-plantuml-title (file)
+	(let ((plantuml-file (concat (file-name-sans-extension file)
+															 ".plantuml")))
+		(when (file-exists-p plantuml-file)
+			(with-temp-buffer
+				(insert-file-contents plantuml-file)
+				(goto-char 0)
+				(when (re-search-forward
+							 (rx bol "title" (+ space) (group (* any)) eol)
+							 nil t)
+					(match-string-no-properties 1))))))
+
+(defun org-update-plantuml-title ()
+	(interactive)
+	(let ((el (org-element-context (org-element-at-point))))
+		(when (and (eq 'link (org-element-type el))
+							 (string= "file" (org-element-property :type el)))
+			(when-let (title (extract-plantuml-title
+												(expand-file-name
+												 (org-element-property :path el))))
+				(when (re-search-backward
+							 (rx bol "#+caption:" (+ space) (group (* any)) eol)
+							 (save-excursion (forward-line -2) (point))
+							 nil)
+					(replace-match (concat "#+caption: " title) t t))))))
+
+
 (keymap-set org-mode-map "C-c i i" #'org-insert-image)
 (keymap-set org-mode-map "C-c i e" #'org-insert-existing-image)
+(keymap-set org-mode-map "C-c C-u" #'org-update-plantuml-title)
 
 (provide 'org-insert-image)
 ;;; org-insert-image.el -- Ends here
