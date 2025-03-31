@@ -74,21 +74,16 @@
 	(defun fc/flash-mode-line ()
 		(invert-face 'mode-line)
 		(run-with-timer 0.1 nil #'invert-face 'mode-line))
+
+	;; to disable completely
+	;; (setq ring-bell-function 'ignore)
 #+end_src
-*** +Disable Completely+
-#+begin_example emacs-lisp
-	(setq ring-bell-function 'ignore)
-#+end_example
 ** Replace BufferMenu with ibuffer
 #+begin_src emacs-lisp
 	;; user `ibuffer' for buffer listing
 	(global-remap-key "C-x C-b" #'ibuffer)
 ;	(global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
-** +Replace dabbrev expand with hippie-expand+
-#+begin_example emacs-lisp
-	(global-remap-key "M-/" #'hippie-expand)
-#+end_example
 ** Use fido vertical mode
 #+begin_src emacs-lisp
 	;; list of available styles `completion-styles-alist'
@@ -286,23 +281,6 @@ Already handled by desktop?
 #+begin_src emacs-lisp
 	(use-package diminish)
 #+end_src
-** +Set exec-path from shell+
-Causes LC_ENCODING issues with projectile-find-file
-#+begin_example
-	(use-package exec-path-from-shell
-		:ensure t
-		:config
-		(exec-path-from-shell-initialize))
-#+end_example
-*** Set path manually
-#+begin_src emacs-lisp
-	(setenv "PATH"
-					(concat
-					 (getenv "PATH")
-					 ":" (getenv "HOME") "/go/bin"
-					 ":" (getenv "HOME") "/.cargo/bin"
-					 ":/usr/local/bin"))
-#+end_src
 ** Which Key
 #+begin_src emacs-lisp
 	(use-package which-key
@@ -321,22 +299,6 @@ Causes LC_ENCODING issues with projectile-find-file
 #+begin_src emacs-lisp
 	(use-package dockerfile-mode)
 #+end_src
-** +Autocomplete+
-#+begin_example emacs-lisp
-	(use-package auto-complete
-		:diminish
-		:init
-		(ac-config-default)									; enables global-auto-complete-mode
-		)
-#+end_example
-** +Web Mode+
-#+begin_example emacs-lisp
-	(use-package web-mode
-		:mode "\\.\\(?:aspx?\\|djhtml\\|erb\\|h\\(?:bs\\|tml\\)\\|jsp\\|mustache\\|phtml\\|tpl\\.php\\)\\'"
-		:custom
-		(web-mode-enable-current-element-highlight t "Highlight current tag")
-		:hook setup-compile-html)
-#+end_example
 ** Emmet
 #+begin_src emacs-lisp
 	(use-package emmet-mode
@@ -483,10 +445,6 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
     )
 #+end_src
 ** [[https://github.com/pashky/restclient.el][REST Client]]
-*** +From package repository+
-#+begin_example emacs-lisp
-	(use-package restclient)
-#+end_example
 *** Latest from source to support jq
 Requires [[JQ Mode]]
 #+begin_example emacs-lisp
@@ -526,33 +484,6 @@ Requires [[JQ Mode]]
 #+begin_src emacs-lisp
 	(use-package rust-mode)
 #+end_src
-** +LSP+
-Check if executable is in the path `(executable-find "gopls")`
-#+begin_example emacs-lisp
-	(defun fc/lsp-deferred ()
-			"When enabling lsp-mode disable auto-complete"
-		(auto-complete-mode -1)
-		(lsp-deferred))
-
-	(use-package lsp-mode
-		:config
-		(setq lsp-log-io nil) ; only enable for debugging
-		(add-hook 'go-mode-hook #'fc/lsp-deferred)
-		(add-hook 'js-mode-hook #'fc/lsp-deferred)
-		(add-hook 'css-mode-hook #'fc/lsp-deferred)
-		(add-hook 'html-mode-hook #'fc/lsp-deferred)
-		(setq lsp-rust-rls-server-command (concat (getenv "HOME") "/.cargo/bin/rust-analyzer"))
-		(add-hook 'rust-mode-hook #'fc/lsp-deferred)
-		)
-	(use-package lsp-ui)
-#+end_example
-** +Company for text completion+
-#+begin_example emacs-lisp
-  (use-package company
-    :config
-    (setq company-idle-delay 0)
-    (setq company-minimum-prefix-length 1))
-#+end_example
 ** Rego
 #+begin_src emacs-lisp
 	(use-package rego-mode)
@@ -711,34 +642,6 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
 		:hook (emacs-lisp-mode . aggressive-indent-mode))
 #+end_src
 * Packages not in ELPA/MELPA
-** +Fix ~load-path~+
-Add top-level directories under ~site-lisp~ to ~load-path~
-#+begin_example emacs-lisp
-	(let* ((default-directory user-emacs-directory)
-				(parent-mapper (lambda (x) (expand-file-name x "site-lisp")))
-				(dotfile-filter (lambda (x) (not (or (equal "." x) (equal ".." x)))))
-				(dirs (seq-filter dotfile-filter (directory-files (locate-user-emacs-file "site-lisp")))))
-		;; add specified directories only
-		(normal-top-level-add-to-load-path (seq-map parent-mapper dirs))
-		)
-#+end_example
-Function to install from git repository
-#+begin_src emacs-lisp
-  (defun package-repo-install (package-name package-url &optional branch load-filepath)
-    (let ((package-dir (expand-file-name
-			(concat "site-lisp/" (symbol-name package-name))
-			user-emacs-directory)))
-      (require 'vc)
-      (unless (file-exists-p package-dir)
-	(vc-clone
-	 package-url
-	 'Git package-dir branch))
-      (if load-filepath
-	  (load-file (expand-file-name load-filepath package-dir))
-	(progn
-	  (add-to-list 'load-path package-dir t)
-	  (require package-name)))))
-#+end_src
 ** Visual Basic Mode
 From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
 #+begin_src emacs-lisp
@@ -753,26 +656,6 @@ From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emac
 							 (expand-file-name "~/.emacs.d/site-lisp/visual-basic-mode"))
 	(require 'visual-basic-mode)
 #+end_example
-** +Drools+
-From https://github.com/pdorrell/rules-editing-mode.git
-#+begin_src emacs-lisp
-  (defun fc/init-drools-mode ()
-    (setq
-     drools-tab-indent 2
-     indent-tabs-mode nil))
-
-  (defun fc/setup-drools-mode ()
-    (add-to-list 'auto-mode-alist '("\\.drl\\'" . drools-mode))
-    (add-hook 'drools-mode-hook #'fc/init-drools-mode))
-
-  (package-repo-install
-   'drools-mode
-   "https://github.com/pdorrell/rules-editing-mode"
-   nil
-   "drools-mode.el")
-  (eval-after-load "drools-mode"
-      #'fc/setup-drools-mode)
-#+end_src
 ** [[https://github.com/holistics/dbml][DBML]]
 From https://github.com/ccod/dbd-mode
 #+begin_src emacs-lisp
@@ -852,49 +735,6 @@ Install [[https://xmlstar.sourceforge.net/download.php][XMLStarlet]]
 		(package-repo-install 'git-modes "https://github.com/magit/git-modes")
 		(use-package git-modes
 			:load-path "site-lisp/git-modes"))
-#+end_src
-* Color Theme
-** +Zenburn+
-#+begin_example emacs-lisp
-	(use-package zenburn-theme
-		:init
-		;; pop the icomplete selected item :D
-		(custom-set-faces
-		 '(icomplete-selected-match ((t (:background "dark cyan")))))
-		:config
-		(load-theme 'zenburn t)
-		)
-#+end_example
-** +Set Font+
-#+begin_example emacs-lisp
-	(custom-set-faces
-	 ;; custom-set-faces was added by Custom.
-	 ;; If you edit it by hand, you could mess it up, so be careful.
-	 ;; Your init file should contain only one such instance.
-	 ;; If there is more than one, they won't work right.
-	 '(default ((t (:family "Inconsolata" :foundry "outline" :slant normal :weight normal :height 180 :width normal)))))
-#+end_example
-From https://www.emacswiki.org/emacs/SetFonts
-#+begin_src emacs-lisp
-	(when (eq system-type 'darwin)
-
-		 ;; default Latin font (e.g. Consolas)
-		 (set-face-attribute 'default nil :family "Fira Code")
-
-		 ;; default font size (point * 10)
-		 ;;
-		 ;; WARNING!  Depending on the default font,
-		 ;; if the size is not supported very well, the frame will be clipped
-		 ;; so that the beginning of the buffer may not be visible correctly.
-		 (set-face-attribute 'default nil :height 160)
-
-		 ;; use specific font for Korean charset.
-		 ;; if you want to use different font size for specific charset,
-		 ;; add :size POINT-SIZE in the font-spec.
-		 ;(set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
-
-		 ;; you may want to add different for other charset in this way.
-		 )
 #+end_src
 * Enable advanced flags
 ** Case Sensitive replacements
@@ -1094,12 +934,6 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 							(find-file file)))))))
 
 	(keymap-set org-mode-map "C-c o" #'org-find-image-src)
-#+end_src
-** [[https://github.com/hakimel/reveal.js][Reveal.js]] & [[https://github.com/yjwen/org-reveal][ox-reveal]]
-#+begin_src emacs-lisp
-  (use-package ox-reveal
-    :config
-    (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
 #+end_src
 ** Update diary file for using calendar
 #+begin_src emacs-lisp
@@ -1319,32 +1153,6 @@ From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-
 				(push-mark)
 				(insert repl))))
 #+end_src
-** +base64 url encode & decode+
-Can be replaced with [[help:base64-decode-string][base64-decode-string]] with 2nd argument
-From https://gist.github.com/inouetmhr/4116307
-#+begin_example emacs-lisp
-  (defun fc/base64-to-base64url (str)
-  	(setq str (replace-regexp-in-string "=+$" "" str))
-  	(setq str (replace-regexp-in-string "+" "-" str))
-  	(setq str (replace-regexp-in-string "/" "_" str)))
-
-  (defun fc/base64url-to-base64 (str)
-  	(setq str (replace-regexp-in-string "-" "+" str))
-  	(setq str (replace-regexp-in-string "_" "/" str))
-  	(let ((mod (% (length str) 4)))
-  		(cond
-  		 ((= mod 1) (concat str "==="))
-  		 ((= mod 2) (concat str "=="))
-  		 ((= mod 3) (concat str "="))
-  		 (t str))))
-
-  (defun fc/base64url-encode-string (str)
-  	(base64-to-base64url (base64-encode-string str t)))
-
-  (defun fc/base64url-decode-string (str)
-  	(base64-decode-string (base64url-to-base64 str)))
-
-#+end_example
 ** Toggle proxy
 #+begin_src emacs-lisp
 	(defun fc/toggle-proxy (&optional force)
@@ -1405,30 +1213,6 @@ Force indents, offsets and disable tabs
                     tab-width 2
                     indent-tabs-mode nil)))
 #+end_src
-** +Untabify files using prog mode hooks+
-#+begin_example emacs-lisp
-  (defun fc/progmodes-hooks ()
-  	"Hooks for programming modes"
-  	(add-hook 'before-save-hook #'fc/progmodes-write-hooks)
-  	(message (format "Adding save hook for %s" major-mode)))
-
-  (defun fc/progmodes-write-hooks ()
-  	"Hooks which run on file write for programming modes"
-  	(prog1 nil
-  		(if (member major-mode (list 'makefile-bsdmake-mode))
-  				(lambda ()
-  					(message (format "untabifying buffer %s" major-mode))
-  					(untabify-buffer)
-  					)
-  				(lambda ()
-  					(message (format "skipping for %s" major-mode)))
-  				))
-  	)
-
-  (add-hook 'sh-set-shell-hook #'fc/progmodes-hooks)
-  (add-hook 'python-mode-hook #'fc/progmodes-hooks)
-  (add-hook 'js-mode-hook #'fc/progmodes-hooks)
-#+end_example
 ** Show whitespace in makefiles
 #+begin_src emacs-lisp
 	(add-hook 'makefile-bsdmake-mode-hook #'whitespace-mode)
@@ -1591,11 +1375,6 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
   (provide '" (file-name-base	(buffer-file-name)) ")
   ;;; " (file-name-nondirectory	(buffer-file-name))) " ends here
   ")
-#+end_src
-* Global key bindings
-#+begin_src emacs-lisp
-	;(global-set-key (kbd "C-c C-d") 'calendar)
-	;(global-unset-key (kbd "C-c C-d"))
 #+end_src
 * Proxy
 #+begin_src emacs-lisp
