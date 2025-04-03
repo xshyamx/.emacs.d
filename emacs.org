@@ -642,6 +642,23 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
 		:hook (emacs-lisp-mode . aggressive-indent-mode))
 #+end_src
 * Packages not in ELPA/MELPA
+Function to install from git repository
+#+begin_src emacs-lisp
+  (defun package-repo-install (package-name package-url &optional branch load-filepath)
+    (let ((package-dir (expand-file-name
+                       (concat "site-lisp/" (symbol-name package-name))
+                       user-emacs-directory)))
+      (require 'vc)
+      (unless (file-exists-p package-dir)
+       (vc-clone
+        package-url
+        'Git package-dir branch))
+      (if load-filepath
+         (load-file (expand-file-name load-filepath package-dir))
+       (progn
+         (add-to-list 'load-path package-dir t)
+         (require package-name)))))
+#+end_src
 ** Visual Basic Mode
 From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
 #+begin_src emacs-lisp
