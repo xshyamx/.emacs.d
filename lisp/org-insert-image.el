@@ -17,6 +17,9 @@
 (defconst org-insert-graphviz-file-extension ".gv"
 	"Default file extension for Graphviz dot files")
 
+(defvar org-insert-image-dirs '("./img/screenshots/" "./img/")
+	"List of directories to search for images")
+
 (defun org-insert-image--target-dir (fn projects-home)
 	"Return the target directory for the source image file"
 	(let* ((bn (file-name-base fn))
@@ -45,7 +48,7 @@ open a new buffer to SLUG.EXT"
 	(let* ((itd (org-insert-image--target-dir (buffer-file-name) projects-home))
 				 (itf (if (eql 4 prefix)
 									(expand-file-name (concat slug ext) itd)
-									(org-insert-image--target-file itd slug ext)))
+								(org-insert-image--target-file itd slug ext)))
 				 (ci (make-string (current-indentation) ? ))
 				 (png (concat
 							 "./"
@@ -71,19 +74,45 @@ open a new buffer to SLUG.EXT"
 							 "%s#+include: %s export html\n" ci map)))
 		(find-file itf)))
 
+(defun org-extract-slug-prefix ()
+	(let ((el (org-element-context (org-element-at-point))))
+    (or (org-entry-get el "slug-prefix")
+        (org-entry-get el "slug-prefix" t))))
+
 (defun org-insert-image (prefix slug)
 	"Insert image"
-	(interactive "p\nsImage slug: ")
-	(message "org-insert-image %d %s" prefix slug)
+	(interactive
+	 (list
+		(prefix-numeric-value current-prefix-arg)
+		(read-string
+		 "Image slug: "
+		 (if-let (p (org-extract-slug-prefix))
+				 (concat p "--")
+			 ""))))
 	(org-insert-image--execute
 	 slug
 	 org-insert-plantuml-file-extension
 	 prefix))
 
+(defun org-insert--initial-directory ()
+	(let ((image-dirs org-insert-image-dirs))
+		(when-let (file buffer-file-name)
+			(setq slug (file-name-base file))
+			(when (string-match
+						 (rx bol "daily-log-" (group (repeat 4 digit)) eol)
+						 slug)
+
+				(add-to-list 'image-dirs
+										 (concat "./org-includes/" (match-string 1 slug) "/"))))
+		(seq-find
+		 #'file-exists-p
+		 (mapcar #'expand-file-name image-dirs))))
+
 (defun org-insert-existing-image (prefix)
 	(interactive "p")
 	(when-let ((file (read-file-name
-										"Insert image: " "img/"
+										"Insert image: "
+										(org-insert--initial-directory)
 										nil t nil
 										(lambda (f) (or
 														(string-suffix-p "/" f)
@@ -126,7 +155,7 @@ open a new buffer to SLUG.EXT"
 
 (keymap-set org-mode-map "C-c i i" #'org-insert-image)
 (keymap-set org-mode-map "C-c i e" #'org-insert-existing-image)
-(keymap-set org-mode-map "C-c C-u" #'org-update-plantuml-title)
+(keymap-set org-mode-map "C-c u" #'org-update-plantuml-title)
 
 (provide 'org-insert-image)
 ;;; org-insert-image.el -- Ends here
