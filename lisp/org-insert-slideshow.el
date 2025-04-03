@@ -1,5 +1,8 @@
 ;; org-insert-slideshow.el --  -*- lexical-binding: t -*-
 
+(defvar slideshow-image-dirs '("./img/screenshots/" "./img/")
+	"Initial list of directories to look for slideshow images")
+
 (defun slideshow--content (indent)
 	"Generate the slide format template with placeholders for caption
 and filename with the initial indent from INDENT"
@@ -49,20 +52,27 @@ invocation and close the opened dired buffer"
 		(when (buffer-live-p target-buffer)
 			(switch-to-buffer target-buffer))))
 
-(defvar slideshow-image-dirs '("./img/screenshots" "./img")
-	"Initial list of directories to look for slideshow images")
+(defun slideshow--initial-directory ()
+	(let ((image-dirs slideshow-image-dirs))
+		(when-let (file buffer-file-name)
+			(setq slug (file-name-base file))
+			(when (string-match
+						 (rx bol "daily-log-" (group (repeat 4 digit)) eol)
+						 slug)
+
+				(add-to-list 'image-dirs
+										 (concat "./org-includes/" (match-string 1 slug) "/"))))
+		(seq-find
+		 #'file-exists-p
+		 (mapcar #'expand-file-name image-dirs))))
 
 (defun org-insert-slideshow ()
 	(interactive)
-	(let* ((initial-dir
-					(seq-find
-					 #'file-exists-p
-					 (mapcar #'expand-file-name slideshow-image-dirs)))
-				 (base-directory (file-name-directory (buffer-file-name)))
-				 (dbuf (find-file-noselect (read-string "Images directory: " initial-dir)))
-				 (target-buffer (buffer-name))
-				 (target-point (point))
-				 (target-indent (current-indentation)))
+	(let ((base-directory (file-name-directory (buffer-file-name)))
+				(dbuf (find-file-noselect (read-string "Images directory: " (slideshow--initial-directory))))
+				(target-buffer (buffer-name))
+				(target-point (point))
+				(target-indent (current-indentation)))
 		(with-current-buffer dbuf
 			(setq-local base-directory base-directory
 									target-buffer target-buffer
