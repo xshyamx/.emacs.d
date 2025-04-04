@@ -1232,12 +1232,6 @@ Force indents, offsets and disable tabs
 ** Show whitespace in makefiles
 #+begin_src emacs-lisp
 	(add-hook 'makefile-bsdmake-mode-hook #'whitespace-mode)
-	(add-hook 'makefile-bsdmake-mode-hook
-						(lambda ()
-							(remove-hook 'sh-set-shell-hook 'progmodes-hooks t)))
-	(add-hook 'makefile-bsdmake-mode-hook
-						(lambda ()
-							(message "removed untabify for makefile")))
 #+end_src
 ** Make file with shebang executable
 #+begin_src emacs-lisp
