@@ -507,72 +507,13 @@ Requires [[JQ Mode]]
 *** Setup functions used by the hydra
 #+begin_src emacs-lisp
 
-	(defun fc/remove-prefix (name)
-		(replace-regexp-in-string
-		 (rx-to-string `(: line-start ,projects-home "/") t)
-		 ""
-		 name))
+  (require 'project-notes)
 
-	(defun fc/make-pair (path)
-		"create a pair with the directory name & filename"
-		(cons (file-name-nondirectory path) path))
+  (run-with-idle-timer 1 nil #'load-project-notes)
 
-	;; build list of projects and org files
-	(defvar project-notes nil
-		"Variable to hold org project notes as a list of pairs of the form (`basename' . `full-path') ")
+  (require 'daily-notes)
 
-	(defvar project-notes-hook nil
-		"Hook for running things after `project-notes' has been loaded")
-
-	(defun load-project-notes ()
-		(when (and projects-home (file-exists-p projects-home))
-			(setq project-notes
-						(seq-map
-						 #'fc/make-pair
-						 (seq-map #'fc/remove-prefix
-											(directory-files-recursively projects-home  "-notes\\.org$")))))
-		(message "Loaded %d project notes" (length project-notes))
-		(run-hooks 'project-notes-hook))
-
-	(run-with-idle-timer 1 nil #'load-project-notes)
-	;; sort ?
-						;(setq project-notes (seq-sort-by #'car #'string< project-notes))
-
-	(defun fc/daily-notes-matcher (path)
-		"Match daily notes files"
-		(and (string-prefix-p (concat daily-home "/daily-log-") path) (string-suffix-p ".org" path)))
-	(defun fc/daily-make-pair (path)
-		"Create a pair with the year & filename"
-		(cons (replace-regexp-in-string "daily-log-" "" (file-name-base path)) path))
-	;; build list of daily notes
-	(setq daily-notes
-	(if daily-home
-			(seq-map #'fc/daily-make-pair
-				 (directory-files daily-home nil "daily-log-[[:digit:]]\\{4\\}\\.org$")
-				 )
-		nil))
-
-	(defun fc/find-project-notes ()
-		"Select a project from `project-notes' and open it"
-		(interactive "i")
-		(let ((proj (assoc
-		 (completing-read "Select project: " (seq-map #'car project-notes))
-		 project-notes)))
-			(when proj
-	(find-file (expand-file-name (cdr proj) projects-home)))
-			)
-		)
-
-	(defun fc/find-daily-notes ()
-		"Select a year from `daily-notes' and open it"
-		(interactive "i")
-		(let ((year (assoc
-		 (completing-read "Select year: " (seq-map #'car daily-notes))
-		 daily-notes)))
-			(when year
-	(find-file (expand-file-name (cdr year) daily-home)))
-			)
-		)
+  (run-with-idle-timer 1 nil #'load-daily-notes)
 #+end_src
 *** Commonly used org files
 #+begin_src emacs-lisp
@@ -582,22 +523,22 @@ Requires [[JQ Mode]]
 #+end_src
 *** Setup Hydra
 #+begin_src emacs-lisp
-	(use-package hydra
-		:config
-		(defhydra common-org-files (:exit t)
-			"goto"
-			("a" (find-file (expand-file-name "../profile/asset.org" daily-home)) "asset.org")
-			("b" (find-file (expand-file-name "buf.org" daily-home)) "buf.org")
-			("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
-			("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
-			("D" (fc/find-daily-notes) "Daily Notes")
-			("e" (find-file (locate-user-emacs-file "emacs.org")) "emacs.org")
-			("i" (find-file (locate-user-emacs-file "init.el")) "init.el")
-			("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
-			("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
-			("P" (fc/find-project-notes) "Projects")
-			("q" nil "quit")
-			))
+  (use-package hydra
+  	:config
+  	(defhydra common-org-files (:exit t)
+  		"goto"
+  		("a" (find-file (expand-file-name "../profile/asset.org" daily-home)) "asset.org")
+  		("b" (find-file (expand-file-name "buf.org" daily-home)) "buf.org")
+  		("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
+  		("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
+  		("D" (daily-notes-find-file) "Daily Notes")
+  		("e" (find-file (locate-user-emacs-file "emacs.org")) "emacs.org")
+  		("i" (find-file (locate-user-emacs-file "init.el")) "init.el")
+  		("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
+  		("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
+  		("P" (project-notes-find-file) "Projects")
+  		("q" nil "quit")
+  		))
 #+end_src
 ** eglot
 #+begin_src emacs-lisp
@@ -1292,106 +1233,106 @@ Force indents, offsets and disable tabs
 * Auto-insert templates
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
 #+begin_src emacs-lisp
-	;; do not ask for confirmation to include
-	(setq auto-insert-query nil)
-	(auto-insert-mode)
-	;; Graphviz diagrams
-	(define-auto-insert
-		'(graphviz-dot-mode . "Graphviz diagram")
-		'("Diagram skeleton: "
-			"digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n" > _ "  \n}"))
+  ;; do not ask for confirmation to include
+  (setq auto-insert-query nil)
+  (auto-insert-mode)
+  ;; Graphviz diagrams
+  (define-auto-insert
+  	'(graphviz-dot-mode . "Graphviz diagram")
+  	'("Diagram skeleton: "
+  		"digraph G {\n" "  // " (file-name-base (buffer-file-name)) "\n" > _ "  \n}"))
 
-	;; PlantUML diagrams
-	(define-auto-insert
-		'(plantuml-mode . "PlantUML diagram")
-		'("Diagram skeleton: "
-			"@startuml" \n
-			"' " (file-name-base (buffer-file-name)) \n
-			"header Draft" \n
-			"title "
-			(string-join
-			 (mapcar #'capitalize
-							 (split-string (file-name-base (buffer-file-name)) "-"))
-			 " ")
-			\n
-			"footer " (format-time-string "%Y-%m-%d") \n
-			\n
-			> _
-			\n "@enduml"))
+  ;; PlantUML diagrams
+  (define-auto-insert
+  	'(plantuml-mode . "PlantUML diagram")
+  	'("Diagram skeleton: "
+  		"@startuml" \n
+  		"' " (file-name-base (buffer-file-name)) \n
+  		"header Draft" \n
+  		"title "
+  		(string-join
+  		 (mapcar #'capitalize
+  						 (split-string (file-name-base (buffer-file-name)) "-"))
+  		 " ")
+  		\n
+  		"footer " (format-time-string "%Y-%m-%d") \n
+  		\n
+  		> _
+  		\n "@enduml"))
 
-	;; Org mode
-	(define-auto-insert
-		'(org-mode . "Org file")
-		'("Org file skeleton: "
-			"#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
-			"#+author: " user-login-name " <" user-mail-address ">\n"
-			"# -*- org-export-use-babel: nil; -*-\n"
-			"#+year: " (format-time-string "%Y") "\n"
-			"#+created: " (format-time-string "%Y-%m-%d") "\n"
-			"#+options:  num:nil broken-links:mark\n"
-			"#+property: header-args :eval never-export\n"
-			"#+startup: overview hideblocks\n"
-			"#+html_head: <link rel=\"stylesheet\" href=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/org.css" daily-home) default-directory)
-			"\"></link>\n"
-			"#+html_head: <link rel=\"stylesheet\" href=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/slideshow.css" daily-home) default-directory)
-			"\"></link>\n"
-			"#+html_head: <script src=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/org.js" daily-home) default-directory)
-			"\"></script>\n"
-			"#+html_head: <script src=\""
-			(file-relative-name
-			 (expand-file-name "org-includes/slideshow.js" daily-home) default-directory)
-			"\"></script>\n"
-			"* " > _
-			))
+  ;; Org mode
+  (define-auto-insert
+  	'(org-mode . "Org file")
+  	'("Org file skeleton: "
+  		"#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
+  		"#+author: " user-login-name " <" user-mail-address ">\n"
+  		"# -*- org-export-use-babel: nil; -*-\n"
+  		"#+year: " (format-time-string "%Y") "\n"
+  		"#+created: " (format-time-string "%Y-%m-%d") "\n"
+  		"#+options:  num:nil broken-links:mark\n"
+  		"#+property: header-args :eval never-export\n"
+  		"#+startup: overview hideblocks\n"
+  		"#+html_head: <link rel=\"stylesheet\" href=\""
+  		(file-relative-name
+  		 (expand-file-name "org-includes/org.css" daily-home) default-directory)
+  		"\"></link>\n"
+  		"#+html_head: <link rel=\"stylesheet\" href=\""
+  		(file-relative-name
+  		 (expand-file-name "org-includes/slideshow.css" daily-home) default-directory)
+  		"\"></link>\n"
+  		"#+html_head: <script src=\""
+  		(file-relative-name
+  		 (expand-file-name "org-includes/org.js" daily-home) default-directory)
+  		"\"></script>\n"
+  		"#+html_head: <script src=\""
+  		(file-relative-name
+  		 (expand-file-name "org-includes/slideshow.js" daily-home) default-directory)
+  		"\"></script>\n"
+  		"* " > _
+  		))
 
-	;; remove existing entry
-	(setq auto-insert-alist
-				(seq-filter
-				 (lambda (l) (not
-											(and
-											 (listp (car l))
-											 (stringp (cdar l))
-											 (string= "Emacs Lisp header" (cdar l)))))
-				 auto-insert-alist))
+  ;; remove existing entry
+  (setq auto-insert-alist
+  			(seq-filter
+  			 (lambda (l) (not
+  										(and
+  										 (listp (car l))
+  										 (stringp (cdar l))
+  										 (string= "Emacs Lisp header" (cdar l)))))
+  			 auto-insert-alist))
 
-	(define-auto-insert
-		'("\\.el\\'" . "Emacs Lisp header")
-		'("Short description: "
-			";;; " (file-name-nondirectory (buffer-file-name))	" --- " str
-			(make-string	(max 2
-												 (- fill-column (current-column) 27))
-										32)
-			"-*- lexical-binding: t; -*-"
-			'(setq lexical-binding t)
-			"
+  (define-auto-insert
+  	'("\\.el\\'" . "Emacs Lisp header")
+  	'("Short description: "
+  		";;; " (file-name-nondirectory (buffer-file-name))	" --- " str
+  		(make-string	(max 2
+  											 (- fill-column (current-column) 27))
+  									32)
+  		"-*- lexical-binding: t; -*-"
+  		'(setq lexical-binding t)
+  		"
 
-		;; Author: " (user-login-name)
-			'(end-of-line 1)
-			"
-		;;; Commentary:
+  ;; Author: " (user-login-name)
+  	'(end-of-line 1)
+  	"
+  ;;; Commentary:
 
-		;; " _ "
+  ;; " _ "
 
-		;;; Code:
+  ;;; Code:
 
 
 
-		(provide '" (file-name-base	(buffer-file-name)) ")
-		;;; " (file-name-nondirectory	(buffer-file-name))) " ends here
-		")
+  (provide '" (file-name-base	(buffer-file-name)) ")
+  ;;; " (file-name-nondirectory	(buffer-file-name))) " ends here
+  ")
 
-	(define-auto-insert
-		'("\\.gitignore\\'" . ".gitignore file")
-		'("Short description: "
-			".*" \n
-			"!.gitignore" \n
-			_))
+  (define-auto-insert
+  	'("\\.gitignore\\'" . ".gitignore file")
+  	'("Short description: "
+  		".*" \n
+  		"!.gitignore" \n
+  		_))
 #+end_src
 * Proxy
 #+begin_src emacs-lisp

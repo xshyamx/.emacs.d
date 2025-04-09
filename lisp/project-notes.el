@@ -9,15 +9,60 @@
 
 ;;; Code
 
+
 (defvar project-meetings-headline "Meetings"
   "Headline for the meetings top-level heading")
 
 (defvar project-notes-file nil
   "File to cache the contents of `project-notes'")
 
+;; build list of projects and org files
+(defvar project-notes nil
+	"Variable to hold org project notes as a list of pairs of the form (`basename' . `full-path') ")
+
+(defvar project-notes-hook nil
+	"Hook for running things after `project-notes' has been loaded")
+
+(defconst project-notes--regexp
+	(rx "-notes.org" eol)	"Regexp to match project notes files")
+
+(defun project-notes--relative-path (file)
+	"Return file path relative to `projects-home' directory"
+	(file-relative-name file projects-home))
+
+(defun project-notes--make-pair (path)
+	"create a pair with the directory name & filename"
+	(cons (file-name-nondirectory path) path))
+
+(defun load-project-notes ()
+	"Load project notes files from the `project-home' directory and return a
+list of cons of the form (`<project>--notes.org'
+. `<path-relative-to-projects-home'')"
+	(when (and projects-home (file-exists-p projects-home))
+		(when-let ((pns (directory-files-recursively
+										 projects-home
+										 project-notes--regexp)))
+			(setq project-notes
+						(mapcar #'project-notes--make-pair
+										(mapcar #'project-notes--relative-path
+														pns))))
+		(message "Loaded %d project notes" (length project-notes))
+		(run-hooks 'project-notes-hook)))
+
+(defun project-notes-find-file ()
+	"Select a project from `project-notes' and open it"
+	(interactive "i")
+	(let ((proj (assoc
+							 (completing-read "Select project: " (seq-map #'car project-notes))
+							 project-notes)))
+		(when proj
+			(find-file (expand-file-name (cdr proj) projects-home)))
+		)
+	)
+
 (defun project-info (file)
   (let ((fn (expand-file-name file projects-home))
-	(m))
+				(m))
     (push (file-name-base file) m)
     (push :project m)
     (push file m)
@@ -30,13 +75,13 @@
       (insert-file-contents fn nil 0 1024)
       (goto-char 0)
       (when (re-search-forward (rx bol "#+title:" (+ space) (group (+ any)) eol) nil t)
-	(push (match-string-no-properties 1) m)
-	(push :title m))
+				(push (match-string-no-properties 1) m)
+				(push :title m))
       (goto-char 0)
       (unless (plist-member m :year)
-	(when (re-search-forward (rx bol "#+year:" (+ space) (group (+ any)) eol) nil t)
-	  (push (string-to-number (match-string-no-properties 1)) m)
-	  (push :year m))))
+				(when (re-search-forward (rx bol "#+year:" (+ space) (group (+ any)) eol) nil t)
+					(push (string-to-number (match-string-no-properties 1)) m)
+					(push :year m))))
     m))
 
 (defun add-project-meeting-note ()
