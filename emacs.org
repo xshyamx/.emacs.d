@@ -1340,53 +1340,6 @@ Exclude ~.el.gz~ buffers when saving the desktop
 		"Do not mark special buffers specified by
 	`ibuffer-ignore-special-buffers-alist'")
 #+end_src
-* Quote selected lines
-#+begin_src emacs-lisp
-	(defun quote-string (s)
-		"Quote string by escaping `\"' with `\\\"'"
-		(concat
-		 "\""
-		 (string-replace "\"" "\\\"" s)
-		 "\""))
-
-	(defun quote-lines-in-region (start end)
-		"Quote all lines in the region"
-		(interactive "r")
-		(when (use-region-p)
-			(let ((s (buffer-substring-no-properties start end)))
-				(delete-region start end)
-				(insert (mapconcat
-								 #'quote-string
-								 (seq-filter
-									(lambda (s) (> (length s) 0))
-									(split-string s "\n"))
-								 "\n"))
-				(when (string-suffix-p "\n" s)
-					(insert "\n")))))
-
-	(keymap-global-set "C-c \"" #'quote-lines-in-region)
-#+end_src
-* Join selected lines with separator
-#+begin_src emacs-lisp
-	(defun join-lines-in-region (prefix start end)
-		"Join all lines in region with `,' to override use `C-u' prefix"
-		(interactive "p\nr")
-		(when (use-region-p)
-			(let ((separator ",")
-						(s (buffer-substring-no-properties start end)))
-				(when (> prefix 1)
-					(setq separator (read-string "Separator: " nil nil separator)))
-				(delete-region start end)
-				(insert (string-join
-								 (seq-filter
-									(lambda (s) (> (length s) 0))
-									(split-string s "\n"))
-								 separator))
-				(when (string-suffix-p "\n" s)
-					(insert "\n")))))
-
-	(keymap-global-set "C-c j" #'join-lines-in-region)
-#+end_src
 * Extras
 #+begin_src emacs-lisp
   ;; load interview csv
@@ -1406,12 +1359,14 @@ Exclude ~.el.gz~ buffers when saving the desktop
   (setq project-notes-file
   			(no-littering-expand-var-file-name "project-notes.eld"))
 
-
   ;; reset-frame
   (require 'reset-frame)
 
   ;; prefix-find-file
   (require 'prefix-find-file)
+
+  ;; region-extras
+  (require 'region-extras)
 #+end_src
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
