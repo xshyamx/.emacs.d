@@ -871,28 +871,6 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 	(keymap-unset org-mode-map "C-c $" t)
 	(keymap-unset org-mode-map "C-c C-<tab>" t)
 #+end_src
-** Open corresponding plantuml/grapvhiz source file if available
-#+begin_src emacs-lisp
-	(defun org-find-image-src ()
-		"Open corresponding plantuml/grapvhiz file for the image link"
-		(interactive)
-		(let* ((el (org-element-context (org-element-at-point)))
-					 (type (org-element-type el)))
-			(when (memq type '(link paragraph))
-				(when (and (eq type 'paragraph)
-									 (org-element-property :post-affiliated el))
-					(goto-char (org-element-property :post-affiliated el))
-					(setq el (org-element-context (org-element-at-point))))
-				(setq img (org-element-property :path el)
-							plantuml-file (concat (file-name-sans-extension img) ".plantuml")
-							graphviz-file (concat (file-name-sans-extension img) ".gv"))
-				(when (string= "png" (file-name-extension img))
-					(dolist (file (list plantuml-file graphviz-file))
-						(when (file-exists-p file)
-							(find-file file)))))))
-
-	(keymap-set org-mode-map "C-c o" #'org-find-image-src)
-#+end_src
 ** Update diary file for using calendar
 #+begin_src emacs-lisp
 	(setq diary-file (no-littering-expand-var-file-name "diary"))

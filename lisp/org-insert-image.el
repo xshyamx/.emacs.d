@@ -119,12 +119,18 @@ open a new buffer to SLUG.EXT"
 														(string-suffix-p ".png" f)))))
 						 (ci (make-string (current-indentation) ? ))
 						 (basedir (file-name-directory (buffer-file-name))))
-		(insert "#+caption: "
-						(or (extract-plantuml-title file)
-								(file-name-base file))
-						"\n")
-		(insert ci
-						"[[./" (file-relative-name file basedir) "]]\n")))
+		(let* ((map-file (concat (file-name-sans-extension file) ".cmapx"))
+					 (map-file-p (file-exists-p map-file)))
+			(insert "#+caption: "
+							(or (extract-plantuml-title file)
+									(file-name-base file))
+							"\n")
+			(when map-file-p
+				(insert "#+attr_html: :usemap #" (file-name-base file) "_map\n"))
+			(insert ci
+							"[[./" (file-relative-name file basedir) "]]\n")
+			(when map-file-p
+				(insert "#+include: \"" (file-relative-name map-file basedir) "\" export html\n")))))
 
 (defun extract-plantuml-title (file)
 	(let ((plantuml-file (concat (file-name-sans-extension file)
@@ -152,10 +158,67 @@ open a new buffer to SLUG.EXT"
 							 nil)
 					(replace-match (concat "#+caption: " title) t t))))))
 
+(defun org--image-path-around-point ()
+	"Find the image path of the org link. If on the caption navigate to the
+link before extracting the path"
+	(let ((el (org-element-context (org-element-at-point))))
+		(when (and (eq 'paragraph (org-element-type el))
+							 (org-element-property :post-affiliated el))
+			(goto-char (org-element-property :post-affiliated el))
+			(setq el (org-element-context (org-element-at-point))))
+		(and (eq 'link (org-element-type el))
+				 (string= "file" (org-element-property :type el))
+				 (org-element-property :path el))))
+
+
+(defun org-insert-image-map ()
+	"Insert the html attribute `usemap' for html export and the include
+directive for the `cmapx' image map"
+	(interactive)
+	(save-excursion
+		(let ((path (org--image-path-around-point)) (map-file) (link-point))
+			(setq link-point (point-marker))
+			(when (string= "png" (file-name-extension path))
+				(setq map-file (concat (file-name-sans-extension path) ".cmapx"))
+				(when (file-exists-p map-file)
+					(if (re-search-backward
+							 (rx "#+attr_html:" (*? any)
+									 ":usemap" (+ space))
+							 (save-excursion (forward-line -2) (point)) t)
+							(message "Image map already present")
+						(let ((slug (file-name-base path)))
+							(goto-char (marker-position link-point))
+							(goto-char (line-beginning-position))
+							(insert "#+attr_html: :usemap #" slug "_map\n")))
+					(goto-char (marker-position link-point))
+					(if (re-search-forward
+							 (rx "#+include: " (*? any) ".cmapx\"" (+ space) "export" (+ space) "html")
+							 (save-excursion (forward-line 2) (point)) t)
+							(message "Image map already included" )
+						(goto-char (marker-position link-point))
+						(goto-char (line-end-position))
+						(insert "\n#+include: \"" map-file "\" export html\n"))
+					))
+			(setq link-point nil))))
+
+(defun org-find-image-src ()
+	"Open corresponding plantuml/grapvhiz file for the image link"
+	(interactive)
+	(when-let (img (org--image-path-around-point))
+		(when (string= "png" (file-name-extension img))
+			(let ((candidates
+						 (mapcar
+							(lambda (ext) (concat (file-name-sans-extension img) ext))
+							'(".plantuml" ".gv"))))
+				(dolist (file candidates)
+					(when (file-exists-p file)
+						(find-file file)))))))
 
 (keymap-set org-mode-map "C-c i i" #'org-insert-image)
 (keymap-set org-mode-map "C-c i e" #'org-insert-existing-image)
+(keymap-set org-mode-map "C-c i m" #'org-insert-image-map)
 (keymap-set org-mode-map "C-c u" #'org-update-plantuml-title)
+(keymap-set org-mode-map "C-c o" #'org-find-image-src)
 
 (provide 'org-insert-image)
 ;;; org-insert-image.el -- Ends here
