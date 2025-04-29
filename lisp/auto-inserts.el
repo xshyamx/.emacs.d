@@ -3,7 +3,7 @@
 ;; Author: shyam
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -38,30 +38,30 @@
 (define-auto-insert
  	'(org-mode . "Org file")
 	'("Org file skeleton: "
-		"#+title: " (capitalize (file-name-base (buffer-file-name))) "\n"
-		"#+author: " user-login-name " <" user-mail-address ">\n"
-		"# -*- org-export-use-babel: nil; -*-\n"
-		"#+year: " (format-time-string "%Y") "\n"
-		"#+created: " (format-time-string "%Y-%m-%d") "\n"
-		"#+options:  num:nil broken-links:mark\n"
-		"#+property: header-args :eval never-export\n"
-		"#+startup: overview hideblocks\n"
+		"#+title: " (capitalize (file-name-base (buffer-file-name))) \n
+		"#+author: " user-login-name " <" user-mail-address ">" \n
+		"# -*- org-export-use-babel: nil; -*-" \n
+		"#+year: " (format-time-string "%Y") \n
+		"#+created: " (format-time-string "%Y-%m-%d") \n
+		"#+options:  num:nil broken-links:mark" \n
+		"#+property: header-args :eval never-export" \n
+		"#+startup: overview hideblocks" \n
 		"#+html_head: <link rel=\"stylesheet\" href=\""
 		(file-relative-name
 		 (expand-file-name "org-includes/org.css" daily-home) default-directory)
-		"\"></link>\n"
+		"\"></link>" \n
 		"#+html_head: <link rel=\"stylesheet\" href=\""
 		(file-relative-name
 		 (expand-file-name "org-includes/slideshow.css" daily-home) default-directory)
-		"\"></link>\n"
+		"\"></link>" \n
 		"#+html_head: <script src=\""
 		(file-relative-name
 		 (expand-file-name "org-includes/org.js" daily-home) default-directory)
-		"\"></script>\n"
+		"\"></script>" \n
 		"#+html_head: <script src=\""
 		(file-relative-name
 		 (expand-file-name "org-includes/slideshow.js" daily-home) default-directory)
-		"\"></script>\n"
+		"\"></script>" \n
 		"* " > _
 		))
 
