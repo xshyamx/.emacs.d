@@ -15,25 +15,42 @@
 	 quote-char))
 
 (defun quote-lines-in-region (prefix start end)
-	"Quote all lines in the region"
+	"Quote all lines in the region. When invoked with single universal
+argument (\\`C-u' \\[quote-lines-in-region]) allows overriding default
+quote character `\"' which is useful for single quoting strings. With
+double universal argument (\\`C-u' \\`C-u' \\[quote-lines-in-region]) allows
+overriding the default separator char `\\n'. For eg. Selecting the
+following region
+
+a,b,c,d
+
+And invoking \\`C-u' \\`C-u' \\[quote-lines-in-region] giving separator as
+`,' and quote character as `\"' the region is transformed to
+
+\"a\",\"b\",\"c\",\"d\"
+ "
 	(interactive "p\nr")
 	(when (use-region-p)
 		(let ((quote-char "\"")
+					(separator "\n")
 					(s (buffer-substring-no-properties start end)))
-			(when (> prefix 1)
-				(setq quote-char (read-string "Quote with: " nil nil separator)))
-			(delete-region start end)
-			(insert (mapconcat
-							 (lambda (s) (quote-string s quote-char))
-							 (seq-filter
-								(lambda (s) (> (length s) 0))
-								(split-string s "\n"))
-							 "\n"))
-			(when (string-suffix-p "\n" s)
-				(insert "\n")))))
+			(when (> prefix 4)
+				(setq separator (read-string "Separator: " separator nil separator)))
+			(when(> prefix 1)
+				(setq quote-char (read-string "Quote with: " quote-char nil quote-char)))
+			(atomic-change-group
+				(delete-region start end)
+				(insert (mapconcat
+								 (lambda (s) (quote-string s quote-char))
+								 (seq-filter
+									(lambda (s) (> (length s) 0))
+									(split-string s separator))
+								 separator))
+				(when (string-suffix-p separator s)
+					(insert separator))))))
 
 (defun join-lines-in-region (prefix start end)
-	"Join all lines in region with `,' to override use `C-u' prefix"
+	"Join all lines in region with `,' to override use \\`C-u' prefix"
 	(interactive "p\nr")
 	(when (use-region-p)
 		(let ((separator ",")
@@ -80,7 +97,10 @@ determine the count of items
 
 So, for eg.
 Running:
-C-u 3 M-x generate-sequence
+\\`C-u 3' \\[generate-sequence]
+or equivalent
+\\`C-u 3' \\`M-x generate-sequence'
+
 and use the template \"component c%d as \\\"component-%02d\\\"\"
 template should generate the following 3 items
 
