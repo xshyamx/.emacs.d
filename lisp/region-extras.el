@@ -7,21 +7,24 @@
 
 ;;; Code:
 
-(defun quote-string (s)
+(defun quote-string (s quote-char)
 	"Quote string by escaping `\"' with `\\\"'"
 	(concat
-	 "\""
-	 (string-replace "\"" "\\\"" s)
-	 "\""))
+	 quote-char
+	 (string-replace quote-char (concat "\\" quote-char) s)
+	 quote-char))
 
-(defun quote-lines-in-region (start end)
+(defun quote-lines-in-region (prefix start end)
 	"Quote all lines in the region"
-	(interactive "r")
+	(interactive "p\nr")
 	(when (use-region-p)
-		(let ((s (buffer-substring-no-properties start end)))
+		(let ((quote-char "\"")
+					(s (buffer-substring-no-properties start end)))
+			(when (> prefix 1)
+				(setq quote-char (read-string "Quote with: " nil nil separator)))
 			(delete-region start end)
 			(insert (mapconcat
-							 #'quote-string
+							 (lambda (s) (quote-string s quote-char))
 							 (seq-filter
 								(lambda (s) (> (length s) 0))
 								(split-string s "\n"))
