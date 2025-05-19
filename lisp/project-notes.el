@@ -49,6 +49,11 @@ list of cons of the form (`<project>--notes.org'
 		(message "Loaded %d project notes" (length project-notes))
 		(run-hooks 'project-notes-hook)))
 
+(defun project-load-notes ()
+	"Load project notes interactively"
+	(interactive)
+	(load-project-notes))
+
 (defun project-notes-find-file ()
 	"Select a project from `project-notes' and open it"
 	(interactive "i")

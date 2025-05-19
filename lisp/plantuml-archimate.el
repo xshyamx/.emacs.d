@@ -187,7 +187,7 @@
 			 plantuml--archimate-sprites)))
     (insert (plantuml--archimate-sprite selection))))
 
-(keymap-set plantuml-mode-map "C-c a" #'plantuml-insert-archimate-sprite)
+(keymap-set plantuml-mode-map "C-c a s" #'plantuml-insert-archimate-sprite)
 
 (provide 'plantuml-archimate)
 ;;; plantuml-archimate.el ends here

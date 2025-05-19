@@ -458,6 +458,10 @@ Requires [[JQ Mode]]
       (package-vc-install 'restclient nil "https://github.com/pashky/restclient.el"))
   (require 'restclient-jq)
 #+end_example
+#+begin_src emacs-lisp
+  (use-package restclient
+  	:load-path "site-lisp/restclient")
+#+end_src
 ** Ditaa
 #+begin_src emacs-lisp
 	;; this line activates ditaa for org mode
@@ -824,47 +828,48 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 #+end_src
 ** org-capture templates
 #+begin_src emacs-lisp
-	(defun add-daily-note ()
-		"Find heading to add daily note"
-		(goto-char (point-max))
-		(let ((ts (format-time-string "[%Y-%m-%d %a]"))
-					(tl (org-find-top-headline)))
-			;; create heading if it does not exist
-			(unless (string= ts tl)
-				(unless (bolp) (insert "\n"))
-				(insert "* " ts "\n"))
-			(unless (bolp) (insert "\n"))))
+  (require 'org-agenda)
+  (defun add-daily-note ()
+  	"Find heading to add daily note"
+  	(goto-char (point-max))
+  	(let ((ts (format-time-string "[%Y-%m-%d %a]"))
+  				(tl (org-find-top-headline)))
+  		;; create heading if it does not exist
+  		(unless (string= ts tl)
+  			(unless (bolp) (insert "\n"))
+  			(insert "* " ts "\n"))
+  		(unless (bolp) (insert "\n"))))
 
-	(global-remap-key "C-x x" #'org-capture)
-	;(global-set-key (kbd "C-x c") #'org-capture)
+  (global-remap-key "C-x x" #'org-capture)
+  ;(global-set-key (kbd "C-x c") #'org-capture)
 
-	(defun add-daily-note-capture (filename)
-		(add-to-list 'org-capture-templates
-								 `("n" "Daily notes item" plain
-									 (file+function ,filename add-daily-note)
-									 "** %^{Title}\n%?" :jump-to-captured t)))
+  (defun add-daily-note-capture (filename)
+  	(add-to-list 'org-capture-templates
+  							 `("n" "Daily notes item" plain
+  								 (file+function ,filename add-daily-note)
+  								 "** %^{Title}\n%?" :jump-to-captured t)))
 
-	(defun add-interview-capture (filename)
-		(add-to-list 'org-capture-templates
-								 `("i" "Interview" plain
-									 (file+function ,filename add-daily-note)
-										,(string-join
-											`("** Interviews"
-											 "*** %^{Candidate Name}"
-											 "- %?"
-											 ,(concat "**** %\\1 / Interview notes" (make-string 24 ? ) ":noexport:")
-											 "DEADLINE: %^{Interview Time}T")
-											"\n")
-										:jump-to-captured t)))
+  (defun add-interview-capture (filename)
+  	(add-to-list 'org-capture-templates
+  							 `("i" "Interview" plain
+  								 (file+function ,filename add-daily-note)
+  									,(string-join
+  										`("** Interviews"
+  										 "*** %^{Candidate Name}"
+  										 "- %?"
+  										 ,(concat "**** %\\1 / Interview notes" (make-string 24 ? ) ":noexport:")
+  										 "DEADLINE: %^{Interview Time}T")
+  										"\n")
+  									:jump-to-captured t)))
 
-	(defun add-note-capture (filename)
-		(add-to-list 'org-capture-templates
-								 `("b" "Buf note item" entry
-									 (file ,filename)
-									 "* %?" :jump-to-captured t)))
-	;; set variable to nil otherwise will get the following error
-	;; Symbol's value as variable is void: org-capture-templates
-	(setq org-capture-templates nil)
+  (defun add-note-capture (filename)
+  	(add-to-list 'org-capture-templates
+  							 `("b" "Buf note item" entry
+  								 (file ,filename)
+  								 "* %?" :jump-to-captured t)))
+  ;; set variable to nil otherwise will get the following error
+  ;; Symbol's value as variable is void: org-capture-templates
+  (setq org-capture-templates nil)
 #+end_src
 ** Disable archive keybindings
 #+begin_src emacs-lisp
@@ -877,9 +882,9 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 #+end_src
 ** Do not split headings & respect content
 #+begin_src emacs-lisp
-	(setq
-	 org-M-RET-may-split-line '((default . nil))
-	 org-insert-heading-respect-content t)
+  (setq
+   org-M-RET-may-split-line '((default . nil))
+   org-insert-heading-respect-content nil)
 #+end_src
 ** Reset the dates on a meeting list heading
 #+begin_src emacs-lisp
