@@ -12,6 +12,92 @@
 
 ;;; Code:
 
+(defvar plantuml--archimate-relationships
+	'("Composition"
+		"Aggregation"
+		"Assignment"
+		"Specialization"
+		"Serving"
+		"Association"
+		"Association_dir"
+		"Flow"
+		"Realization"
+		"Triggering"
+		"Access"
+		"Access_r"
+		"Access_rw"
+		"Access_w"
+		"Influence")
+	"List of Archimate PlantUML relationships")
+
+(defvar plantuml--archimate-elements
+	'("Boundary"
+		"Strategy_Resource"
+		"Strategy_Capability"
+		"Strategy_CourseOfAction"
+		"Strategy_ValueStream"
+		"Business_Actor"
+		"Business_Role"
+		"Business_Collaboration"
+		"Business_Interface"
+		"Business_Process"
+		"Business_Function"
+		"Business_Interaction"
+		"Business_Event"
+		"Business_Service"
+		"Business_Object"
+		"Business_Contract"
+		"Business_Representation"
+		"Business_Product"
+		"Business_Location"
+		"Application_Component"
+		"Application_Collaboration"
+		"Application_Interface"
+		"Application_Function"
+		"Application_Interaction"
+		"Application_Process"
+		"Application_Event"
+		"Application_Service"
+		"Application_DataObject"
+		"Technology_Node"
+		"Technology_Device"
+		"Technology_SystemSoftware"
+		"Technology_Collaboration"
+		"Technology_Interface"
+		"Technology_Path"
+		"Technology_CommunicationNetwork"
+		"Technology_Function"
+		"Technology_Process"
+		"Technology_Interaction"
+		"Technology_Event"
+		"Technology_Service"
+		"Technology_Artifact"
+		"Physical_Equipment"
+		"Physical_Facility"
+		"Physical_DistributionNetwork"
+		"Physical_Material"
+		"Motivation_Stakeholder"
+		"Motivation_Driver"
+		"Motivation_Assessment"
+		"Motivation_Goal"
+		"Motivation_Outcome"
+		"Motivation_Principle"
+		"Motivation_Requirement"
+		"Motivation_Constraint"
+		"Motivation_Meaning"
+		"Motivation_Value"
+		"Implementation_WorkPackage"
+		"Implementation_Deliverable"
+		"Implementation_Event"
+		"Implementation_Plateau"
+		"Implementation_Gap"
+		"Other_Location"
+		"Junction_Or"
+		"Junction_And"
+		"Grouping"
+		"Group")
+	"List of PlantUML Archimate elements")
+
 (defvar plantuml--archimate-element-shortnames
   '(("collaboration" . "Coll")
     ("component" . "Comp")
@@ -183,11 +269,55 @@
 (defun plantuml-insert-archimate-sprite ()
   (interactive)
   (when-let ((selection (completing-read
-			 "Select archimate artifact: "
-			 plantuml--archimate-sprites)))
+												 "Select archimate artifact: "
+												 plantuml--archimate-sprites)))
     (insert (plantuml--archimate-sprite selection))))
 
+(defun plantuml--archimate-element (element name)
+	(format "%s(%s, %S)" element (plantuml--make-alias name) name))
+
+(defun plantuml-insert-archimate-element (element name)
+	(interactive
+	 (list (completing-read
+					"Archimate Element: " plantuml--archimate-elements nil t)
+				 (read-string "Label/Name: ")))
+	(when (and (> (length element) 0)
+						 (> (length name) 0))
+		(insert (plantuml--archimate-element element name))))
+
+(defun plantuml-archimate-convert-region (prefix start end)
+  "Converts the selected region to a set of archimate element"
+  (interactive "p\nr")
+  (when (use-region-p)
+    (let ((s (buffer-substring-no-properties start end)))
+			(when-let (element (completing-read
+													"Archimate Element: "
+													plantuml--archimate-elements nil t))
+				(atomic-change-group
+					(delete-region start end)
+					(push-mark)
+					(dolist (name (split-string s "[\r\n]" t "[ \t]+"))
+						(insert (plantuml--archimate-element element name))))))))
+
+(defun plantuml--find-archimate-elements ()
+	(let ((els))
+		(save-excursion
+			(goto-char 0)
+			(while (re-search-forward
+							(rx-to-string `(: (group (or ,@plantuml--archimate-elements)) (* space)
+																"(" (group (+ (not ","))) "," (* space)
+																"\"" (group (+ (not "\""))) "\"" (* space)
+																")"))
+							nil t)
+				(push (list :element (match-string-no-properties 1)
+										:alias (match-string-no-properties 2)
+										:label (match-string-no-properties 3))
+							els)))
+		(reverse els)))
+
 (keymap-set plantuml-mode-map "C-c a s" #'plantuml-insert-archimate-sprite)
+(keymap-set plantuml-mode-map "C-c I" #'plantuml-insert-archimate-element)
+(keymap-set plantuml-mode-map "C-c R" #'plantuml-archimate-convert-region)
 
 (provide 'plantuml-archimate)
 ;;; plantuml-archimate.el ends here
