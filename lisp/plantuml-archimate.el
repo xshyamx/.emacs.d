@@ -315,9 +315,45 @@
 							els)))
 		(reverse els)))
 
+(defun plantuml--propertize-completion-list (pl)
+	(cons
+	 (format
+		"%s / %s" (plist-get pl :label)
+		(propertize (plist-get pl :element)
+								'face 'font-lock-type-face))
+	 pl))
+
+(defun plantuml--completing-read (prompt els)
+	(let ((pls (mapcar #'plantuml--propertize-completion-list els)))
+		(when-let (selection (completing-read prompt pls))
+			(cdr (assoc-string selection pls)))))
+
+(defun plantuml--filter-selection (selection pls)
+	(let ((alias (plist-get selection :alias)))
+		(seq-filter
+		 (lambda (pl) (not (string= alias (plist-get pl :alias))))
+		 pls)))
+
+(defun plantuml-insert-archimate-relationship ()
+	(interactive)
+	(let ((els (plantuml--find-archimate-elements))
+				(src) (target) (relationship))
+		(setq
+		 relationship (completing-read "Relationship: " plantuml--archimate-relationships)
+		 src (plantuml--completing-read "Source: " els)
+		 target (plantuml--completing-read "Target: " (plantuml--filter-selection src els)))
+		(when (and (> (length relationship) 0)
+							 (> (length src) 0)
+							 (> (length target) 0))
+			(insert (format "Rel_%s(%s, %s)" relationship
+											(plist-get src :alias)
+											(plist-get target :alias))))))
+
 (keymap-set plantuml-mode-map "C-c a s" #'plantuml-insert-archimate-sprite)
 (keymap-set plantuml-mode-map "C-c I" #'plantuml-insert-archimate-element)
+(keymap-set plantuml-mode-map "C-c l" #'plantuml-insert-archimate-relationship)
 (keymap-set plantuml-mode-map "C-c R" #'plantuml-archimate-convert-region)
+
 
 (provide 'plantuml-archimate)
 ;;; plantuml-archimate.el ends here
