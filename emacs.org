@@ -178,12 +178,6 @@
 #+begin_src emacs-lisp
 	(add-hook 'before-save-hook #'delete-trailing-whitespace)
 #+end_src
-** imenu keybinding
-#+begin_src emacs-lisp
-	;; bind super-i to imenu
-	(global-remap-key "s-i" #'imenu)
-	;(define-key global-map (kbd "s-i") #'imenu)
-#+end_src
 ** Hide mouse cursor while typing
 #+begin_src emacs-lisp
 	(setq make-pointer-invisible t)
