@@ -562,6 +562,10 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
 	(use-package aggressive-indent
 		:hook (emacs-lisp-mode . aggressive-indent-mode))
 #+end_src
+** [[https://github.com/dajva/rg.el][rg.el]]
+#+begin_src emacs-lisp
+  (use-package rg)
+#+end_src
 * Packages not in ELPA/MELPA
 Function to install from git repository
 #+begin_src emacs-lisp
