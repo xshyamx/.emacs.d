@@ -301,13 +301,34 @@ Already handled by desktop?
 ** JSON
 Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
 #+begin_src emacs-lisp
-	(use-package json-mode
-		:mode "\\.\\(\\(babel\\|bower\\)rc\\|json\\)\\'"
-		:bind (:map json-mode-map
-			 ("C-c C-j" . 'jq-interactively))
-		:custom
-		(tab-width 2)
-		)
+  (use-package json-mode
+  	:mode "\\.\\(\\(babel\\|bower\\)rc\\|json\\)\\'"
+  	:bind (:map json-mode-map
+  							("C-c C-j" . 'jq-interactively))
+  	:custom
+  	(tab-width 2)
+  	)
+
+  (defun json--compact-string (s)
+  	"Convert the JSON string to its compact form"
+  	(with-temp-buffer
+  		(insert s)
+  		(goto-char 0)
+  		(while (re-search-forward (rx bol (+ space)) nil t)
+  			(replace-match ""))
+  		(goto-char 0)
+  		(while (re-search-forward (rx (+ (any ?\n ?\r))) nil t)
+  			(replace-match " "))
+  		(buffer-string)))
+
+  (defun json-compact-print (begin end)
+  	"Replace the selected region with a compact version of the JSON"
+  	(interactive "r")
+  	(when (use-region-p)
+  		(let ((s (buffer-substring-no-properties begin end)))
+  			(atomic-change-group
+  				(delete-region begin end)
+  				(insert (json--compact-string s))))))
 #+end_src
 ** Go
 https://geeksocket.in/posts/emacs-lsp-go/
@@ -1320,9 +1341,12 @@ Exclude ~.el.gz~ buffers when saving the desktop
 
 	(defalias 'wcb #'scratch-with-this-buffer "Scratch with this buffer")
 #+end_src
-* Shorthand for [[elisp:(describe-function #'revert-buffer-quick)][revert-buffer-quick]]
+* Shorthands / aliases
 #+begin_src emacs-lisp
-	(defalias 'rb #'revert-buffer-quick "Quick revert buffer")
+  (defalias 'rb #'revert-buffer-quick
+  	"Shorthand for `revert-buffer-quick'")
+  (defalias 'rvf #'rename-visited-file
+  	"Shorthand for `rename-visited-file'")
 #+end_src
 * Skip marking certain special buffers
 #+begin_src emacs-lisp
