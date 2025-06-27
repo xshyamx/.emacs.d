@@ -688,6 +688,11 @@ Install [[https://xmlstar.sourceforge.net/download.php][XMLStarlet]]
 ** [[https://github.com/pashky/restclient.el][REST Client]]
 *** Latest from source to support jq
 Requires [[JQ Mode]]
+#+begin_src emacs-lisp
+  (package-repo-install 'restclient-mode "https://github.com/xshyamx/restclient-mode")
+  (use-package restclient-mode
+  	:load-path "site-lisp/restclient-mode")
+#+end_src
 #+begin_example emacs-lisp
   (unless (package-installed-p 'restclient)
     (package-vc-install 'restclient nil "https://github.com/pashky/restclient.el"))
@@ -699,11 +704,6 @@ Requires [[JQ Mode]]
       (package-vc-install 'restclient nil "https://github.com/pashky/restclient.el"))
   (require 'restclient-jq)
 #+end_example
-#+begin_src emacs-lisp
-  (package-repo-install 'restclient "https://github.com/pashky/restclient.el")
-  (use-package restclient
-  	:load-path "site-lisp/restclient")
-#+end_src
 ** Git modes
 #+begin_src emacs-lisp
 	(require 'cl)
