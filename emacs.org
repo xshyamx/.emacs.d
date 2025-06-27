@@ -7,228 +7,227 @@
 ** [[https://github.com/jwiegley/use-package#getting-started][Use Package Help]]
 ** Print startup time
 #+begin_src emacs-lisp
-	;; or alternatively use emacs-init-time function
-	(defun fc/print-startup-time ()
-		(message "Emacs loaded in %s seconds with %d garbage collection" (emacs-init-time "%.02f") gcs-done))
-	(add-hook 'emacs-startup-hook #'fc/print-startup-time)
+  ;; or alternatively use emacs-init-time function
+  (defun fc/print-startup-time ()
+  	(message "Emacs loaded in %s seconds with %d garbage collection" (emacs-init-time "%.02f") gcs-done))
+  (add-hook 'emacs-startup-hook #'fc/print-startup-time)
 #+end_src
 ** Remapped keys
 #+begin_src emacs-lisp
-	(defvar remapped-keys nil
-		"List of remapped keys from the global-map")
+  (defvar remapped-keys nil
+    "List of remapped keys from the global-map")
 
-	(defun global-remap-key (keys defn)
-		(when-let ((old (keymap-lookup global-map keys)))
-			(add-to-list 'remapped-keys
-									 (cons keys old)))
-		(keymap-global-set keys defn))
+  (defun global-remap-key (keys defn)
+    (when-let ((old (keymap-lookup global-map keys)))
+      (add-to-list 'remapped-keys
+  		 (cons keys old)))
+    (keymap-global-set keys defn))
 #+end_src
 * Interface Tweaks
 ** Use y/p instead of yes/no
 #+begin_src emacs-lisp
-	(if (version< emacs-version "28.1")
-			(defalias 'yes-or-no-p 'y-or-n-p "Use y/n instead of yes/no")
-		(setq use-short-answers t))
+  (if (version< emacs-version "28.1")
+      (defalias 'yes-or-no-p 'y-or-n-p "Use y/n instead of yes/no")
+    (setq use-short-answers t))
 #+end_src
 ** Use utf-8 encoding everywhere
 #+begin_src emacs-lisp
-	;; set default encoding for all files
-	(set-language-environment "UTF-8")
-	(set-default-coding-systems 'utf-8)
-	;(set-buffer-file-coding-system 'utf-8-unix)
+  ;; set default encoding for all files
+  (set-language-environment "UTF-8")
+  (set-default-coding-systems 'utf-8)
+  ;(set-buffer-file-coding-system 'utf-8-unix)
 #+end_src
 ** UI tweaks
 - From [[https://stackoverflow.com/questions/6068819/alias-to-make-emacs-open-a-file-in-a-new-buffer-not-frame-and-be-activated-com][Do not allow new buffer frames]]
 #+begin_src emacs-lisp
-	(tool-bar-mode -1)		; hide toolbar
-	(menu-bar-mode t)		; show menubar
-	(scroll-bar-mode -1)		; hide scrollbar
-	(electric-pair-mode t)		; auto-close parenthesis everywhere
-	(desktop-save-mode t)		; save all emacs buffers
+  (tool-bar-mode -1)		; hide toolbar
+  (menu-bar-mode t)		; show menubar
+  (scroll-bar-mode -1)		; hide scrollbar
+  (electric-pair-mode t)		; auto-close parenthesis everywhere
+  (desktop-save-mode t)		; save all emacs buffers
 
-	(setq
-	 inhibit-startup-screen t	; do not show startup screen
-	 size-indication-mode t		; show human readable file size in modeline
-	 column-number-mode t		; show column numbers
-	 ns-pop-up-frames nil		; do not allow new frames
-	 pop-up-frames nil		; do not allow new frames
-	 global-hl-line-mode nil	; do not highlight current line
-	 savehist-mode 1		; persist minibuffer history across sessions
-	 save-place-mode 1		; save the place when last visited
-	 view-read-only t		; use view-mode for readonly buffers
-	 use-dialog-box nil		; disable using dialog boxes
-	 desktop-save t			; always save desktop
-	 )
+  (setq
+   inhibit-startup-screen t	; do not show startup screen
+   size-indication-mode t		; show human readable file size in modeline
+   column-number-mode t		; show column numbers
+   ns-pop-up-frames nil		; do not allow new frames
+   pop-up-frames nil		; do not allow new frames
+   global-hl-line-mode nil	; do not highlight current line
+   savehist-mode 1		; persist minibuffer history across sessions
+   save-place-mode 1		; save the place when last visited
+   view-read-only t		; use view-mode for readonly buffers
+   use-dialog-box nil		; disable using dialog boxes
+   desktop-save t			; always save desktop
+   )
 #+end_src
 *** System specific
 #+begin_src emacs-lisp
-	(pcase system-type
-		(darwin
-		 (setq dired-use-ls-dired nil)))		; do not pass --dired flag to ls
+  (pcase system-type
+    (darwin
+     (setq dired-use-ls-dired nil)))    ; do not pass --dired flag to ls
 #+end_src
 ** Flash modeline instead of visble bell
 #+begin_src emacs-lisp
-	;; flash mode line instead of beeping
-	(setq visible-bell nil
-				ring-bell-function 'fc/flash-mode-line)
-	(defun fc/flash-mode-line ()
-		(invert-face 'mode-line)
-		(run-with-timer 0.1 nil #'invert-face 'mode-line))
+  ;; flash mode line instead of beeping
+  (setq visible-bell nil
+        ring-bell-function 'fc/flash-mode-line)
+  (defun fc/flash-mode-line ()
+    (invert-face 'mode-line)
+    (run-with-timer 0.1 nil #'invert-face 'mode-line))
 
-	;; to disable completely
-	;; (setq ring-bell-function 'ignore)
+  ;; to disable completely
+  ;; (setq ring-bell-function 'ignore)
 #+end_src
 ** Replace BufferMenu with ibuffer
 #+begin_src emacs-lisp
-	;; user `ibuffer' for buffer listing
-	(global-remap-key "C-x C-b" #'ibuffer)
-;	(global-set-key (kbd "C-x C-b") 'ibuffer)
+  ;; user `ibuffer' for buffer listing
+  (global-remap-key "C-x C-b" #'ibuffer)
+  ;; (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
 ** Use fido vertical mode
 #+begin_src emacs-lisp
-	;; list of available styles `completion-styles-alist'
-	(setq  completion-styles '(basic partial-completion emacs22 initials flex))
-	;; enable ido completions
-	(fido-vertical-mode 1)
-	;; non-contiguos chars matching
-	;(setq ido-enable-flex-matching t)
+  ;; list of available styles `completion-styles-alist'
+  (setq  completion-styles '(basic partial-completion emacs22 initials flex))
+  ;; enable ido completions
+  (fido-vertical-mode 1)
+  ;; non-contiguos chars matching
+  ;(setq ido-enable-flex-matching t)
 #+end_src
 ** Completion preview mode
 #+begin_src emacs-lisp
   (when (fboundp 'completion-preview-mode)
-  	(add-hook
-  	 'prog-mode-hook
-  	 #'completion-preview-mode)
+    (add-hook
+     'prog-mode-hook
+     #'completion-preview-mode)
 
-  	(with-eval-after-load 'completion-preview
-  		(keymap-set
-  		 completion-preview-active-mode-map
-  		 "RET" #'completion-preview-insert)
-  		(keymap-set
-  		 completion-preview-active-mode-map
-  		 "M-n" #'completion-preview-next-candidate)
-  		(keymap-set
-  		 completion-preview-active-mode-map
-  		 "M-p" #'completion-preview-prev-candidate)))
+    (with-eval-after-load 'completion-preview
+      (keymap-set
+       completion-preview-active-mode-map
+       "RET" #'completion-preview-insert)
+      (keymap-set
+       completion-preview-active-mode-map
+       "M-n" #'completion-preview-next-candidate)
+      (keymap-set
+       completion-preview-active-mode-map
+       "M-p" #'completion-preview-prev-candidate)))
 #+end_src
 ** Set calendar options
 #+begin_src emacs-lisp
-	(calendar-set-date-style 'iso)
-	;; use yyyy-MM-dd and mark diary entries
-	(setq calendar-date-style 'iso
-				calendar-mark-diary-entries-flag t
-				calendar-mark-holidays-flag t
-				diary-file "~/.emacs.d/diary"
-				)
+  (calendar-set-date-style 'iso)
+  ;; use yyyy-MM-dd and mark diary entries
+  (setq calendar-date-style 'iso
+        calendar-mark-diary-entries-flag t
+        calendar-mark-holidays-flag t
+        diary-file "~/.emacs.d/diary")
 
-	;; disable all other calendar holidays
-	(setq holiday-bahai-holidays			nil
-				holiday-christian-holidays	nil
-				holiday-general-holidays		nil
-				holiday-hebrew-holidays			nil
-				holiday-islamic-holidays		nil
-				holiday-local-holidays			nil
-				holiday-oriental-holidays		nil
-				holiday-solar-holidays			nil)
+  ;; disable all other calendar holidays
+  (setq holiday-bahai-holidays	 nil
+        holiday-christian-holidays nil
+        holiday-general-holidays	 nil
+        holiday-hebrew-holidays	 nil
+        holiday-islamic-holidays	 nil
+        holiday-local-holidays	 nil
+        holiday-oriental-holidays	 nil
+        holiday-solar-holidays	 nil)
 
-	;; load work holidays
-	(load-file (locate-user-emacs-file "lisp/work-holidays.el"))
-	;; list of holidays filter by if calendar is visible
-	(defun fc/filtered-holidays (holidays)
-		"Returns a list of HOLIDAYS that ar within the visible calendar range"
-		(seq-filter (lambda (x) (calendar-date-is-visible-p (car x))) holidays)
-		)
+  ;; load work holidays
+  (load-file (locate-user-emacs-file "lisp/work-holidays.el"))
+  ;; list of holidays filter by if calendar is visible
+  (defun fc/filtered-holidays (holidays)
+    "Returns a list of HOLIDAYS that ar within the visible calendar range"
+    (seq-filter (lambda (x) (calendar-date-is-visible-p (car x))) holidays))
 
-	;; set displayable holidays
-	(setq holiday-local-holidays
-				'((holiday-fixed 1 1 "New Years Day")
-					(holiday-fixed 1 26 "Republic Day")
-					(holiday-fixed 5 1 "May Day")
-					(holiday-fixed 8 15 "Independence Day")
-					(holiday-fixed 10 2 "Gandhi Jayanthi")
-					(holiday-fixed 11 1 "Karnataka Rajyotsava")
-					(holiday-fixed 12 25 "Christmas")
-					(fc/filtered-holidays work-holidays-2017)
-					(fc/filtered-holidays work-holidays-2018)
-					(fc/filtered-holidays work-holidays-2019)
-					(fc/filtered-holidays work-holidays-2020)
-					(fc/filtered-holidays work-holidays-2022)
-					(fc/filtered-holidays work-holidays-2023)
-					(fc/filtered-holidays work-holidays-2024)
-					(fc/filtered-holidays work-holidays-2025)
-					))
+  ;; set displayable holidays
+  (setq holiday-local-holidays
+        '((holiday-fixed 1 1 "New Years Day")
+  	(holiday-fixed 1 26 "Republic Day")
+  	(holiday-fixed 5 1 "May Day")
+  	(holiday-fixed 8 15 "Independence Day")
+  	(holiday-fixed 10 2 "Gandhi Jayanthi")
+  	(holiday-fixed 11 1 "Karnataka Rajyotsava")
+  	(holiday-fixed 12 25 "Christmas")
+  	(fc/filtered-holidays work-holidays-2017)
+  	(fc/filtered-holidays work-holidays-2018)
+  	(fc/filtered-holidays work-holidays-2019)
+  	(fc/filtered-holidays work-holidays-2020)
+  	(fc/filtered-holidays work-holidays-2022)
+  	(fc/filtered-holidays work-holidays-2023)
+  	(fc/filtered-holidays work-holidays-2024)
+  	(fc/filtered-holidays work-holidays-2025)))
 #+end_src
 ** Open emacs sources in readonly view mode
 #+begin_src emacs-lisp
-	(defun fc/eldoc-readonly ()
-		"When browsing gzipped elisp files mark them as readonly"
-		(when
-				(and
-				 (buffer-file-name)
-				 (string-suffix-p ".el.gz" (file-name-nondirectory buffer-file-name))
-				 (not buffer-read-only))
+  (defun fc/eldoc-readonly ()
+    "When browsing gzipped elisp files mark them as readonly"
+    (when
+        (and
+         (buffer-file-name)
+         (string-suffix-p
+  	".el.gz"
+  	(file-name-nondirectory buffer-file-name))
+         (not buffer-read-only))
 
-			(read-only-mode t)
-			(view-mode t)
-			(message "read-only view mode enabled")))
+      (read-only-mode t)
+      (view-mode t)
+      (message "read-only view mode enabled")))
 
-	(add-hook 'emacs-lisp-mode-hook #'fc/eldoc-readonly)
+  (add-hook 'emacs-lisp-mode-hook #'fc/eldoc-readonly)
 #+end_src
 ** Remove trailing whitespace
 #+begin_src emacs-lisp
-	(add-hook 'before-save-hook #'delete-trailing-whitespace)
+  (add-hook 'before-save-hook #'delete-trailing-whitespace)
 #+end_src
 ** Hide mouse cursor while typing
 #+begin_src emacs-lisp
-	(setq make-pointer-invisible t)
+  (setq make-pointer-invisible t)
 #+end_src
 ** Remap compose-email to switch-to-scratch
 #+begin_src emacs-lisp
-	(defun switch-to-scratch ()
-		(interactive)
-		(switch-to-buffer "*scratch*"))
-	(global-remap-key "C-x m" #'switch-to-scratch)
-	;; (let ((keys "C-x m"))
-	;; 	(setq old-c-x-m (keymap-lookup global-map keys))
-	;; 	(define-key global-map (kbd keys) #'switch-to-scratch))
+  (defun switch-to-scratch ()
+    (interactive)
+    (switch-to-buffer "*scratch*"))
+  (global-remap-key "C-x m" #'switch-to-scratch)
+  ;; (let ((keys "C-x m"))
+  ;; 	(setq old-c-x-m (keymap-lookup global-map keys))
+  ;; 	(define-key global-map (kbd keys) #'switch-to-scratch))
 #+end_src
 ** Show messages buffer in other window
 #+begin_src emacs-lisp
-	(defun show-messages ()
-		(interactive)
-		(display-buffer "*Messages*" 'display-buffer-pop-up-window))
-	(keymap-global-set "C-x M" #'show-messages)
+  (defun show-messages ()
+    (interactive)
+    (display-buffer "*Messages*" 'display-buffer-pop-up-window))
+  (keymap-global-set "C-x M" #'show-messages)
 #+end_src
 ** Remove keybinding to suspend frame
 Always getting triggered by accident
 #+begin_src emacs-lisp
-	(dolist (keys '("C-z" "C-x C-z"))
-		(global-remap-key keys nil))
+  (dolist (keys '("C-z" "C-x C-z"))
+    (global-remap-key keys nil))
 #+end_src
 ** Display fill column indicator for prog modes
 #+begin_src emacs-lisp
-	(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
-	(add-hook 'git-commit-mode-hook #'display-fill-column-indicator-mode)
+  (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+  (add-hook 'git-commit-mode-hook #'display-fill-column-indicator-mode)
 #+end_src
 * Autosave & Backups
 Change the backup directory to be inside .emacs.d so that it does
 not litter directories with the backup files
 #+begin_src emacs-lisp
-	(let ((autosave-dir (no-littering-expand-var-file-name "auto-save"))
-				(backup-dir (no-littering-expand-var-file-name "backups")))
-		(setq
-		;; configure autosaves to folder
-		 auto-save-default nil
-		 auto-save-file-name-transforms (list (list "." autosave-dir t))
+  (let ((autosave-dir (no-littering-expand-var-file-name "auto-save"))
+        (backup-dir (no-littering-expand-var-file-name "backups")))
+    (setq
+     ;; configure autosaves to folder
+     auto-save-default nil
+     auto-save-file-name-transforms (list (list "." autosave-dir t))
 
-		 ;; move backups to different folder
-		 backup-directory-alist (list (cons ".*"  backup-dir))
+     ;; move backups to different folder
+     backup-directory-alist (list (cons ".*"  backup-dir))
 
-		 ;; do not create lockfiles
-		 create-lockfiles nil
+     ;; do not create lockfiles
+     create-lockfiles nil
 
-		 ;; use trash to delete
-		 delete-by-moving-to-trash t))
+     ;; use trash to delete
+     delete-by-moving-to-trash t))
 
 #+end_src
 * +Position the Emacs frame+
@@ -255,103 +254,98 @@ Already handled by desktop?
 #+begin_src emacs-lisp
   ;; define functions used in init-local
   (defun fc/add-to-path (paths)
-	  "Returns a new `PATH' string with unique items fromt PATHS from
+    "Returns a new `PATH' string with unique items fromt PATHS from
   the environment variable `PATH'"
-	  (let ((ps (split-string (getenv "PATH") ":")))
-		  (string-join (seq-uniq (append ps paths)) ":")))
+    (let ((ps (split-string (getenv "PATH") ":")))
+      (string-join (seq-uniq (append ps paths)) ":")))
   ;; load
   (require 'init-local nil t)
 #+end_src
 * GNU/MELPA Packages
 ** Compat
 #+begin_src emacs-lisp
-	(use-package compat)
+  (use-package compat)
 #+end_src
 ** Try
 #+begin_src emacs-lisp
-	(use-package try)
+  (use-package try)
 #+end_src
 ** Diminish
 #+begin_src emacs-lisp
-	(use-package diminish)
+  (use-package diminish)
 #+end_src
 ** Which Key
 #+begin_src emacs-lisp
-	(use-package which-key
-		:diminish
-		:config
-		(which-key-mode))
+  (use-package which-key
+    :diminish
+    :config
+    (which-key-mode))
 #+end_src
 ** ace-window
 #+begin_src emacs-lisp
-	(use-package ace-window
-		:bind ("C-x o" . ace-window)
-		:custom
-		(aw-dispatch-always nil))
+  (use-package ace-window
+    :bind ("C-x o" . ace-window)
+    :custom
+    (aw-dispatch-always nil))
 #+end_src
 ** Dockerfile
 #+begin_src emacs-lisp
-	(use-package dockerfile-mode)
+  (use-package dockerfile-mode)
 #+end_src
 ** Emmet
 #+begin_src emacs-lisp
-	(use-package emmet-mode
-		:hook (sgml-mode html-mode web-mode))
+  (use-package emmet-mode
+    :hook (sgml-mode html-mode web-mode))
 #+end_src
 ** JSON
 Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
 #+begin_src emacs-lisp
   (use-package json-mode
-  	:mode "\\.\\(\\(babel\\|bower\\)rc\\|json\\)\\'"
-  	:bind (:map json-mode-map
-  							("C-c C-j" . 'jq-interactively))
-  	:custom
-  	(tab-width 2)
-  	)
+    :mode "\\.\\(\\(babel\\|bower\\)rc\\|json\\)\\'"
+    :bind (:map json-mode-map
+  	      ("C-c C-j" . 'jq-interactively)))
 
   (defun json--compact-string (s)
-  	"Convert the JSON string to its compact form"
-  	(with-temp-buffer
-  		(insert s)
-  		(goto-char 0)
-  		(while (re-search-forward (rx bol (+ space)) nil t)
-  			(replace-match ""))
-  		(goto-char 0)
-  		(while (re-search-forward (rx (+ (any ?\n ?\r))) nil t)
-  			(replace-match " "))
-  		(buffer-string)))
+    "Convert the JSON string to its compact form"
+    (with-temp-buffer
+      (insert s)
+      (goto-char 0)
+      (while (re-search-forward (rx bol (+ space)) nil t)
+        (replace-match ""))
+      (goto-char 0)
+      (while (re-search-forward (rx (+ (any ?\n ?\r))) nil t)
+        (replace-match " "))
+      (buffer-string)))
 
   (defun json-compact-print (begin end)
-  	"Replace the selected region with a compact version of the JSON"
-  	(interactive "r")
-  	(when (use-region-p)
-  		(let ((s (buffer-substring-no-properties begin end)))
-  			(atomic-change-group
-  				(delete-region begin end)
-  				(insert (json--compact-string s))))))
+    "Replace the selected region with a compact version of the JSON"
+    (interactive "r")
+    (when (use-region-p)
+      (let ((s (buffer-substring-no-properties begin end)))
+        (atomic-change-group
+  	(delete-region begin end)
+  	(insert (json--compact-string s))))))
 #+end_src
 ** Go
 https://geeksocket.in/posts/emacs-lsp-go/
 #+begin_src emacs-lisp
-	;; Go - lsp-mode
-	(defun go-set-compile-command ()
-		(interactive)
-		(setq-local
-		 compile-command
-		 (string-join
-			`(,go-command "build")
-			" ")))
-	;; Set up before-save hooks to format buffer and add/delete imports.
-	(use-package go-mode
-		:bind (:map go-mode-map
-								("C-c C-c" . #'compile))
-		:config
-		(add-hook 'before-save-hook #'gofmt-before-save)
-		(add-hook 'go-mode-hook #'go-set-compile-command)
-		:custom
-		(tab-width 2)
-		(go-command (executable-find "go")))
-	;;  (add-hook 'before-save-hook #'gofmt-before-save))
+  ;; Go - lsp-mode
+  (defun go-set-compile-command ()
+    (interactive)
+    (setq-local
+     compile-command
+     (string-join `(,go-command "build") " ")))
+
+  ;; Set up before-save hooks to format buffer and add/delete imports.
+  (use-package go-mode
+    :bind (:map go-mode-map
+  	      ("C-c C-c" . #'compile))
+    :config
+    (add-hook 'before-save-hook #'gofmt-before-save)
+    (add-hook 'go-mode-hook #'go-set-compile-command)
+    :custom
+    (go-command (executable-find "go")))
+  ;;  (add-hook 'before-save-hook #'gofmt-before-save))
 #+end_src
 ** Mermaid
 Ensure that the NPM package =mermaid.cli= is installed globally
@@ -359,16 +353,14 @@ Ensure that the NPM package =mermaid.cli= is installed globally
   (use-package mermaid-mode
     :custom
     (mermaid-mmdc-location "/usr/bin/env mmdc")
-    (mermaid-output-format ".png")
-  )
+    (mermaid-output-format ".png"))
 #+end_src
 ** Yaml
 #+begin_src emacs-lisp
-	(use-package yaml-mode
-		:hook whitespace-mode
-		:config
-		(setq indent-tabs-mode nil)
-		)
+  (use-package yaml-mode
+    :hook whitespace-mode
+    :config
+    (setq indent-tabs-mode nil))
 #+end_src
 ** Markdown
 Ensure that [[https://gitlab.com/golang-commonmark/mdtool][mdtool]] is installed via go get
@@ -376,78 +368,77 @@ Ensure that [[https://gitlab.com/golang-commonmark/mdtool][mdtool]] is installed
   go get -u gitlab.com/golang-commonmark/mdtool
 #+end_src
 #+begin_src emacs-lisp
-	(use-package markdown-mode
-		:custom
-		(markdown-command "~/go/bin/mdtool +h +ta +l")
-		)
+  (use-package markdown-mode
+    :custom
+    (markdown-command "~/go/bin/mdtool +h +ta +l"))
 #+end_src
 *** Edit indirect for editing code blocks (Still need to figure out how it works)
 #+begin_src emacs-lisp
-	(use-package edit-indirect)
+  (use-package edit-indirect)
 #+end_src
 ** Asciidoc
 #+begin_src emacs-lisp
-	(use-package adoc-mode
-		:init
-		(add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
+  (use-package adoc-mode
+    :init
+    (add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
 #+end_src
 ** Cypher
 #+begin_src emacs-lisp
-	(use-package cypher-mode)
+  (use-package cypher-mode)
 #+end_src
 ** Terraform
 #+begin_src emacs-lisp
-	(use-package terraform-mode
-		:init
-		(add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
+  (use-package terraform-mode
+    :init
+    (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
 #+end_src
 ** Groovy
 #+begin_src emacs-lisp
-	(use-package groovy-mode
-		:mode "\\(^Jenkinsfile|\\.groovy\\)\\'")
+  (use-package groovy-mode
+    :mode "\\(^Jenkinsfile|\\.groovy\\)\\'")
 #+end_src
 ** vlf
 #+begin_src emacs-lisp
-	(use-package vlf
-		:config
-		(require 'vlf-setup))
+  (use-package vlf
+    :config
+    (require 'vlf-setup))
 #+end_src
 ** CSV
 #+begin_src emacs-lisp
-	(use-package csv-mode
-		;; add keybinding
-		:bind (:map csv-mode-map ("C-c C-o" . #'csv-open-in-excel)))
+  (use-package csv-mode
+    ;; add keybinding
+    :bind (:map csv-mode-map ("C-c C-o" . #'csv-open-in-excel)))
 
-	(defun csv-open-in-excel ()
-		"Open csv in MS Excel in Mac"
-		(interactive)
-		(let ((fn (if (buffer-file-name)
-									(buffer-file-name)
-								(make-temp-file "csv" nil ".csv" (buffer-string))))
-					(cmd '("open" "-a" "\"Microsoft Excel.app\"" "--args")))
-			(add-to-list 'cmd fn t)
-			(compilation-start (string-join cmd " "))))
+  (defun csv-open-in-excel ()
+    "Open csv in MS Excel in Mac"
+    (interactive)
+    (let ((fn (if (buffer-file-name)
+  		(buffer-file-name)
+  	      (make-temp-file "csv" nil ".csv" (buffer-string))))
+  	(cmd '("open" "-a" "\"Microsoft Excel.app\"" "--args")))
+      (add-to-list 'cmd fn t)
+      (compilation-start (string-join cmd " "))))
 
 #+end_src
 ** Kotlin
 #+begin_src emacs-lisp
-	(use-package kotlin-mode)
+  (use-package kotlin-mode)
 #+end_src
 ** CQL Mode
 #+begin_src emacs-lisp
-	(use-package cql-mode)
+  (use-package cql-mode)
 #+end_src
 ** Powershell
 #+begin_src emacs-lisp
-	(use-package powershell)
+  (use-package powershell)
 #+end_src
 ** Typescript
 #+begin_src emacs-lisp
-	(use-package typescript-mode)
+  (use-package typescript-mode)
 #+end_src
 ** Web Sequence Diagrams
 #+begin_src emacs-lisp
-	(use-package wsd-mode)
+  (use-package wsd-mode)
 #+end_src
 ** [[https://github.com/ljos/jq-mode][JQ Mode]]
 Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/gojq][gojq]] (Pure go implementation of jq)
@@ -456,44 +447,43 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
     :init
     (add-to-list 'auto-mode-alist '("\\.jq" . jq-mode))
     :custom
-    (jq-interactive-command "/usr/local/bin/jq")
-    )
+    (jq-interactive-command "/usr/local/bin/jq"))
 #+end_src
 ** Ditaa
 #+begin_src emacs-lisp
-	;; this line activates ditaa for org mode
-	(eval-after-load 'org
-		(progn
-			(org-babel-do-load-languages
-			 'org-babel-load-languages
-			 '((ditaa . t)))
-			(setq org-ditaa-jar-path "/usr/local/opt/ditaa/libexec/ditaa-0.11.0-standalone.jar")
-			(setq org-babel-default-header-args:ditaa
-						'((:results . "file")
-							(:exports . "results")
-							(:java . "-Dfile.encoding=UTF-8 -Djava.awt.headless=true")))
-			(message "Configured org babel")
-			))
+  ;; this line activates ditaa for org mode
+  (eval-after-load 'org
+    (progn
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((ditaa . t)))
+      (setq org-ditaa-jar-path
+  	  "/usr/local/opt/ditaa/libexec/ditaa-0.11.0-standalone.jar")
+      (setq org-babel-default-header-args:ditaa
+  	  '((:results . "file")
+  	    (:exports . "results")
+  	    (:java . "-Dfile.encoding=UTF-8 -Djava.awt.headless=true")))
+      (message "Configured org babel")))
 #+end_src
 ** JSX Support
 #+begin_src emacs-lisp
-	(use-package rjsx-mode)
-	(add-to-list 'auto-mode-alist '("\.tsx\\'" . rjsx-mode))
-	(add-to-list 'auto-mode-alist '("\.jsx\\'" . rjsx-mode))
+  (use-package rjsx-mode)
+  (add-to-list 'auto-mode-alist '("\.tsx\\'" . rjsx-mode))
+  (add-to-list 'auto-mode-alist '("\.jsx\\'" . rjsx-mode))
 #+end_src
 ** Rust
 #+begin_src emacs-lisp
-	(use-package rust-mode)
+  (use-package rust-mode)
 #+end_src
 ** Rego
 #+begin_src emacs-lisp
-	(use-package rego-mode)
+  (use-package rego-mode)
 #+end_src
 ** Rainbow colors
 #+begin_src emacs-lisp
   ;; use `M-x rainbow-mode' to fontify colors
   (use-package rainbow-mode
-  	:config (rainbow-mode))
+    :config (rainbow-mode))
 #+end_src
 ** Hydra
 *** Setup common paths
@@ -507,7 +497,6 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
 #+end_src
 *** Setup functions used by the hydra
 #+begin_src emacs-lisp
-
   (require 'project-notes)
 
   (run-with-idle-timer 1 nil #'load-project-notes)
@@ -518,70 +507,68 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
 #+end_src
 *** Commonly used org files
 #+begin_src emacs-lisp
-	(global-unset-key (kbd "M-g o"))
-	(global-remap-key "M-g o" #'common-org-files/body)
-	;(global-set-key (kbd "s-g") #'common-org-files/body)
+  (global-unset-key (kbd "M-g o"))
+  (global-remap-key "M-g o" #'common-org-files/body)
+  ;(global-set-key (kbd "s-g") #'common-org-files/body)
 #+end_src
 *** Setup Hydra
 #+begin_src emacs-lisp
   (use-package hydra
-  	:config
-  	(defhydra common-org-files (:exit t)
-  		"goto"
-  		("a" (find-file (expand-file-name "../profile/asset.org" daily-home)) "asset.org")
-  		("b" (find-file (expand-file-name "buf.org" daily-home)) "buf.org")
-  		("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
-  		("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
-  		("D" (daily-notes-find-file) "Daily Notes")
-  		("e" (find-file (locate-user-emacs-file "emacs.org")) "emacs.org")
-  		("i" (find-file (locate-user-emacs-file "init.el")) "init.el")
-  		("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
-  		("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
-  		("P" (project-notes-find-file) "Projects")
-  		("q" nil "quit")
-  		))
+    :config
+    (defhydra common-org-files (:exit t)
+      "goto"
+      ("a" (find-file (expand-file-name "../profile/asset.org" daily-home)) "asset.org")
+      ("b" (find-file (expand-file-name "buf.org" daily-home)) "buf.org")
+      ("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
+      ("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
+      ("D" (daily-notes-find-file) "Daily Notes")
+      ("e" (find-file (locate-user-emacs-file "emacs.org")) "emacs.org")
+      ("i" (find-file (locate-user-emacs-file "init.el")) "init.el")
+      ("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
+      ("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
+      ("P" (project-notes-find-file) "Projects")
+      ("q" nil "quit")))
 #+end_src
 ** eglot
 #+begin_src emacs-lisp
-	(use-package eglot)
+  (use-package eglot)
 #+end_src
 ** Avy
 #+begin_src emacs-lisp
-		;;	(define-key global-map (kbd "s-l") nil)
-		(use-package avy
-			:bind
-			("M-g l" . avy-goto-line)
-			("M-g f" . avy-goto-char-timer)
-			("C-x j" . avy-goto-char-timer))
+  ;;	(define-key global-map (kbd "s-l") nil)
+  (use-package avy
+    :bind
+    ("M-g l" . avy-goto-line)
+    ("M-g f" . avy-goto-char-timer)
+    ("C-x j" . avy-goto-char-timer))
 #+end_src
 ** Golden Ratio
 #+begin_src emacs-lisp
-	;; add advice so that golden ratio is called
-	(use-package golden-ratio
-		:diminish
-		:config
-		(golden-ratio-mode 1)
-		(define-advice select-window
-				(:after (window &optional no-record) golden-ratio-resize-window)
-			(golden-ratio)
-			nil)
-		)
+  ;; add advice so that golden ratio is called
+  (use-package golden-ratio
+    :diminish
+    :config
+    (golden-ratio-mode 1)
+    (define-advice select-window
+        (:after (window &optional no-record) golden-ratio-resize-window)
+      (golden-ratio)
+      nil))
 #+end_src
 ** Paredit
 Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]]
 #+begin_src emacs-lisp
   (use-package paredit
-  	:hook	(emacs-lisp-mode . paredit-mode)
-  	:config
-  	(keymap-set paredit-mode-map "C-j" nil)
-  	(keymap-set paredit-mode-map "RET" nil)
-  	(keymap-set paredit-mode-map "M-s" nil) ; rebind convolute
-  	(keymap-set paredit-mode-map "C-M-?" #'paredit-convolute-sexp))
+    :hook	(emacs-lisp-mode . paredit-mode)
+    :config
+    (keymap-set paredit-mode-map "C-j" nil)
+    (keymap-set paredit-mode-map "RET" nil)
+    (keymap-set paredit-mode-map "M-s" nil) ; rebind convolute
+    (keymap-set paredit-mode-map "C-M-?" #'paredit-convolute-sexp))
 #+end_src
 ** Aggressive Indent
 #+begin_src emacs-lisp
-	(use-package aggressive-indent
-		:hook (emacs-lisp-mode . aggressive-indent-mode))
+  (use-package aggressive-indent
+    :hook (emacs-lisp-mode . aggressive-indent-mode))
 #+end_src
 ** [[https://github.com/dajva/rg.el][rg.el]]
 #+begin_src emacs-lisp
@@ -590,28 +577,28 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
 * Packages not in ELPA/MELPA
 Function to install from git repository
 #+begin_src emacs-lisp
-  (defun package-repo-install (package-name package-url &optional branch load-filepath)
+  (defun package-repo-install
+      (package-name package-url &optional branch load-filepath)
     (let ((package-dir (expand-file-name
-                       (concat "site-lisp/" (symbol-name package-name))
-                       user-emacs-directory)))
+                        (concat "site-lisp/" (symbol-name package-name))
+                        user-emacs-directory)))
       (require 'vc)
       (unless (file-exists-p package-dir)
-       (vc-clone
-        package-url
-        'Git package-dir branch))
+        (vc-clone
+         package-url
+         'Git package-dir branch))
       (if load-filepath
-         (load-file (expand-file-name load-filepath package-dir))
-       (progn
-         (add-to-list 'load-path package-dir t)
-         (require package-name)))))
+  	(load-file (expand-file-name load-filepath package-dir))
+        (progn
+  	(add-to-list 'load-path package-dir t)
+  	(require package-name)))))
 #+end_src
 ** Visual Basic Mode
 From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el][visual-basic-mode.el]]
 #+begin_src emacs-lisp
-	(use-package visual-basic-mode
-		:mode "\\.vbs\\'"
-		:load-path "site-lisp/visual-basic-mode"
-		)
+  (use-package visual-basic-mode
+    :mode "\\.vbs\\'"
+    :load-path "site-lisp/visual-basic-mode")
 #+end_src
 *** Old way
 #+begin_example emacs-lisp
@@ -649,7 +636,9 @@ Forked from https://github.com/emacsattic/gedcom
 ** Plantuml
 Install from [[https://plantuml.com/][PlantUML]]
 #+begin_src emacs-lisp
-  (package-repo-install 'plantuml-mode "https://github.com/xshyamx/simple-plantuml-mode")
+  (package-repo-install
+   'plantuml-mode "https://github.com/xshyamx/simple-plantuml-mode")
+
   (use-package plantuml-mode
     :load-path "site-lisp/simple-plantuml-mode"
     :custom
@@ -660,16 +649,19 @@ Install from [[https://plantuml.com/][PlantUML]]
 ** Graphviz
 Install [[https://graphviz.org/][Graphviz]]
 #+begin_src emacs-lisp
-  (package-repo-install 'graphviz-dot-mode "https://github.com/xshyamx/graphviz-dot-mode")
+  (package-repo-install
+   'graphviz-dot-mode "https://github.com/xshyamx/graphviz-dot-mode")
+
   (use-package graphviz-dot-mode
     :load-path "site-lisp/graphviz-dot-mode"
     :custom
-    (graphviz-dot-indent-width 2 "set indent size to 2")
     (graphviz-dot-dot-program "/usr/local/bin/dot" "Path to dot executable"))
 #+end_src
 ** OpenAPI
 #+begin_src emacs-lisp
-  (package-repo-install 'openapi-mode "https://github.com/xshyamx/openapi-mode")
+  (package-repo-install
+   'openapi-mode "https://github.com/xshyamx/openapi-mode")
+
   (use-package openapi-mode
     :load-path "site-lisp/openapi-mode"
     :config
@@ -679,7 +671,8 @@ Install [[https://graphviz.org/][Graphviz]]
 ** XPath query & XML format with XMLStarlet
 Install [[https://xmlstar.sourceforge.net/download.php][XMLStarlet]]
 #+begin_src emacs-lisp
-  (package-repo-install 'xmlstarlet-mode "https://github.com/xshyamx/xmlstarlet-mode")
+  (package-repo-install
+   'xmlstarlet-mode "https://github.com/xshyamx/xmlstarlet-mode")
   (use-package xmlstarlet-mode
     :load-path "site-lisp/xmlstarlet-mode"
     :config
@@ -689,9 +682,11 @@ Install [[https://xmlstar.sourceforge.net/download.php][XMLStarlet]]
 *** Latest from source to support jq
 Requires [[JQ Mode]]
 #+begin_src emacs-lisp
-  (package-repo-install 'restclient-mode "https://github.com/xshyamx/restclient-mode")
+  (package-repo-install
+   'restclient-mode "https://github.com/xshyamx/restclient-mode")
+
   (use-package restclient-mode
-  	:load-path "site-lisp/restclient-mode")
+    :load-path "site-lisp/restclient-mode")
 #+end_src
 #+begin_example emacs-lisp
   (unless (package-installed-p 'restclient)
@@ -706,17 +701,20 @@ Requires [[JQ Mode]]
 #+end_example
 ** Git modes
 #+begin_src emacs-lisp
-	(require 'cl)
-	(package-repo-install 'git-commit "https://github.com/xshyamx/git-commit-mode")
-	(use-package git-commit
-		:init
-		:load-path "site-lisp/git-commit")
+  (require 'cl)
+  (package-repo-install
+   'git-commit "https://github.com/xshyamx/git-commit-mode")
 
-	(with-eval-after-load "compat"
-		(require 'compat)
-		(package-repo-install 'git-modes "https://github.com/magit/git-modes")
-		(use-package git-modes
-			:load-path "site-lisp/git-modes"))
+  (use-package git-commit
+    :init
+    :load-path "site-lisp/git-commit")
+
+  (with-eval-after-load "compat"
+    (require 'compat)
+    (package-repo-install
+     'git-modes "https://github.com/magit/git-modes")
+    (use-package git-modes
+      :load-path "site-lisp/git-modes"))
 #+end_src
 * Enable advanced flags
 ** Case Sensitive replacements
@@ -733,8 +731,8 @@ Requires [[JQ Mode]]
 #+end_src
 ** Enable narrowing =C-x n n= & widening =C-x n w=
 #+begin_src emacs-lisp
-	;; `C-x n n` & `C-x n w n`
-	(put 'narrow-to-region 'disabled nil)
+  ;; `C-x n n` & `C-x n w n`
+  (put 'narrow-to-region 'disabled nil)
 #+end_src
 * Tabs & Indentation
 ** +Indenting+
@@ -742,163 +740,171 @@ Set indentation level to 2 for most used modes
 #+begin_example emacs-lisp
   (indent-tab s-mode)
 #+end_example
-** Basic offset to 2
-#+begin_src emacs-lisp
-	(setq default-indent-offset 2)
-	(defun fc/set-default-indent-offset (var)
-		(setq x default-indent-offset))
+** +Basic offset to 2+
+#+begin_example emacs-lisp
+  (setq default-indent-offset 2)
+  (defun fc/set-default-indent-offset (var)
+  	(setq x default-indent-offset))
 
-	(setq offset-vars
-				'(
-					lisp-indent-offset
-					css-indent-offset
-					groovy-indent-offset
-					js-indent-level
-					jsx-indent-level
-					opa-js-indent-level
-					perl-indent-level
-					python-indent
-					python-indent-offset
-					sh-basic-offset
-					sh-indentation
-					standard-indent
-					tab-width
-					typescript-indent-level
-					web-mode-markup-indent-offset ; HTML element offset indentation
-					web-mode-css-indent-offset ; CSS offset indentation
-					web-mode-code-indent-offset ; Script/code offset indentation (for JavaScript, Java, PHP, Ruby, VBScript, Python, etc.)
-					)
-				)
-	;; set for all the variables
-	(mapc #'fc/set-default-indent-offset offset-vars)
-#+end_src
+  (setq offset-vars
+  			'(
+  				lisp-indent-offset
+  				css-indent-offset
+  				groovy-indent-offset
+  				js-indent-level
+  				jsx-indent-level
+  				opa-js-indent-level
+  				perl-indent-level
+  				python-indent
+  				python-indent-offset
+  				sh-basic-offset
+  				sh-indentation
+  				standard-indent
+  				tab-width
+  				typescript-indent-level
+  				web-mode-markup-indent-offset ; HTML element offset indentation
+  				web-mode-css-indent-offset ; CSS offset indentation
+  				web-mode-code-indent-offset ; Script/code offset indentation (for JavaScript, Java, PHP, Ruby, VBScript, Python, etc.)
+  				)
+  			)
+  ;; set for all the variables
+  (mapc #'fc/set-default-indent-offset offset-vars)
+#+end_example
 * Saving Abbreviations
 - Emacs Lisp abbreviations from https://github.com/malabarba/speed-of-thought-lisp
 #+begin_src emacs-lisp
-	(setq abbrev-file-name
-				(expand-file-name "~/.emacs.d/abbrev_defs"))
-	;; do not prompt to save abbreivations
-	(setq save-abbrevs 'silently)
-	;; enable for the following modes
-	(let ((abbrev-modes '(org plantuml emacs-lisp go-mode)))
-		(mapc (lambda (name)
-						(add-hook (intern (concat (symbol-name name) "-mode-hook")) #'abbrev-mode))
-					abbrev-modes))
-	;; `M-x ea' to edit abbreivations
-	(defalias 'ea #'edit-abbrevs "Edit abbreviations")
+  (setq abbrev-file-name
+        (expand-file-name "~/.emacs.d/abbrev_defs"))
+
+  ;; do not prompt to save abbreivations
+  (setq save-abbrevs 'silently)
+
+  ;; enable for the following modes
+  (let ((abbrev-modes '(org plantuml emacs-lisp go-mode)))
+    (mapc (lambda (name)
+  	  (add-hook
+  	   (intern (concat (symbol-name name) "-mode-hook"))
+  	   #'abbrev-mode))
+  	abbrev-modes))
+
+  ;; `M-x ea' to edit abbreivations
+  (defalias 'ea #'edit-abbrevs "Edit abbreviations")
 #+end_src
 * Server
 #+begin_src emacs-lisp
-	;; start the server !!
-	(load "server")
-	(setq server-socket-dir (no-littering-expand-var-file-name "server"))
-	(server-start)
-	(unless (server-running-p) (server-start))
-	(message "started server")
+  ;; start the server !!
+  (load "server")
+  (setq server-socket-dir (no-littering-expand-var-file-name "server"))
+  (server-start)
+  (unless (server-running-p) (server-start))
+  (message "started server")
 #+end_src
 * Org Mode
 #+begin_src emacs-lisp
-	(setq org-confirm-babel-evaluate nil)
-	(org-babel-do-load-languages
-	 'org-babel-load-languages
-	 '((js . t)))
+  (setq org-confirm-babel-evaluate nil)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((js . t)))
 
-	(add-to-list 'org-structure-template-alist '("x" . "src emacs-lisp") t)
+  (add-to-list 'org-structure-template-alist '("x" . "src emacs-lisp") t)
 #+end_src
 ** Install htmlize from elpa
 #+begin_src emacs-lisp
-	(use-package htmlize)
+  (use-package htmlize)
 #+end_src
 ** Always open files in emacs
 From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files with C-c C-o inside Emacs]]
 #+begin_src emacs-lisp
-	(setq org-file-apps '((t . emacs)))
+  (setq org-file-apps '((t . emacs)))
 #+end_src
 ** Allow elisp evaluation
 #+begin_src emacs-lisp
-	;; allow elisp evaluation in org files
-	(defun org-babel-allow-elisp (lang body)
-		(not (string= lang "emacs-lisp")))
-	(setq org-confirm-babel-evaluate #'org-babel-allow-elisp)
+  ;; allow elisp evaluation in org files
+  (defun org-babel-allow-elisp (lang body)
+    (not (string= lang "emacs-lisp")))
+  (setq org-confirm-babel-evaluate #'org-babel-allow-elisp)
 #+end_src
 ** Keybindings for killing src blocks
 #+begin_src emacs-lisp
-	(defun org-block-at-point ()
-		"Block at point"
-		(let ((case-fold-search t))
-			(org-between-regexps-p "^[ \t]*#\\+begin_.*"
-														 "^[ \t]*#\\+end_.*")))
+  (defun org-block-at-point ()
+    "Block at point"
+    (let ((case-fold-search t))
+      (org-between-regexps-p "^[ \t]*#\\+begin_.*"
+  			   "^[ \t]*#\\+end_.*")))
 
-	(defun org-kill-block ()
-		"Kill current block."
-		(interactive)
-		(if-let ((blockp (org-block-at-point)))
-				(kill-region (car blockp) (cdr blockp))
-			(user-error "Not in a block")))
+  (defun org-kill-block ()
+    "Kill current block."
+    (interactive)
+    (if-let ((blockp (org-block-at-point)))
+        (kill-region (car blockp) (cdr blockp))
+      (user-error "Not in a block")))
 
-	(defun org-copy-block ()
-		"Copy current block."
-		(interactive)
-		(if-let ((blockp (org-block-at-point)))
-				(kill-ring-save (car blockp) (cdr blockp))
-			(user-error "Not in a block")))
+  (defun org-copy-block ()
+    "Copy current block."
+    (interactive)
+    (if-let ((blockp (org-block-at-point)))
+        (kill-ring-save (car blockp) (cdr blockp))
+      (user-error "Not in a block")))
 
-	(keymap-set org-mode-map "C-c C-v C-w" #'org-kill-block)
-	(keymap-set org-mode-map "C-c C-v M-w" #'org-copy-block)
+  (keymap-set org-mode-map "C-c C-v C-w" #'org-kill-block)
+  (keymap-set org-mode-map "C-c C-v M-w" #'org-copy-block)
 #+end_src
 ** org-capture templates
 #+begin_src emacs-lisp
   (require 'org-agenda)
   (defun add-daily-note ()
-  	"Find heading to add daily note"
-  	(goto-char (point-max))
-  	(let ((ts (format-time-string "[%Y-%m-%d %a]"))
-  				(tl (org-find-top-headline)))
-  		;; create heading if it does not exist
-  		(unless (string= ts tl)
-  			(unless (bolp) (insert "\n"))
-  			(insert "* " ts "\n"))
-  		(unless (bolp) (insert "\n"))))
+    "Find heading to add daily note"
+    (goto-char (point-max))
+    (let ((ts (format-time-string "[%Y-%m-%d %a]"))
+  	(tl (org-find-top-headline)))
+      ;; create heading if it does not exist
+      (unless (string= ts tl)
+        (unless (bolp) (insert "\n"))
+        (insert "* " ts "\n"))
+      (unless (bolp) (insert "\n"))))
 
   (global-remap-key "C-x x" #'org-capture)
   ;(global-set-key (kbd "C-x c") #'org-capture)
 
   (defun add-daily-note-capture (filename)
-  	(add-to-list 'org-capture-templates
-  							 `("n" "Daily notes item" plain
-  								 (file+function ,filename add-daily-note)
-  								 "** %^{Title}\n%?" :jump-to-captured t)))
+    (add-to-list 'org-capture-templates
+  	       `("n" "Daily notes item" plain
+  		 (file+function ,filename add-daily-note)
+  		 "** %^{Title}\n%?" :jump-to-captured t)))
 
   (defun add-interview-capture (filename)
-  	(add-to-list 'org-capture-templates
-  							 `("i" "Interview" plain
-  								 (file+function ,filename add-daily-note)
-  									,(string-join
-  										`("** Interviews"
-  										 "*** %^{Candidate Name}"
-  										 "- %?"
-  										 ,(concat "**** %\\1 / Interview notes" (make-string 24 ? ) ":noexport:")
-  										 "DEADLINE: %^{Interview Time}T")
-  										"\n")
-  									:jump-to-captured t)))
+    (add-to-list 'org-capture-templates
+  	       `("i" "Interview" plain
+  		 (file+function ,filename add-daily-note)
+  		 ,(string-join
+  		   `("** Interviews"
+  		     "*** %^{Candidate Name}"
+  		     "- %?"
+  		     ,(concat
+  		       "**** %\\1 / Interview notes"
+  		       (make-string 24 ? ) ":noexport:")
+  		     "DEADLINE: %^{Interview Time}T")
+  		   "\n")
+  		 :jump-to-captured t)))
 
   (defun add-note-capture (filename)
-  	(add-to-list 'org-capture-templates
-  							 `("b" "Buf note item" entry
-  								 (file ,filename)
-  								 "* %?" :jump-to-captured t)))
+    (add-to-list 'org-capture-templates
+  	       `("b" "Buf note item" entry
+  		 (file ,filename)
+  		 "* %?" :jump-to-captured t)))
+
   ;; set variable to nil otherwise will get the following error
   ;; Symbol's value as variable is void: org-capture-templates
   (setq org-capture-templates nil)
 #+end_src
 ** Disable archive keybindings
 #+begin_src emacs-lisp
-	(keymap-unset org-mode-map "C-c $" t)
-	(keymap-unset org-mode-map "C-c C-<tab>" t)
+  (keymap-unset org-mode-map "C-c $" t)
+  (keymap-unset org-mode-map "C-c C-<tab>" t)
 #+end_src
 ** Update diary file for using calendar
 #+begin_src emacs-lisp
-	(setq diary-file (no-littering-expand-var-file-name "diary"))
+  (setq diary-file (no-littering-expand-var-file-name "diary"))
 #+end_src
 ** Do not split headings & respect content
 #+begin_src emacs-lisp
@@ -909,249 +915,271 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 ** Reset the dates on a meeting list heading
 #+begin_src emacs-lisp
   (defun org-reset-day (bc)
-  	(with-temp-buffer
-  		(insert bc)
-  		;; Set the date to current date
-  		(goto-char 0)
-  		(while (re-search-forward
-  						(rx bow (repeat 4 digit)
-  								"-" (repeat 2 digit)
-  								"-" (repeat 2 digit)
-  								(+ space)
-  								(or "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"))
-  						nil t)
-  			(replace-match (format-time-string "%Y-%m-%d %a")))
-  		;; remove CLOSED tags
-  		(goto-char 0)
-  		(while (re-search-forward
-  						(rx bol "CLOSED: [" (+ (not "]")) "]" (+ space))
-  						nil t)
-  			(replace-match ""))
-  		;; remove DONE
-  		(goto-char 0)
-  		(while (re-search-forward
-  						(rx bol (repeat 3 "*") (+ space) (? (or "TODO" "DONE") eow (+ space))) nil t)
-  			(replace-match "*** TODO "))
-  		;; Remove meeting notes
-  		(goto-char 0)
-  		(while (re-search-forward (rx bol "DEADLINE" eow) nil t)
-  			(forward-line)
-  			(while (not (or (eobp)
-  											(looking-at (rx bol (+ "*") (+ space)))))
-  				(delete-line)))
-  		(buffer-substring-no-properties (point-min) (point-max))))
+    (with-temp-buffer
+      (insert bc)
+      ;; Set the date to current date
+      (goto-char 0)
+      (while (re-search-forward
+  	    (rx bow (repeat 4 digit)
+  		"-" (repeat 2 digit)
+  		"-" (repeat 2 digit)
+  		(+ space)
+  		(or "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"))
+  	    nil t)
+        (replace-match (format-time-string "%Y-%m-%d %a")))
+      ;; remove CLOSED tags
+      (goto-char 0)
+      (while (re-search-forward
+  	    (rx bol "CLOSED: [" (+ (not "]")) "]" (+ space))
+  	    nil t)
+        (replace-match ""))
+      ;; remove DONE
+      (goto-char 0)
+      (while (re-search-forward
+  	    (rx bol (repeat 3 "*") (+ space) (? (or "TODO" "DONE") eow (+ space))) nil t)
+        (replace-match "*** TODO "))
+      ;; Remove meeting notes
+      (goto-char 0)
+      (while (re-search-forward (rx bol "DEADLINE" eow) nil t)
+        (forward-line)
+        (while (not (or (eobp)
+  		      (looking-at (rx bol (+ "*") (+ space)))))
+  	(delete-line)))
+      (buffer-substring-no-properties (point-min) (point-max))))
 
   (defun org-reset-meeting-dates ()
-  	(interactive)
-  	(save-excursion
-  		(save-restriction
-  			(when-let ((level (org-outline-level))
-  								 (heading (org-element-at-point)))
-  				;; if at the appropriate heading level
-  				(when (eq 2 level)
-  					(org-narrow-to-subtree heading)))
-  			(let ((day-contents (buffer-substring-no-properties (point-min) (point-max))))
-  				;; replace narrowed region with processed content
-  				(delete-region (point-min) (point-max))
-  				(insert (org-reset-day day-contents))))))
+    (interactive)
+    (save-excursion
+      (save-restriction
+        (when-let ((level (org-outline-level))
+  		 (heading (org-element-at-point)))
+  	;; if at the appropriate heading level
+  	(when (eq 2 level)
+  	  (org-narrow-to-subtree heading)))
+        (let ((day-contents (buffer-substring-no-properties
+  			   (point-min) (point-max))))
+  	;; replace narrowed region with processed content
+  	(delete-region (point-min) (point-max))
+  	(insert (org-reset-day day-contents))))))
 
   (keymap-set org-mode-map "C-c r m" #'org-reset-meeting-dates)
 #+end_src
 ** Generate email content from interview notes
 #+begin_src emacs-lisp
   (defun interview-email ()
-  	"Generate email content from interview notes in org mode"
-  	(interactive)
-  	(save-excursion
-  		(let* ((el (org-element-at-point))
-  					 (pel (org-element-property :parent el)))
-  			(if (and
-  					 (eq 'headline (org-element-type el))
-  					 (string= "Interviews" (org-element-property :title pel)))
-  					(let* ((content
-  									(buffer-substring-no-properties
-  									 (org-element-property :contents-begin el)
-  									 (org-element-property :contents-end el)))
-  								 (fn (make-temp-file "org-export" nil ".html")))
-  						(with-temp-buffer
-  							(insert "#+EXPORT_FILE_NAME: " fn "\n")
-  							(insert "#+html: <!doctype html>\n\n")
-  							(insert "#+html: <style> body {font-family: sans-serif; font-size: 12pt;}</style>\n\n")
-  							(insert "Hi,\n\nPlease find below my observations from my discussion with ")
-  							(insert "*" (org-element-property :title el) "*\n\n")
-  							(insert content)
-  							(goto-char (point-min))
-  							(when (re-search-forward (rx bol (+ "*") (+ space) (*? any) ":noexport:") nil t)
-  								(delete-region (match-beginning 0) (point-max))
-  								(forward-line -2))
-  							(when (re-search-forward (rx bol "- " (group (? "Not ") "Recommended")) nil t)
-  								(replace-match "- *\\1*"))
-  							(goto-char (point-max))
-  							(insert "\n\nRegards,\n\nShyam")
-  							(org-html-export-to-html nil nil nil t nil)
-  							(browse-url fn)
+    "Generate email content from interview notes in org mode"
+    (interactive)
+    (save-excursion
+      (let* ((el (org-element-at-point))
+  	   (pel (org-element-property :parent el)))
+        (if (and
+  	   (eq 'headline (org-element-type el))
+  	   (string= "Interviews" (org-element-property :title pel)))
+  	  (let* ((content
+  		  (buffer-substring-no-properties
+  		   (org-element-property :contents-begin el)
+  		   (org-element-property :contents-end el)))
+  		 (fn (make-temp-file "org-export" nil ".html")))
+  	    (with-temp-buffer
+  	      (insert "#+EXPORT_FILE_NAME: " fn "\n")
+  	      (insert "#+html: <!doctype html>\n\n")
+  	      (insert "#+html: <style> body "
+  		      "{font-family: sans-serif; font-size: 12pt;}"
+  		      "</style>\n\n")
+  	      (insert "Hi,\n\nPlease find below my observations "
+  		      "from my discussion with ")
+  	      (insert "*" (org-element-property :title el) "*\n\n")
+  	      (insert content)
+  	      (goto-char (point-min))
+  	      (when (re-search-forward
+  		     (rx bol (+ "*") (+ space) (*? any) ":noexport:")
+  		     nil t)
+  		(delete-region (match-beginning 0) (point-max))
+  		(forward-line -2))
+  	      (when (re-search-forward
+  		     (rx bol "- " (group (? "Not ") "Recommended"))
+  		     nil t)
+  		(replace-match "- *\\1*"))
+  	      (goto-char (point-max))
+  	      (insert "\n\nRegards,\n\nShyam")
+  	      (org-html-export-to-html nil nil nil t nil)
+  	      (browse-url fn)
 
-  							))
-  				(user-error "Not under an \"Interviews\" heading")))))
+  	      ))
+  	(user-error "Not under an \"Interviews\" heading")))))
 
   (keymap-set org-mode-map "C-c e" #'interview-email)
 #+end_src
 ** Get active tab in firefox as org link
 Find current profile directory from [[elisp:(browse-url-firefox "about:profiles")][about:profiles]]
 #+begin_src emacs-lisp
-	(defun ff-link-org ()
-		(interactive)
-		(insert
-		 (shell-command-to-string
-			(string-join
-			 '("lz4jsoncat \"$FIREFOX_PROFILE/sessionstore-backups/recovery.jsonlz4\""
-				 "jq -r '.windows[0].tabs | sort_by(.lastAccessed)[-1] | .entries[.index-1] | \"[[\" + (.url) + \"][\" + (.title) + \"]]\"'"
-				 "tr -d '\n'")
-			 " | ")))
-		)
-	(keymap-set org-mode-map "C-c i f" #'ff-link-org)
+  (defun ff-link-org ()
+    (interactive)
+    (insert
+     (shell-command-to-string
+      (string-join
+       (list
+        (concat
+         "lz4jsoncat "
+         "\"$FIREFOX_PROFILE/sessionstore-backups/recovery.jsonlz4\"")
+        (concat "jq -r "
+  	      "'.windows[0].tabs "
+  	      "| sort_by(.lastAccessed)[-1] "
+  	      "| .entries[.index-1] "
+  	      "| \"[[\" + (.url) + \"][\" + (.title) + \"]]\"'")
+        "tr -d '\n'")
+       " | ")))
+    )
+  (keymap-set org-mode-map "C-c i f" #'ff-link-org)
 #+end_src
 * Utility Functions
 ** Recreate scratch buffer
 #+begin_src emacs-lisp
-	;; recreate scratch buffer
-	(defun fc/create-scratch-buffer ()
-		"Create a scratch buffer if one does not already exist"
-		(interactive)
-		(let ((buffer-name "*scratch*"))
-			(unless (get-buffer buffer-name)
-				(with-current-buffer (get-buffer-create buffer-name)
-					(insert (string-join
-									 '(";; This buffer is for text that is not saved, and for Lisp evaluation."
-										 ";; To create a file, visit it with C-x C-f and enter text in its buffer."
-										 ";; Use C-x C-e to eval expressing and C-j to eval and print\n\n"
-										 )
-									 "\n"))
-					(lisp-interaction-mode))
-				)
-			(switch-to-buffer buffer-name)
-			)
-		)
-	(defalias
-		'create-scratch-buffer
-		'fc/create-scratch-buffer
-		"Alias namespaced function to an non-namespaced name")
+  ;; recreate scratch buffer
+  (defun fc/create-scratch-buffer ()
+    "Create a scratch buffer if one does not already exist"
+    (interactive)
+    (let ((buffer-name "*scratch*"))
+      (unless (get-buffer buffer-name)
+        (with-current-buffer (get-buffer-create buffer-name)
+  	(insert (string-join
+  		 '(";; This buffer is for text that is not saved, and for Lisp evaluation."
+  		   ";; To create a file, visit it with C-x C-f and enter text in its buffer."
+  		   ";; Use C-x C-e to eval expressing and C-j to eval and print\n\n"
+  		   )
+  		 "\n"))
+  	(lisp-interaction-mode))
+        )
+      (switch-to-buffer buffer-name)
+      )
+    )
+
+  (defalias
+    'create-scratch-buffer
+    'fc/create-scratch-buffer
+    "Alias namespaced function to an non-namespaced name")
 #+end_src
 ** Untabify buffer
 From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-saving-certain-file-types-and-only-those-file-ty][Untabify certain filetypes in Emacs]]
 #+begin_src emacs-lisp
-	(defun fc/untabify-buffer ()
-		"Untabify current buffer"
-		(interactive)
-		(untabify (point-min) (point-max)))
-	(defalias
-		'untabify-buffer
-		'fc/untabify-buffer
-		"Alias namespaced function to an non-namespaced name")
+  (defun fc/untabify-buffer ()
+    "Untabify current buffer"
+    (interactive)
+    (untabify (point-min) (point-max)))
+
+  (defalias
+    'untabify-buffer
+    'fc/untabify-buffer
+    "Alias namespaced function to an non-namespaced name")
 #+end_src
 ** Unhexify
 #+begin_src emacs-lisp
-	(defun fc/unhexify (color)
-		(map
-		 'list
-		 (lambda (x) (string-to-number x 16))
-		 (split-string
-			(replace-regexp-in-string
-			 "#\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)\\([0-9A-Fa-f]\\{2\\}\\)"
-			 "\\1-\\2-\\3"
-			 color) "-")
-		 )
-		)
-	(defalias
-		'unhexify
-		'fc/unhexify
-		"Alias namespaced function to an non-namespaced name")
+  (defun fc/unhexify (color)
+    (map
+     'list
+     (lambda (x) (string-to-number x 16))
+     (split-string
+      (replace-regexp-in-string
+       (rx "#"
+  	 (group (repeat 2 xdigit))
+  	 (group (repeat 2 xdigit))
+  	 (group (repeat 2 xdigit))
+  	 eow)
+       "\\1-\\2-\\3"
+       color)
+      "-")))
+
+  (defalias
+    'unhexify
+    'fc/unhexify
+    "Alias namespaced function to an non-namespaced name")
 #+end_src
 ** Camelcase
 #+begin_src emacs-lisp
-	;;;###autoload
-	(defun fc/camel-case (input &optional upper)
-		"Convert INPUT to camel case string. If UPPER is passed then the
-	first word is capitalized"
-		(let ((parts (split-string input "[ \f\t\n\r\v_-]+")))
-			(let ((first-word-transformer (if upper #'capitalize #'downcase)))
-				(mapconcat
-				 'identity
-				 (cons (funcall first-word-transformer (car parts))
-							 (mapcar 'capitalize (cdr parts)))
-				 "")
-				)
-			)
-		)
-	(defalias
-		'camel-case
-		'fc/camel-case
-		"Alias namespaced function to an non-namespaced name")
+  ;;;###autoload
+  (defun fc/camel-case (input &optional upper)
+    "Convert INPUT to camel case string. If UPPER is passed then the
+  first word is capitalized"
+    (let ((parts (split-string input "[ \f\t\n\r\v_-]+")))
+      (let ((first-word-transformer (if upper #'capitalize #'downcase)))
+        (mapconcat
+         'identity
+         (cons (funcall first-word-transformer (car parts))
+  	     (mapcar 'capitalize (cdr parts)))
+         "")
+        )
+      )
+    )
 
-	(defun camel-case-region (begin end)
-		"Convert selected region to camel case"
-		(interactive "r")
-		(when (use-region-p)
-			(let ((repl (camel-case (buffer-substring-no-properties begin end))))
-				(delete-region begin end)
-				(push-mark)
-				(insert repl))))
+  (defalias
+    'camel-case
+    'fc/camel-case
+    "Alias namespaced function to an non-namespaced name")
+
+  (defun camel-case-region (begin end)
+    "Convert selected region to camel case"
+    (interactive "r")
+    (when (use-region-p)
+      (let ((repl
+  	   (camel-case
+  	    (buffer-substring-no-properties begin end))))
+        (delete-region begin end)
+        (push-mark)
+        (insert repl))))
 #+end_src
 ** Kebab Case
 #+begin_src emacs-lisp
-	(defun kebab-case (s)
-		"Convert to kebab case by splitting on spaces, underscores &
-	hyphens"
-		(string-join (split-string (downcase s) "[ \f\t\n\r\v_-]+") "-"))
+  (defun kebab-case (s)
+    "Convert to kebab case by splitting on spaces, underscores &
+  hyphens"
+    (string-join (split-string (downcase s) "[ \f\t\n\r\v_-]+") "-"))
 
-	(defun kebab-case-region (begin end)
-		"Convert selected region to kebab case"
-		(interactive "r")
-		(when (use-region-p)
-			(let ((repl (kebab-case (buffer-substring-no-properties begin end))))
-				(delete-region begin end)
-				(push-mark)
-				(insert repl))))
+  (defun kebab-case-region (begin end)
+    "Convert selected region to kebab case"
+    (interactive "r")
+    (when (use-region-p)
+      (let ((repl (kebab-case
+  		 (buffer-substring-no-properties begin end))))
+        (delete-region begin end)
+        (push-mark)
+        (insert repl))))
 #+end_src
 ** Toggle proxy
 #+begin_src emacs-lisp
-	(defun fc/toggle-proxy (&optional force)
-		"Toggle proxy settings for emacs"
-		(interactive)
-		(if (or force (file-exists-p "~/.proxy.lock"))
-				(progn
-					(setq url-using-proxy t
-								url-proxy-services
-								'(("no_proxy" . "localhost")
-									("http" . "localhost:3128")
-									("https" . "localhost:3128")))
-					(setenv "http_proxy" "http://localhost:3128")
-					(setenv "https_proxy" "http://localhost:3128")
-					(setenv "no_proxy" "localhost")
-					(message "Proxy enabled")
-					)
-			(progn
-				(setq url-using-proxy nil
-							url-proxy-services nil)
-				(setenv "http_proxy" nil)
-				(setenv "https_proxy" nil)
-				(setenv "no_proxy" nil)
-				(message "Proxy disabled")
-				)
-			)
-		)
+  (defun fc/toggle-proxy (&optional force)
+    "Toggle proxy settings for emacs"
+    (interactive)
+    (if (or force (file-exists-p "~/.proxy.lock"))
+        (progn
+  	(setq url-using-proxy t
+  	      url-proxy-services
+  	      '(("no_proxy" . "localhost")
+  		("http" . "localhost:3128")
+  		("https" . "localhost:3128")))
+  	(setenv "http_proxy" "http://localhost:3128")
+  	(setenv "https_proxy" "http://localhost:3128")
+  	(setenv "no_proxy" "localhost")
+  	(message "Proxy enabled")
+  	)
+      (progn
+        (setq url-using-proxy nil
+  	    url-proxy-services nil)
+        (setenv "http_proxy" nil)
+        (setenv "https_proxy" nil)
+        (setenv "no_proxy" nil)
+        (message "Proxy disabled"))))
 #+end_src
 ** Crux
 #+begin_src emacs-lisp
-	;; From https://github.com/bbatsov/crux
-	(defun crux-eval-and-replace (prefix)
-		"Replace the preceding sexp with its value."
-		(interactive "p")
-		(let ((value (eval (elisp--preceding-sexp))))
-			(backward-kill-sexp)
-			(insert (format (if (> prefix 1) "%s" "%S") value))))
+  ;; From https://github.com/bbatsov/crux
+  (defun crux-eval-and-replace (prefix)
+    "Replace the preceding sexp with its value."
+    (interactive "p")
+    (let ((value (eval (elisp--preceding-sexp))))
+      (backward-kill-sexp)
+      (insert (format (if (> prefix 1) "%s" "%S") value))))
 
-;	(keymap-global-set "C-c e" #'crux-eval-and-replace)
+  ;	(keymap-global-set "C-c e" #'crux-eval-and-replace)
 #+end_src
 * File Mode Specific
 ** Ruby mode for Vagrantfile
@@ -1161,77 +1189,80 @@ From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-
 ** SQL
 Setup sql-mode to highlight sql keywords
 #+begin_src emacs-lisp
-	(add-hook 'sql-mode-hook
-						(lambda () (sql-highlight-ansi-keywords)))
+  (add-hook 'sql-mode-hook
+  	  #'sql-highlight-ansi-keywords)
 #+end_src
-** Java
+** +Java+
 Force indents, offsets and disable tabs
-#+begin_src emacs-lisp
+#+begin_example emacs-lisp
   (add-hook 'java-mode-hook
             (lambda ()
               (setq c-basic-offset 2
                     tab-width 2
                     indent-tabs-mode nil)))
-#+end_src
+#+end_example
 ** Show whitespace in makefiles
 #+begin_src emacs-lisp
-	(add-hook 'makefile-bsdmake-mode-hook #'whitespace-mode)
+  (add-hook 'makefile-bsdmake-mode-hook #'whitespace-mode)
 #+end_src
 ** Make file with shebang executable
 #+begin_src emacs-lisp
-	(add-hook 'after-save-hook
-						'executable-make-buffer-file-executable-if-script-p)
+  (add-hook 'after-save-hook
+  	  #'executable-make-buffer-file-executable-if-script-p)
 #+end_src
 ** Golang
 *** Setup GOPATH and variables for go-mode
 #+begin_src emacs-lisp
-	(setq go-path (expand-file-name "go" (getenv "HOME"))
-				godef-command (executable-find "godef")
-				gofmt-command (executable-find "gofmt")
-				godoc-command (executable-find "godoc")
-				go-command (executable-find "go"))
+  (setq go-path (expand-file-name "go" (getenv "HOME"))
+        godef-command (executable-find "godef")
+        gofmt-command (executable-find "gofmt")
+        godoc-command (executable-find "godoc")
+        go-command (executable-find "go"))
 #+end_src
 ** HTML
 #+begin_src emacs-lisp
-	(defun setup-compile-html ()
-		(when (buffer-file-name)
-			(setq-local compile-command (concat "vnu " (file-name-nondirectory (buffer-file-name))))))
-	;; install vnu from brew
-	(add-hook 'html-mode-hook #'setup-compile-html)
+  (defun setup-compile-html ()
+    (when (buffer-file-name)
+      (setq-local compile-command
+  		(concat "vnu "
+  			(file-name-nondirectory (buffer-file-name))))))
+
+  ;; install vnu from brew
+  (add-hook 'html-mode-hook #'setup-compile-html)
 #+end_src
 ** Prettify symbols for emacs lisp
 #+begin_src emacs-lisp
-	(add-hook 'emacs-lisp-mode-hook #'prettify-symbols-mode)
+  (add-hook 'emacs-lisp-mode-hook #'prettify-symbols-mode)
 #+end_src
 ** Insert lambda for elisp
 #+begin_src emacs-lisp
-	(require 'skeleton)
-	(define-skeleton insert-lambda
-		"Insert a lambda function"
-		"Skeleton"
-		"(lambda (" _ "))")
+  (require 'skeleton)
+  (define-skeleton insert-lambda
+    "Insert a lambda function"
+    "Skeleton"
+    "(lambda (" _ "))")
 
-	(keymap-set emacs-lisp-mode-map "C-c C-l" #'insert-lambda)
-	(keymap-set lisp-interaction-mode-map "C-c C-l" #'insert-lambda)
+  (keymap-set emacs-lisp-mode-map "C-c C-l" #'insert-lambda)
+  (keymap-set lisp-interaction-mode-map "C-c C-l" #'insert-lambda)
 
-	(defun insert-let (prefix)
-		(interactive "p")
-		(message "insert-let : %d" prefix)
-		(insert "(let" (if (>= prefix 4) "*" "") " ((")
-		(setq p (point))
-		(insert ")))")
-		(goto-char p))
+  (defun insert-let (prefix)
+    (interactive "p")
+    (message "insert-let : %d" prefix)
+    (insert "(let" (if (>= prefix 4) "*" "") " ((")
+    (setq p (point))
+    (insert ")))")
+    (goto-char p))
 
-	(keymap-set lisp-interaction-mode-map "C-c l" #'insert-let)
-	(keymap-set emacs-lisp-mode-map "C-c l" #'insert-let)
+  (keymap-set lisp-interaction-mode-map "C-c l" #'insert-let)
+  (keymap-set emacs-lisp-mode-map "C-c l" #'insert-let)
 
-	(define-skeleton insert-format
-		"Insert a formatted insert"
-		"Skeleton"
-		"(insert (format \"" _ "\"))")
+  (define-skeleton insert-format
+  	"Insert a formatted insert"
+  	"Skeleton"
+  	"(insert (format \"" _ "\"))")
 
-	(keymap-set lisp-interaction-mode-map "C-c i" #'insert-format)
-	(keymap-set emacs-lisp-mode-map "C-c i" #'insert-format)
+  (keymap-set lisp-interaction-mode-map "C-c i" #'insert-format)
+  (keymap-set emacs-lisp-mode-map "C-c i" #'insert-format)
 #+end_src
 * Auto-insert templates
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
@@ -1244,129 +1275,134 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
 #+end_src
 * Proxy
 #+begin_src emacs-lisp
-	;; toggle proxy
-	(fc/toggle-proxy)
+  ;; toggle proxy
+  (fc/toggle-proxy)
 #+end_src
 * Mode customizations
 ** Highlight elisp functions
 #+begin_src emacs-lisp
-	(font-lock-add-keywords
-	 'emacs-lisp-mode
-	 '(("#'[[:word:]-/]+\\>" . font-lock-function-name-face)))
+  (font-lock-add-keywords
+   'emacs-lisp-mode
+   '(("#'[[:word:]-/]+\\>" . font-lock-function-name-face)))
 #+end_src
 * Open links in firefox
 #+begin_src emacs-lisp
-	;; open links in firefox
-	(setq
-	 browse-url-browser-function 'browse-url-firefox
-	 browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox")
+  ;; open links in firefox
+  (setq
+   browse-url-browser-function 'browse-url-firefox
+   browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox")
 #+end_src
 * Do not save .el.gz buffers
 Exclude ~.el.gz~ buffers when saving the desktop
 #+begin_src emacs-lisp
-	(setq desktop-files-not-to-save
-				(rx (group (or
-					(seq bos "/" (* (not (any "/:"))) ":")
-					(seq "(ftp)" eos)
-					(seq ".el.gz" eos)))))
+  (setq desktop-files-not-to-save
+        (rx (group (or
+  		  (seq bos "/" (* (not (any "/:"))) ":")
+  		  (seq "(ftp)" eos)
+  		  (seq ".el.gz" eos)))))
 #+end_src
 * Keybinding to evaluate elisp buffer
 #+begin_src emacs-lisp
-	(defun eval-last-sexp-yank ()
-		(interactive)
-		(let ((sexp (thing-at-point 'sexp t)) (p))
-			(kill-new
-			 (with-temp-buffer
-				 (insert sexp)
-				 (setq p (point))
-				 (eval-last-sexp t)
-				 (buffer-substring-no-properties p (point-max))))))
+  (defun eval-last-sexp-yank ()
+    (interactive)
+    (let ((sexp (thing-at-point 'sexp t)) (p))
+      (kill-new
+       (with-temp-buffer
+         (insert sexp)
+         (setq p (point))
+         (eval-last-sexp t)
+         (buffer-substring-no-properties p (point-max))))))
 
-	;; C-c C-e already does it !!
-	(defun eval-buffer-notify ()
-		(interactive)
-		(eval-buffer)
-		(message "Evaluated buffer: %s"
-						 (propertize (buffer-name (current-buffer)) 'face 'font-lock-function-name-face)))
+  ;; C-c C-e already does it !!
+  (defun eval-buffer-notify ()
+    (interactive)
+    (eval-buffer)
+    (message "Evaluated buffer: %s"
+  	   (propertize (buffer-name (current-buffer))
+  		       'face 'font-lock-function-name-face)))
 
-	(dolist (mode-map (mapcar #'symbol-value '(emacs-lisp-mode-map lisp-interaction-mode-map)))
-		(keymap-set mode-map "C-c C-w" #'eval-last-sexp-yank)
-		(keymap-set mode-map "C-c C-p" #'pp-eval-last-sexp))
+  (dolist (mode-map (mapcar #'symbol-value
+  			  '(emacs-lisp-mode-map
+  			    lisp-interaction-mode-map)))
+    (keymap-set mode-map "C-c C-w" #'eval-last-sexp-yank)
+    (keymap-set mode-map "C-c C-p" #'pp-eval-last-sexp))
 
 #+end_src
 * Toggle between default browser & firefox
 #+begin_src emacs-lisp
-	(defun toggle-browser ()
-		"Toggle between default browser and firefox"
-		(interactive)
-		(setq  browse-url-browser-function
-					 (if (eql browse-url-browser-function 'browse-url-default-browser)
-							 'browse-url-firefox
-						 'browse-url-default-browser))
-		(message (if (eql browse-url-browser-function 'browse-url-default-browser)
-								 "Using default browser"
-							 "Using firefox")))
-	(defalias 'tb #'toggle-browser "Short alias for toggle browser")
+  (defun toggle-browser ()
+    "Toggle between default browser and firefox"
+    (interactive)
+    (setq  browse-url-browser-function
+  	 (if (eql browse-url-browser-function 'browse-url-default-browser)
+  	     'browse-url-firefox
+  	   'browse-url-default-browser))
+    (message (if (eql browse-url-browser-function 'browse-url-default-browser)
+  	       "Using default browser"
+  	     "Using firefox")))
+  (defalias 'tb #'toggle-browser "Short alias for toggle browser")
 #+end_src
 * Copy buffer name & path
 #+begin_src emacs-lisp
-	(defun copy-buffer-name ()
-		(interactive)
-		(kill-new (buffer-name)))
+  (defun copy-buffer-name ()
+    (interactive)
+    (kill-new (buffer-name)))
 
-	(defalias 'cbn #'copy-buffer-name "copy buffer name")
+  (defalias 'cbn #'copy-buffer-name "copy buffer name")
 
-	(defun copy-buffer-path ()
-		(interactive)
-		(when (buffer-file-name)
-			(kill-new (buffer-file-name))))
+  (defun copy-buffer-path ()
+    (interactive)
+    (when (buffer-file-name)
+      (kill-new (buffer-file-name))))
 
-	(defalias 'cbp #'copy-buffer-path "copy buffer file path")
+  (defalias 'cbp #'copy-buffer-path "copy buffer file path")
 
-	(defun scratch-with-this-buffer (prefix)
-		"Insert `with-current-buffer' snippet with the current buffer"
-		(interactive "p")
-		(let ((bn (buffer-name))
-					(p (point)))
-			(with-current-buffer "*scratch*"
-				(goto-char (point-max))
-				(unless (bolp) (insert "\n"))
-				(insert "(with-current-buffer \"" bn "\"\n\t")
-				(when (> prefix 1)
-					(insert "(goto-char " (number-to-string p) ")\n\t"))
-				(setq p (point))
-				(insert "\n)")
-				(switch-to-buffer (current-buffer))
-				(goto-char p))))
+  (defun scratch-with-this-buffer (prefix)
+    "Insert `with-current-buffer' snippet with the current buffer"
+    (interactive "p")
+    (let ((bn (buffer-name))
+  	(p (point)))
+      (with-current-buffer "*scratch*"
+        (goto-char (point-max))
+        (unless (bolp) (insert "\n"))
+        (insert "(with-current-buffer \"" bn "\"\n\t")
+        (when (> prefix 1)
+  	(insert "(goto-char " (number-to-string p) ")\n\t"))
+        (setq p (point))
+        (insert "\n)")
+        (switch-to-buffer (current-buffer))
+        (goto-char p))))
 
-	(defalias 'wcb #'scratch-with-this-buffer "Scratch with this buffer")
+  (defalias 'wcb #'scratch-with-this-buffer "Scratch with this buffer")
 #+end_src
 * Shorthands / aliases
 #+begin_src emacs-lisp
   (defalias 'rb #'revert-buffer-quick
-  	"Shorthand for `revert-buffer-quick'")
+    "Shorthand for `revert-buffer-quick'")
   (defalias 'rvf #'rename-visited-file
-  	"Shorthand for `rename-visited-file'")
+    "Shorthand for `rename-visited-file'")
 #+end_src
 * Skip marking certain special buffers
 #+begin_src emacs-lisp
-	(defvar ibuffer-ignore-special-buffers-alist
-		'("*scratch*" "*Messages*" "*temp*")
-		"List of special buffers to skip")
+  (defvar ibuffer-ignore-special-buffers-alist
+    '("*scratch*" "*Messages*" "*temp*")
+    "List of special buffers to skip")
 
-	(require 'ibuf-ext)											; for `ibuffer-mark-on-buffer'
-	(defun ibuffer-mark-special-buffers-with-ignores ()
-		(interactive)
-		(ibuffer-mark-on-buffer
-		 (lambda (buf) (and (string-match "^\\*.+\\*$" (buffer-name buf))
-									 (not (member
-												 (buffer-name buf)
-												 ibuffer-ignore-special-buffers-alist))))))
+  (require 'ibuf-ext)
 
-	(defalias 'ibuffer-mark-special-buffers
-		#'ibuffer-mark-special-buffers-with-ignores
-		"Do not mark special buffers specified by
-	`ibuffer-ignore-special-buffers-alist'")
+  ;; for `ibuffer-mark-on-buffer'
+  (defun ibuffer-mark-special-buffers-with-ignores ()
+    (interactive)
+    (ibuffer-mark-on-buffer
+     (lambda (buf) (and (string-match "^\\*.+\\*$" (buffer-name buf))
+  		 (not (member
+  		       (buffer-name buf)
+  		       ibuffer-ignore-special-buffers-alist))))))
+
+  (defalias 'ibuffer-mark-special-buffers
+  	#'ibuffer-mark-special-buffers-with-ignores
+  	"Do not mark special buffers specified by
+  `ibuffer-ignore-special-buffers-alist'")
 #+end_src
 * Extras
 #+begin_src emacs-lisp
@@ -1385,7 +1421,7 @@ Exclude ~.el.gz~ buffers when saving the desktop
   ;; project-notes
   (require 'project-notes)
   (setq project-notes-file
-  			(no-littering-expand-var-file-name "project-notes.eld"))
+        (no-littering-expand-var-file-name "project-notes.eld"))
 
   ;; reset-frame
   (require 'reset-frame)
@@ -1399,6 +1435,9 @@ Exclude ~.el.gz~ buffers when saving the desktop
 * Finally
 Also use =M-x emacs-init-time= to find out how long emacs took to load
 #+begin_src emacs-lisp
-	(run-with-idle-timer 2 nil #'set-emacs-gc-threshold original-gc-cons-threshold)
-	(message "Loaded all from emacs.org")
+  (run-with-idle-timer
+   2 nil #'set-emacs-gc-threshold
+   original-gc-cons-threshold)
+
+  (message "Loaded all from emacs.org")
 #+end_src

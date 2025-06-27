@@ -18,52 +18,55 @@
 
 ;; build list of projects and org files
 (defvar project-notes nil
-	"Variable to hold org project notes as a list of pairs of the form (`basename' . `full-path') ")
+  "Variable to hold org project notes as a list of pairs of the
+form (`basename' . `full-path')")
 
 (defvar project-notes-hook nil
-	"Hook for running things after `project-notes' has been loaded")
+  "Hook for running things after `project-notes' has been loaded")
 
 (defconst project-notes--regexp
-	(rx "-notes.org" eol)	"Regexp to match project notes files")
+  (rx "-notes.org" eol)	"Regexp to match project notes files")
 
 (defun project-notes--relative-path (file)
-	"Return file path relative to `projects-home' directory"
-	(file-relative-name file projects-home))
+  "Return file path relative to `projects-home' directory"
+  (file-relative-name file projects-home))
 
 (defun project-notes--make-pair (path)
-	"create a pair with the directory name & filename"
-	(cons (file-name-nondirectory path) path))
+  "create a pair with the directory name & filename"
+  (cons (file-name-nondirectory path) path))
 
 (defun load-project-notes ()
-	"Load project notes files from the `project-home' directory and return a
+  "Load project notes files from the `project-home' directory and return a
 list of cons of the form (`<project>--notes.org'
 . `<path-relative-to-projects-home'')"
-	(when (and projects-home (file-exists-p projects-home))
-		(when-let ((pns (directory-files-recursively
-										 projects-home
-										 project-notes--regexp)))
-			(setq project-notes
-						(mapcar #'project-notes--make-pair
-										(mapcar #'project-notes--relative-path
-														pns))))
-		(message "Loaded %d project notes" (length project-notes))
-		(run-hooks 'project-notes-hook)))
+  (when (and projects-home (file-exists-p projects-home))
+    (when-let ((pns (directory-files-recursively
+		     projects-home
+		     project-notes--regexp)))
+      (setq project-notes
+	    (mapcar #'project-notes--make-pair
+		    (mapcar #'project-notes--relative-path
+			    pns))))
+    (message "Loaded %d project notes" (length project-notes))
+    (run-hooks 'project-notes-hook)))
 
 (defun project-load-notes ()
-	"Load project notes interactively"
-	(interactive)
-	(load-project-notes))
+  "Load project notes interactively"
+  (interactive)
+  (load-project-notes))
 
 (defun project-notes-find-file ()
-	"Select a project from `project-notes' and open it"
-	(interactive "i")
-	(let ((proj (assoc
-							 (completing-read "Select project: " (seq-map #'car project-notes))
-							 project-notes)))
-		(when proj
-			(find-file (expand-file-name (cdr proj) projects-home)))
-		)
-	)
+  "Select a project from `project-notes' and open it"
+  (interactive "i")
+  (let ((proj
+	 (assoc
+	  (completing-read "Select project: "
+			   (seq-map #'car project-notes))
+	  project-notes)))
+    (when proj
+      (find-file (expand-file-name (cdr proj) projects-home)))
+    )
+  )
 
 (defun project-info (file)
   (let ((fn (expand-file-name file projects-home))
@@ -115,17 +118,17 @@ list of cons of the form (`<project>--notes.org'
     (goto-char target)))
 
 (defun add-project-meeting-note-capture (key name file)
-	"Add a capture template for project meetings in the project notes"
-	(let ((template (concat
-									 "*** TODO %?\n"
-									 "DEADLINE: %^{Meeting Time}T\n"
-									 "**** Meeting Details" (format "%56s" ":noexport:")
-									 "\n")))
-		(add-to-list 'org-capture-templates
-								 `(,key ,(format "%s: Meeting Notes" name) plain
-												(file+function ,file add-project-meeting-note)
-												,template
-												:jump-to-captured t))))
+  "Add a capture template for project meetings in the project notes"
+  (let ((template (concat
+		   "*** TODO %?\n"
+		   "DEADLINE: %^{Meeting Time}T\n"
+		   "**** Meeting Details" (format "%56s" ":noexport:")
+		   "\n")))
+    (add-to-list 'org-capture-templates
+		 `(,key ,(format "%s: Meeting Notes" name) plain
+			(file+function ,file add-project-meeting-note)
+			,template
+			:jump-to-captured t))))
 
 (defun setup-meeting-note-capture (key search-suffix project-shortname)
   (add-hook
@@ -169,7 +172,8 @@ list of cons of the form (`<project>--notes.org'
   "Write `project-notes' value to `project-notes-file'"
   (with-temp-buffer
     (insert ";;; -*- coding: utf-8; mode: lisp-data -*-\n")
-    (insert ";;; Automatically generated at: " (format-time-string "%FT%T%z") "\n")
+    (insert ";;; Automatically generated at: "
+	    (format-time-string "%FT%T%z") "\n")
     (pp project-notes (current-buffer))
     (write-region (point-min) (point-max) project-notes-file)))
 
@@ -183,11 +187,13 @@ list of cons of the form (`<project>--notes.org'
   "Check comment line for upated timestamp was more than number of
 DAYS specified"
   (with-temp-buffer
-    (insert-file-contents (locate-user-emacs-file "project-notes") nil 0 256)
+    (insert-file-contents
+     (locate-user-emacs-file "project-notes") nil 0 256)
     (goto-char 0)
     (forward-line)
     (when (re-search-forward "generated at: \\(.*\\)$")
-      (> (time-to-number-of-days (time-since (match-string-no-properties 1))) days))))
+      (> (time-to-number-of-days (time-since (match-string-no-properties 1)))
+	 days))))
 
 (defun project-notes-home-relative-path (file)
   "Get the relative path to the home directory from FILE"
@@ -209,7 +215,8 @@ DAYS specified"
   "Fix the paths in `#+html_head' to be relative"
   (interactive)
   (when (buffer-file-name)
-    (let ((prefix (project-notes-home-relative-path (buffer-file-name))))
+    (let ((prefix (project-notes-home-relative-path
+		   (buffer-file-name))))
       (save-excursion
 	(goto-char 0)
 	(while (re-search-forward
@@ -221,7 +228,10 @@ DAYS specified"
 		    eol)
 		nil t)
 	  (replace-match
-	   (concat prefix "/" (project-notes-clean-relative-path (match-string-no-properties 3)))
+	   (concat prefix "/"
+		   (project-notes-clean-relative-path
+		    (match-string-no-properties 3)))
 	   t t nil 3))))))
+
 (provide 'project-notes)
 ;;; project-notes.el -- Ends here

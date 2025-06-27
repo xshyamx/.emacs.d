@@ -7,12 +7,12 @@
  'package-archives
  '("melpa" . "http://melpa.org/packages/")
  t)
+
 (package-initialize)
 
 ;; install use-package
 (unless (package-installed-p 'use-package)
-  (package-install 'use-package)
-  )
+  (package-install 'use-package))
 
 ;; (setq use-package-verbose t)
 (require 'use-package-ensure)
@@ -39,14 +39,14 @@
 ;; site-lisp  - Packages with customizations / in development
 ;; site-local - Files relevant for current host/site
 (let ((paths '("lisp" "site-lisp" "site-local")))
-	(dolist (path (mapcar #'locate-user-emacs-file paths))
-		(when (file-exists-p path)
-			(add-to-list 'load-path path))))
+  (dolist (path (mapcar #'locate-user-emacs-file paths))
+    (when (file-exists-p path)
+      (add-to-list 'load-path path))))
 
 
 ;;; load literate configuration
 (let ((literate-config (locate-user-emacs-file "emacs.org")))
-	(org-babel-load-file literate-config))
+  (org-babel-load-file literate-config))
 
 (require 'post-init-local nil t)
 
