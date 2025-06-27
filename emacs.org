@@ -237,18 +237,17 @@ Already handled by desktop?
 2. Find out the current width and height using =(frame-width)= & =(frame-height)= functions
 3. Find out the current position using =(frame-parameters (selected-frame))=
 #+begin_example emacs-lisp
-	(defun fc/emacs-frame-size-plist ()
-		(list
-		 :top (frame-parameter (selected-frame) 'top)
-		 :left (frame-parameter (selected-frame) 'left)
-		 :width  (frame-width)
-		 :height  (frame-height))
-		)
+  (defun fc/emacs-frame-size-plist ()
+    (list
+     :top (frame-parameter (selected-frame) 'top)
+     :left (frame-parameter (selected-frame) 'left)
+     :width  (frame-width)
+     :height  (frame-height)))
 #+end_example
 ** +Set the current position+
 #+begin_example emacs-lisp
-	(setq default-frame-alist
-				'((top . 34) (left . 646) (width . 110) (height . 50)))
+  (setq default-frame-alist
+        '((top . 34) (left . 646) (width . 110) (height . 50)))
 #+end_example
 * Initialize Local configurations
 #+begin_src emacs-lisp
@@ -602,9 +601,10 @@ From https://www.emacswiki.org/emacs/VisualBasicMode - [[https://github.com/emac
 #+end_src
 *** Old way
 #+begin_example emacs-lisp
-	(add-to-list 'load-path
-							 (expand-file-name "~/.emacs.d/site-lisp/visual-basic-mode"))
-	(require 'visual-basic-mode)
+  (add-to-list
+   'load-path
+   (expand-file-name "~/.emacs.d/site-lisp/visual-basic-mode"))
+  (require 'visual-basic-mode)
 #+end_example
 ** [[https://github.com/holistics/dbml][DBML]]
 From https://github.com/ccod/dbd-mode
@@ -618,7 +618,9 @@ From https://github.com/ccod/dbd-mode
 #+end_src
 *** Old way
 #+begin_example emacs-lisp
-	(load-file (locate-user-emacs-file "site-lisp/dbdiagram-mode/dbdiagram-mode.el"))
+  (load-file
+   (locate-user-emacs-file
+    "site-lisp/dbdiagram-mode/dbdiagram-mode.el"))
 #+end_example
 ** gedcom
 Forked from https://github.com/emacsattic/gedcom
@@ -631,7 +633,8 @@ Forked from https://github.com/emacsattic/gedcom
 #+end_src
 *** Old way
 #+begin_example emacs-lisp
-	(load-file (locate-user-emacs-file "site-lisp/gedcom/gedcom.el"))
+  (load-file (locate-user-emacs-file
+  	    "site-lisp/gedcom/gedcom.el"))
 #+end_example
 ** Plantuml
 Install from [[https://plantuml.com/][PlantUML]]
@@ -690,13 +693,17 @@ Requires [[JQ Mode]]
 #+end_src
 #+begin_example emacs-lisp
   (unless (package-installed-p 'restclient)
-    (package-vc-install 'restclient nil "https://github.com/pashky/restclient.el"))
+    (package-vc-install 'restclient nil
+  		      "https://github.com/pashky/restclient.el"))
   ;; (add-to-list
   ;;  'load-path
   ;;  (expand-file-name "~/.emacs.d/site-lisp/restclient"))
   (require 'restclient)
+
   (unless (package-installed-p 'restclient-jq)
-      (package-vc-install 'restclient nil "https://github.com/pashky/restclient.el"))
+    (package-vc-install
+     'restclient nil "https://github.com/pashky/restclient.el"))
+
   (require 'restclient-jq)
 #+end_example
 ** Git modes
