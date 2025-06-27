@@ -15,7 +15,9 @@
 
 ;; Open temp buffer
 (defun temp-buffer (prefix)
-  "Switch to `*temp*' buffer. Use with prefix `C-u' to switch to a temporary buffer with the selected mode. `temp-buffer-mode-list' contains the list of modes which can be selected.
+  "Switch to `*temp*' buffer. Use with prefix `C-u' to switch to a
+temporary buffer with the selected mode. `temp-buffer-mode-list'
+contains the list of modes which can be selected.
 
 If buffer does not exist, create it first."
   (interactive "p")
