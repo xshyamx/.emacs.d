@@ -116,5 +116,14 @@
     "!.gitignore" \n
     _))
 
+(define-auto-insert
+  '("\\.http\\'" . "HTTP Restclient file")
+  '("HTTP Restclient"
+    "# -*- mode: restclient -*-" \n
+    "# Local Variables:" \n
+    "# restclient-env-file: \"\"" \n
+    "# restclient-env-selected: \"\"" \n
+    "# End:" \n))
+
 (provide 'auto-inserts)
 ;;; auto-inserts.el
