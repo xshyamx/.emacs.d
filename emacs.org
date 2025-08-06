@@ -516,7 +516,7 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
     :config
     (defhydra common-org-files (:exit t)
       "goto"
-      ("a" (find-file (expand-file-name "../profile/asset.org" daily-home)) "asset.org")
+      ("a" (find-file (expand-file-name "../profile/wipro-assets.org" daily-home)) "asset.org")
       ("b" (find-file (expand-file-name "buf.org" daily-home)) "buf.org")
       ("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
       ("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
@@ -557,7 +557,8 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
 Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]]
 #+begin_src emacs-lisp
   (use-package paredit
-    :hook	(emacs-lisp-mode . paredit-mode)
+    :hook	((emacs-lisp-mode . paredit-mode)
+  	 (json-mode . paredit-mode))
     :config
     (keymap-set paredit-mode-map "C-j" nil)
     (keymap-set paredit-mode-map "RET" nil)
@@ -689,7 +690,8 @@ Requires [[JQ Mode]]
    'restclient-mode "https://github.com/xshyamx/restclient-mode")
 
   (use-package restclient-mode
-    :load-path "site-lisp/restclient-mode")
+    :load-path "site-lisp/restclient-mode"
+    :mode "\\.http\\'")
 #+end_src
 #+begin_example emacs-lisp
   (unless (package-installed-p 'restclient)
