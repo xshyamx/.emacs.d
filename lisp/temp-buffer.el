@@ -9,9 +9,13 @@
 
 
 
-(defvar temp-buffer-mode-list
-  '(json-mode xml-mode emacs-lisp-mode restclient-mode)
-  "List of modes to start temporary buffers")
+(defvar temp-buffer-mode-alist
+  '(("json" .  json-mode)
+    ("shell" . sh-mode)
+    ("emacs-lisp" . emacs-lisp-mode)
+    ("restclient" . restclient-mode)
+    ("xml" . xml-mode))
+  "Alist of modes to start temporary buffers")
 
 ;; Open temp buffer
 (defun temp-buffer (prefix)
@@ -21,18 +25,19 @@ contains the list of modes which can be selected.
 
 If buffer does not exist, create it first."
   (interactive "p")
-  (switch-to-buffer
-   (if (> prefix 1)
-       (when-let ((mode (completing-read
-			 "Select mode: "
-			 temp-buffer-mode-list nil t)))
-	 (let ((buffer (get-buffer-create
-			(format "*%s*"
-				(string-remove-suffix "-mode" mode)))))
-	   (with-current-buffer buffer
-	     (funcall (intern mode)))
-	   buffer))
-     (get-buffer-create "*temp*"))))
+  (let ((mode (if (> prefix 1)
+		  (completing-read
+		   "Select mode: " temp-buffer-mode-alist nil t)
+		"temp"))
+	(bufname) (buffer))
+    (setq bufname (format "*%s*" mode))
+    (when (>= prefix 16)
+      (setq bufname (generate-new-buffer-name bufname)))
+    (setq buffer (get-buffer-create bufname))
+    (unless (string= "temp" mode)
+      (with-current-buffer buffer
+	(funcall (cdr (assoc-string mode temp-buffer-mode-alist)))))
+    (switch-to-buffer buffer)))
 
 (keymap-global-set "C-x t" #'temp-buffer)
 
