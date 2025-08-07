@@ -148,10 +148,10 @@ the separator `-' with spaces"
 	  (rx (repeat 4 digit)
 	      "-" (repeat 2 digit)
 	      "-" (repeat 2 digit) "--")
-	  "" basename))))
-  (string-join
-   (mapcar #'capitalize (split-string sans-date "-"))
-   " "))
+	  "" basename)))
+    (string-join
+     (mapcar #'capitalize (split-string sans-date "-"))
+     " ")))
 (defun extract-plantuml-title (file)
   (let ((plantuml-file (concat (file-name-sans-extension file)
 			       ".plantuml")))
