@@ -127,7 +127,7 @@ open a new buffer to SLUG.EXT"
 	   (map-file-p (file-exists-p map-file)))
       (insert "#+caption: "
 	      (or (extract-plantuml-title file)
-		  (file-name-base file))
+		  (make-title (file-name-base file)))
 	      "\n")
       (when map-file-p
 	(insert "#+attr_html: :usemap #"
@@ -139,6 +139,19 @@ open a new buffer to SLUG.EXT"
 		(file-relative-name map-file basedir)
 		"\" export html\n")))))
 
+(defun make-title (basename)
+  "Create a title from the BASENAME by removing the initial date in
+`yyyy-MM-dd' format followed by `--' and capitalizing the rest replacing
+the separator `-' with spaces"
+  (let ((sans-date
+	 (replace-regexp-in-string
+	  (rx (repeat 4 digit)
+	      "-" (repeat 2 digit)
+	      "-" (repeat 2 digit) "--")
+	  "" basename))))
+  (string-join
+   (mapcar #'capitalize (split-string sans-date "-"))
+   " "))
 (defun extract-plantuml-title (file)
   (let ((plantuml-file (concat (file-name-sans-extension file)
 			       ".plantuml")))

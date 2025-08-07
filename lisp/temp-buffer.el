@@ -14,6 +14,7 @@
     ("shell" . sh-mode)
     ("emacs-lisp" . emacs-lisp-mode)
     ("restclient" . restclient-mode)
+    ("org" . org-mode)
     ("xml" . xml-mode))
   "Alist of modes to start temporary buffers")
 
