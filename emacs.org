@@ -324,6 +324,19 @@ Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
         (atomic-change-group
   	(delete-region begin end)
   	(insert (json--compact-string s))))))
+  
+  (defun json-format-at-point (prefix)
+    (interactive "p")
+    (save-excursion
+      (mark-sexp 1 t)
+      (funcall
+       (if (> prefix 1)
+  	 #'json-compact-print
+         #'json-pretty-print)
+       (mark)
+       (point))))
+
+  (keymap-set json-mode-map "C-c f" #'json-format-at-point)
 #+end_src
 ** Go
 https://geeksocket.in/posts/emacs-lsp-go/
