@@ -529,7 +529,7 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
     :config
     (defhydra common-org-files (:exit t)
       "goto"
-      ("a" (find-file (expand-file-name "../profile/wipro-assets.org" daily-home)) "asset.org")
+      ("a" (find-file (expand-file-name "assets/assets.org" projects-home)) "assets.org")
       ("b" (find-file (expand-file-name "buf.org" daily-home)) "buf.org")
       ("B" (find-file (expand-file-name "dashboard/dashboard.org" dotfiles-home)) "dashboard.org")
       ("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
