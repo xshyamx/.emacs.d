@@ -324,7 +324,7 @@ Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
         (atomic-change-group
   	(delete-region begin end)
   	(insert (json--compact-string s))))))
-  
+
   (defun json-format-at-point (prefix)
     (interactive "p")
     (save-excursion
@@ -336,7 +336,9 @@ Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
        (mark)
        (point))))
 
-  (keymap-set json-mode-map "C-c f" #'json-format-at-point)
+  (add-hook
+   'json-mode-hook
+   (lambda () (keymap-set json-mode-map "C-c f" #'json-format-at-point)))
 #+end_src
 ** Go
 https://geeksocket.in/posts/emacs-lsp-go/
@@ -657,11 +659,7 @@ Install from [[https://plantuml.com/][PlantUML]]
    'plantuml-mode "https://github.com/xshyamx/simple-plantuml-mode")
 
   (use-package plantuml-mode
-    :load-path "site-lisp/simple-plantuml-mode"
-    :custom
-    (plantuml-executable-path "/usr/local/bin/plantuml")
-    (plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar")
-    (org-plantuml-jar-path "/usr/local/opt/plantuml/libexec/plantuml.jar"))
+    :load-path "site-lisp/simple-plantuml-mode")
 #+end_src
 ** Graphviz
 Install [[https://graphviz.org/][Graphviz]]
