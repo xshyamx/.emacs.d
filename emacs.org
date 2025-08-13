@@ -933,6 +933,7 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
    org-insert-heading-respect-content nil)
 #+end_src
 ** Reset the dates on a meeting list heading
+To use in project notes
 #+begin_src emacs-lisp
   (defun org-reset-day (bc)
     (with-temp-buffer
@@ -984,7 +985,22 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 
   (keymap-set org-mode-map "C-c r m" #'org-reset-meeting-dates)
 #+end_src
+** Remove meeting details under current subtree
+To use in project notes
+#+begin_src emacs-lisp
+  (defun org-remove-meeting-details ()
+    (interactive)
+    (save-excursion
+      (save-restriction
+        (org-narrow-to-subtree)
+        (goto-char (point-min))
+        (while (re-search-forward
+  	      (rx bol (+ "*") " Meeting Details" eow) nil t)
+  	(org-cut-subtree)))))
+  (keymap-set org-mode-map "C-c r d" #'org-remove-meeting-details)
+#+end_src
 ** Generate email content from interview notes
+To use in daily notes
 #+begin_src emacs-lisp
   (defun interview-email ()
     "Generate email content from interview notes in org mode"
