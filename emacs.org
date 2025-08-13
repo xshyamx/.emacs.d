@@ -1305,13 +1305,13 @@ From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mo
    'emacs-lisp-mode
    '(("#'[[:word:]-/]+\\>" . font-lock-function-name-face)))
 #+end_src
-* Open links in firefox
-#+begin_src emacs-lisp
+* +Open links in firefox+
+#+begin_example emacs-lisp
   ;; open links in firefox
   (setq
    browse-url-browser-function 'browse-url-firefox
    browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox")
-#+end_src
+#+end_example
 * Do not save .el.gz buffers
 Exclude ~.el.gz~ buffers when saving the desktop
 #+begin_src emacs-lisp
