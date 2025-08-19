@@ -172,11 +172,12 @@ the separator `-' with spaces"
       (when-let (title (extract-plantuml-title
 			(expand-file-name
 			 (org-element-property :path el))))
-	(when (re-search-backward
-	       (rx bol "#+caption:" (+ space) (group (* any)) eol)
-	       (save-excursion (forward-line -2) (point))
-	       nil)
-	  (replace-match (concat "#+caption: " title) t t))))))
+	(save-excursion
+	  (when (re-search-backward
+		 (rx bol (group (* space)) "#+caption:" (+ space) (group (* any)) eol)
+		 (save-excursion (forward-line -2) (point))
+		 nil)
+	    (replace-match (concat (match-string-no-properties 1) "#+caption: " title) t t)))))))
 
 (defun org--image-path-around-point ()
   "Find the image path of the org link. If on the caption navigate to the

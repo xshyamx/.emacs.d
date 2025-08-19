@@ -24,6 +24,9 @@ form (`basename' . `full-path')")
 (defvar project-notes-hook nil
   "Hook for running things after `project-notes' has been loaded")
 
+(defvar project-notes-file-hook nil
+  "Hook for running things when a project notes file is loaded")
+
 (defconst project-notes--regexp
   (rx "-notes.org" eol)	"Regexp to match project notes files")
 
@@ -232,6 +235,18 @@ DAYS specified"
 		   (project-notes-clean-relative-path
 		    (match-string-no-properties 3)))
 	   t t nil 3))))))
+
+(defun project-notes--file-hook ()
+  "Run the `project-notes-file-hook's if the loaded file is a project notes
+file"
+  (when-let (file (buffer-file-name))
+    (when (and projects-home
+	       (string-prefix-p projects-home file)
+	       (string-suffix-p "-notes.org" file))
+      (message "Running `project-notes-file-hook' for: %s" (file-name-sans-extension file))
+      (run-hooks 'project-notes-file-hook))))
+
+(add-hook 'org-mode-hook #'project-notes--file-hook)
 
 (provide 'project-notes)
 ;;; project-notes.el -- Ends here

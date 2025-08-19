@@ -981,7 +981,6 @@ To use in project notes
   	(delete-region (point-min) (point-max))
   	(insert (org-reset-day day-contents))))))
 
-  (keymap-set org-mode-map "C-c r m" #'org-reset-meeting-dates)
 #+end_src
 ** Remove meeting details under current subtree
 To use in project notes
@@ -995,7 +994,14 @@ To use in project notes
         (while (re-search-forward
   	      (rx bol (+ "*") " Meeting Details" eow) nil t)
   	(org-cut-subtree)))))
-  (keymap-set org-mode-map "C-c r d" #'org-remove-meeting-details)
+#+end_src
+** Add via hook to local keymap
+#+begin_src emacs-lisp
+  (add-hook
+   'project-notes-file-hook
+   (lambda ()
+     (keymap-local-set "C-c r m" #'org-reset-meeting-dates)
+     (keymap-local-set "C-c r d" #'org-remove-meeting-details)))
 #+end_src
 ** Generate email content from interview notes
 To use in daily notes
