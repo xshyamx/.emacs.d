@@ -471,8 +471,6 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
       (org-babel-do-load-languages
        'org-babel-load-languages
        '((ditaa . t)))
-      (setq org-ditaa-jar-path
-  	  "/usr/local/opt/ditaa/libexec/ditaa-0.11.0-standalone.jar")
       (setq org-babel-default-header-args:ditaa
   	  '((:results . "file")
   	    (:exports . "results")
