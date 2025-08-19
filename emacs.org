@@ -538,7 +538,7 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
       ("i" (find-file (locate-user-emacs-file "init.el")) "init.el")
       ("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
       ("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
-      ("P" (project-notes-find-file) "Projects")
+      ("p" (project-notes-find-file) "Projects")
       ("q" nil "quit")))
 #+end_src
 ** eglot
