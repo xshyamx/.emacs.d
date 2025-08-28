@@ -237,8 +237,27 @@ directive for the `cmapx' image map"
 	  (when (file-exists-p file)
 	    (find-file file)))))))
 
+(defun org-insert-include-file (file)
+  "Insert include file"
+  (interactive "f")
+  (when (file-exists-p file)
+    (if-let (mode (seq-find
+		   (lambda (ml) (and (stringp (car ml))
+				(string-match (car ml) file)))
+		   auto-mode-alist))
+	(let ((rn (file-relative-name
+		   file
+		   (file-name-directory (buffer-file-name)))))
+	  (insert
+	   (format
+	    "#+include: \"./%s\" src %s" rn
+	    (replace-regexp-in-string "-mode" ""
+				      (symbol-name (cdr mode))))))
+      (insert (format "#+include: \"./%s\"" rn)))))
+
 (keymap-set org-mode-map "C-c i i" #'org-insert-image)
 (keymap-set org-mode-map "C-c i e" #'org-insert-existing-image)
+(keymap-set org-mode-map "C-c i f" #'org-insert-include-file)
 (keymap-set org-mode-map "C-c i m" #'org-insert-image-map)
 (keymap-set org-mode-map "C-c u" #'org-update-plantuml-title)
 (keymap-set org-mode-map "C-c o" #'org-find-image-src)

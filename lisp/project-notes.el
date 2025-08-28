@@ -116,9 +116,9 @@ list of cons of the form (`<project>--notes.org'
 	    (insert "** " ts "\n")))
 	(goto-char (point-max))
 	(unless (bolp) (insert "\n"))
-	(setq target (point))
-	))
-    (goto-char target)))
+	(setq target (point-marker))))
+    (goto-char (marker-position target))
+    (setq target nil)))
 
 (defun add-project-meeting-note-capture (key name file)
   "Add a capture template for project meetings in the project notes"
