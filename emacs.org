@@ -1052,7 +1052,7 @@ To use in daily notes
 #+end_src
 ** Get active tab in firefox as org link
 Find current profile directory from [[elisp:(browse-url-firefox "about:profiles")][about:profiles]]
-#+begin_src emacs-lisp
+#+begin_example emacs-lisp
   (defun ff-link-org ()
     (interactive)
     (insert
@@ -1071,7 +1071,7 @@ Find current profile directory from [[elisp:(browse-url-firefox "about:profiles"
        " | ")))
     )
   (keymap-set org-mode-map "C-c i f" #'ff-link-org)
-#+end_src
+#+end_example
 * Utility Functions
 ** Recreate scratch buffer
 #+begin_src emacs-lisp
