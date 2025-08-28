@@ -1072,6 +1072,23 @@ Find current profile directory from [[elisp:(browse-url-firefox "about:profiles"
     )
   (keymap-set org-mode-map "C-c i f" #'ff-link-org)
 #+end_example
+** Unfill paragraphs
+From http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html
+#+begin_src emacs-lisp
+  (defun unfill-paragraph ()
+    "Undo the effect of `fill-paragraph'"
+    (interactive)
+    (let ((fill-column most-positive-fixnum))
+      (fill-paragraph)))
+
+  (defun unfill-region (start end)
+    "Undo the effect of `fill-region'"
+    (interactive "r")
+    (let ((fill-column most-positive-fixnum))
+      (fill-region start end)))
+
+  (keymap-set org-mode-map "M-Q" #'unfill-paragraph)
+#+end_src
 * Utility Functions
 ** Recreate scratch buffer
 #+begin_src emacs-lisp
