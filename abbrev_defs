@@ -3,7 +3,7 @@
   '(
     ("acg" "atomic-change-group" nil :count 3)
     ("ahk" "add-hook" nil :count 11)
-    ("atl" "add-to-list" nil :count 10)
+    ("atl" "add-to-list" nil :count 11)
     ("bbf" "bury-buffer" nil :count 0)
     ("bfn" "buffer-file-name" nil :count 37)
     ("blp" "buffer-live-p" nil :count 2)
@@ -26,7 +26,7 @@
     ("ef" "executable-find" nil :count 9)
     ("efn" "expand-file-name" nil :count 80)
     ("exf" "executable-find" nil :count 1)
-    ("fep" "file-exists-p" nil :count 26)
+    ("fep" "file-exists-p" nil :count 27)
     ("ff" "find-file" nil :count 0)
     ("ffn" "find-file-noselect" nil :count 2)
     ("fmt" "format \"\"" nil :count 11)
@@ -139,8 +139,8 @@
     ("ds" "#+html: <details><summary></summary>
 #+html: </details>" nil :count 14)
     ("inc" "#+include:" nil :count 3)
+    ("opt" "#+options:" nil :count 1)
     ("st" "#+startup:" nil :count 1)
-    ("tit" "#+title:" nil :count 2)
     ("tle" "#+title:" nil :count 2)
    ))
 
