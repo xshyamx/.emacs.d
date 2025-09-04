@@ -21,7 +21,7 @@
   "Variable to hold org project notes as a list of pairs of the
 form (`basename' . `full-path')")
 
-(defvar project-notes-hook nil
+(defvar project-notes-loaded-hook nil
   "Hook for running things after `project-notes' has been loaded")
 
 (defvar project-notes-file-hook nil
@@ -51,7 +51,7 @@ list of cons of the form (`<project>--notes.org'
 		    (mapcar #'project-notes--relative-path
 			    pns))))
     (message "Loaded %d project notes" (length project-notes))
-    (run-hooks 'project-notes-hook)))
+    (run-hooks 'project-notes-loaded-hook)))
 
 (defun project-load-notes ()
   "Load project notes interactively"
@@ -135,7 +135,7 @@ list of cons of the form (`<project>--notes.org'
 
 (defun setup-meeting-note-capture (key search-suffix project-shortname)
   (add-hook
-   'project-notes-hook
+   'project-notes-loaded-hook
    `(lambda ()
       (when-let
 	  (current-project
@@ -156,9 +156,9 @@ list of cons of the form (`<project>--notes.org'
 
 (defun setup-project-weekly-update-note-capture
     (key search-suffix project-shortname template)
-  "Hook to `project-notes-hook' and add the capture weekly template"
+  "Hook to `project-notes-loaded-hook' and add the capture weekly template"
   (add-hook
-   'project-notes-hook
+   'project-notes-loaded-hook
    `(lambda ()
       (when-let
 	  (current-project
