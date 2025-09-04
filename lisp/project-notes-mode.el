@@ -47,12 +47,12 @@
                  (heading (org-element-at-point)))
         ;; if at the appropriate heading level
         (when (eq 2 level)
-  	(org-narrow-to-subtree heading)))
+	  (org-narrow-to-subtree heading)))
       (let ((day-contents (buffer-substring-no-properties
-  			 (point-min) (point-max))))
+			   (point-min) (point-max))))
         ;; replace narrowed region with processed content
         (delete-region (point-min) (point-max))
-        (insert (org-reset-day day-contents))))))
+        (insert (project-notes--reset-day day-contents))))))
 
 (defun project-notes-delete-meeting-details ()
   (interactive)
