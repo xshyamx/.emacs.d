@@ -587,6 +587,11 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
 #+begin_src emacs-lisp
   (use-package rg)
 #+end_src
+** disk-usage
+https://gitlab.com/ambrevar/emacs-disk-usage
+#+begin_src emacs-lisp
+  (use-package disk-usage)
+#+end_src
 * Packages not in ELPA/MELPA
 Function to install from git repository
 #+begin_src emacs-lisp
