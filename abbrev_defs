@@ -152,10 +152,12 @@
     ("hed" "hide empty description" nil :count 2)
     ("lbt" "skinparam legendBorderThickness 0" nil :count 5)
     ("lgt" "skinparam legendBackgroundColor transparent" nil :count 5)
-    ("lto" "skinparam lineType ortho" nil :count 8)
+    ("lto" "skinparam lineType ortho" nil :count 9)
     ("ltp" "skinparam lineType polyline" nil :count 1)
     ("ltr" "left to right direction" nil :count 8)
     ("mms" "skinparam maxMessageSize 120" nil :count 1)
+    ("o2m" "||--o{" nil :count 6)
+    ("o2o" "||--o|" nil :count 2)
     ("skp" "skinparam" nil :count 2)
    ))
 
