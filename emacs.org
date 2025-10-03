@@ -222,6 +222,10 @@ not litter directories with the backup files
 
      ;; move backups to different folder
      backup-directory-alist (list (cons ".*"  backup-dir))
+     ;; version backups
+     version-control t
+     ;; do not delete old backup files
+     delete-old-versions -1
 
      ;; do not create lockfiles
      create-lockfiles nil
@@ -591,6 +595,10 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
 https://gitlab.com/ambrevar/emacs-disk-usage
 #+begin_src emacs-lisp
   (use-package disk-usage)
+#+end_src
+** backup-walker
+#+begin_src emacs-lisp
+  (use-package backup-walker)
 #+end_src
 * Packages not in ELPA/MELPA
 Function to install from git repository
@@ -1125,7 +1133,7 @@ From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-
   (defun kebab-case (s)
     "Convert to kebab case by splitting on spaces, underscores &
   hyphens"
-    (string-join (split-string (downcase s) "[ \f\t\n\r\v_-]+") "-"))
+    (string-join (split-string (downcase s) "[: \f\t\n\r\v_-]+") "-"))
 
   (defun kebab-case-region (begin end)
     "Convert selected region to kebab case"
