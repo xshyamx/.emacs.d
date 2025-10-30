@@ -58,7 +58,7 @@
     ("luef" "locate-user-emacs-file" nil :count 5)
     ("mbg" "match-beginning" nil :count 14)
     ("mcr" "mapcar" nil :count 29)
-    ("mct" "mapconcat" nil :count 2)
+    ("mct" "mapconcat" nil :count 3)
     ("med" "match-end" nil :count 4)
     ("mlv" "make-local-variable" nil :count 1)
     ("msg" "message \"%s\"" nil :count 25)
@@ -92,7 +92,7 @@
     ("smd" "save-match-data" nil :count 2)
     ("spp" "string-prefix-p" nil :count 17)
     ("spst" "split-string" nil :count 2)
-    ("sq" "setq" nil :count 180)
+    ("sq" "setq" nil :count 181)
     ("sqa" "shell-quote-argument" nil :count 4)
     ("sqf" "seq-filter" nil :count 18)
     ("sr" "save-restriction" nil :count 9)
@@ -113,6 +113,7 @@
     ("ue" "user-error" nil :count 0)
     ("wcb" "with-current-buffer" nil :count 61)
     ("weal" "with-eval-after-load" nil :count 4)
+    ("whl" "when-let" nil :count 1)
     ("wtb" "with-temp-buffer" nil :count 37)
     ("wtf" "with-temp-file" nil :count 0)
     ("wtt" "with-current-buffer (get-buffer-create \"*temp*\")" nil :count 2)
@@ -147,18 +148,21 @@
 (define-abbrev-table 'plantuml-mode-abbrev-table
   '(
     ("archi" "!include <archimate/Archimate>" nil :count 1)
-    ("dtc" "skinparam defaultTextAlignment center" nil :count 18)
+    ("dtc" "skinparam defaultTextAlignment center" nil :count 21)
     ("elk" "!pragma layout elk" nil :count 4)
     ("hed" "hide empty description" nil :count 2)
-    ("lbt" "skinparam legendBorderThickness 0" nil :count 5)
-    ("lgt" "skinparam legendBackgroundColor transparent" nil :count 5)
+    ("lbt" "skinparam legendBorderThickness 0" nil :count 7)
+    ("lgd" "legend
+=Legend
+end legend" nil :count 2)
+    ("lgt" "skinparam legendBackgroundColor transparent" nil :count 7)
     ("lto" "skinparam lineType ortho" nil :count 9)
     ("ltp" "skinparam lineType polyline" nil :count 1)
     ("ltr" "left to right direction" nil :count 8)
     ("mms" "skinparam maxMessageSize 120" nil :count 1)
     ("o2m" "||--o{" nil :count 6)
     ("o2o" "||--o|" nil :count 2)
-    ("skp" "skinparam" nil :count 2)
+    ("skp" "skinparam" nil :count 3)
    ))
 
 (define-abbrev-table 'restclient-mode-abbrev-table
