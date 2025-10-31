@@ -110,12 +110,28 @@ and meeting notes"
   (interactive)
   (project-notes--yank-meeting-item t))
 
+(defun project-notes-add-list-item ()
+  (interactive)
+  (let ((el (org-element-at-point)) (p nil))
+    (when (eq 3 (org-outline-level))
+      (save-excursion
+	(goto-char (org-element-contents-begin el))
+	(when (looking-at (rx bol (or "CLOSED" "DEADLINE") ":"))
+	  (forward-line 1)
+	  (insert "- ")
+	  (setq p (point))
+	  (insert "\n"))))
+    (unless (null p)
+      (org-fold-show-subtree)
+      (goto-char p))))
+
 (defvar project-notes--map
   (let ((keymap (make-sparse-keymap)))
     (keymap-set keymap "n" #'project-notes-yank-meeting-number)
     (keymap-set keymap "p" #'project-notes-yank-meeting-password)
     (keymap-set keymap "r" #'project-notes-reset-meeting-dates)
     (keymap-set keymap "d" #'project-notes-delete-meeting-details)
+    (keymap-set keymap "i" #'project-notes-add-list-item)
     keymap)
   "Project notes keymap without any prefix")
 
