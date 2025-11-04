@@ -115,7 +115,8 @@ and meeting notes"
   (let ((el (org-element-at-point)) (p nil))
     (when (eq 3 (org-outline-level))
       (save-excursion
-	(goto-char (org-element-contents-begin el))
+	(goto-char (or (org-element-contents-begin el)
+		       (org-element-begin el)))
 	(when (looking-at (rx bol (or "CLOSED" "DEADLINE") ":"))
 	  (forward-line 1)
 	  (insert "- ")
