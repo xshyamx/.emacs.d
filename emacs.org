@@ -1095,56 +1095,6 @@ From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-
     'fc/unhexify
     "Alias namespaced function to an non-namespaced name")
 #+end_src
-** Camelcase
-#+begin_src emacs-lisp
-  ;;;###autoload
-  (defun fc/camel-case (input &optional upper)
-    "Convert INPUT to camel case string. If UPPER is passed then the
-  first word is capitalized"
-    (let ((parts (split-string input "[ \f\t\n\r\v_-]+")))
-      (let ((first-word-transformer (if upper #'capitalize #'downcase)))
-        (mapconcat
-         'identity
-         (cons (funcall first-word-transformer (car parts))
-  	     (mapcar 'capitalize (cdr parts)))
-         "")
-        )
-      )
-    )
-
-  (defalias
-    'camel-case
-    'fc/camel-case
-    "Alias namespaced function to an non-namespaced name")
-
-  (defun camel-case-region (begin end)
-    "Convert selected region to camel case"
-    (interactive "r")
-    (when (use-region-p)
-      (let ((repl
-  	   (camel-case
-  	    (buffer-substring-no-properties begin end))))
-        (delete-region begin end)
-        (push-mark)
-        (insert repl))))
-#+end_src
-** Kebab Case
-#+begin_src emacs-lisp
-  (defun kebab-case (s)
-    "Convert to kebab case by splitting on spaces, underscores &
-  hyphens"
-    (string-join (split-string (downcase s) "[: \f\t\n\r\v_-]+") "-"))
-
-  (defun kebab-case-region (begin end)
-    "Convert selected region to kebab case"
-    (interactive "r")
-    (when (use-region-p)
-      (let ((repl (kebab-case
-  		 (buffer-substring-no-properties begin end))))
-        (delete-region begin end)
-        (push-mark)
-        (insert repl))))
-#+end_src
 ** Toggle proxy
 #+begin_src emacs-lisp
   (defun fc/toggle-proxy (&optional force)

@@ -118,6 +118,61 @@ component c3 as \"component-03\"
 	 (indent (make-string ci ? )))
     (generate-sequence--insert prefix template indent)))
 
+(defun camel-case (input &optional upper)
+  "Convert INPUT to camel case string. If UPPER is passed then the
+first word is capitalized"
+  (save-match-data
+    (let ((parts (split-string input "[^[:word:]]+")))
+      (apply #'concat
+	     (cons (funcall (if upper #'capitalize #'downcase) (car parts))
+		   (mapcar 'capitalize (cdr parts)))))))
+
+(defun camel-case-region (begin end prefix)
+  "Convert selected region to camel case"
+  (interactive "r\np")
+  (when (use-region-p)
+    (let ((repl
+	   (camel-case
+	    (buffer-substring-no-properties begin end) (> prefix 1))))
+      (delete-region begin end)
+      (push-mark)
+      (insert repl))))
+
+(defun kebab-case (s)
+  "Convert to kebab case by splitting on spaces, underscores &
+hyphens"
+  (save-match-data
+    (string-join (split-string
+		  (downcase (string-replace "'" "" s)) "[^[:word:]]+")
+		 "-")))
+
+(defun kebab-case-region (begin end)
+  "Convert selected region to kebab case"
+  (interactive "r")
+  (when (use-region-p)
+    (let ((repl (kebab-case
+		 (buffer-substring-no-properties begin end))))
+      (delete-region begin end)
+      (push-mark)
+      (insert repl))))
+
+(defun snake-case (s)
+  "Convert to snake case by splitting on non-word characters"
+  (save-match-data
+    (string-join (split-string
+		  (string-replace "'" "" s) "[^[:word:]]+")
+		 "_")))
+
+(defun snake-case-region (begin end prefix)
+  "Convert selected region to snake case"
+  (interactive "r\np")
+  (when (use-region-p)
+    (let ((repl (snake-case
+		 (buffer-substring-no-properties begin end))))
+      (delete-region begin end)
+      (push-mark)
+      (insert (funcall (if (> prefix 1) #'upcase #'identity) repl)))))
+
 (keymap-global-set "C-c j" #'join-lines-in-region)
 (keymap-global-set "C-c \"" #'quote-lines-in-region)
 (keymap-global-set "C-c n" #'generate-sequence)
