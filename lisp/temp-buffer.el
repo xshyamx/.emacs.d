@@ -15,7 +15,9 @@
     ("emacs-lisp" . emacs-lisp-mode)
     ("restclient" . restclient-mode)
     ("org" . org-mode)
-    ("xml" . xml-mode))
+    ("xml" . xml-mode)
+    ("sql" . sql-mode)
+    ("csv" . csv-mode))
   "Alist of modes to start temporary buffers")
 
 ;; Open temp buffer
