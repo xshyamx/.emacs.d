@@ -69,7 +69,7 @@ invocation and close the opened dired buffer"
 (defun org-insert-slideshow ()
   (interactive)
   (let ((base-directory (file-name-directory (buffer-file-name)))
-	(dbuf (find-file-noselect (read-string "Images directory: " (slideshow--initial-directory))))
+	(dbuf (find-file-noselect (read-directory-name "Images directory: " (slideshow--initial-directory))))
 	(target-buffer (buffer-name))
 	(target-point (point))
 	(target-indent (current-indentation)))
