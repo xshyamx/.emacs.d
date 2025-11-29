@@ -142,9 +142,11 @@ first word is capitalized"
   "Convert to kebab case by splitting on spaces, underscores &
 hyphens"
   (save-match-data
-    (string-join (split-string
-		  (downcase (string-replace "'" "" s)) "[^[:word:]]+")
-		 "-")))
+    (string-trim
+     (string-join (split-string
+		   (downcase (string-replace "'" "" s)) "[^[:word:]]+")
+		  "-")
+     "-" "-")))
 
 (defun kebab-case-region (begin end)
   "Convert selected region to kebab case"
@@ -159,9 +161,11 @@ hyphens"
 (defun snake-case (s)
   "Convert to snake case by splitting on non-word characters"
   (save-match-data
-    (string-join (split-string
-		  (string-replace "'" "" s) "[^[:word:]]+")
-		 "_")))
+    (string-trim
+     (string-join (split-string
+		   (string-replace "'" "" s) "[^[:word:]]+")
+		  "_")
+     "_" "_")))
 
 (defun snake-case-region (begin end prefix)
   "Convert selected region to snake case"
