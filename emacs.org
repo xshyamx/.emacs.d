@@ -1336,30 +1336,11 @@ Exclude ~.el.gz~ buffers when saving the desktop
   (defalias 'rvf #'rename-visited-file
     "Shorthand for `rename-visited-file'")
 #+end_src
-* Skip marking certain special buffers
-#+begin_src emacs-lisp
-  (defvar ibuffer-ignore-special-buffers-alist
-    '("*scratch*" "*Messages*" "*temp*")
-    "List of special buffers to skip")
-
-  (require 'ibuf-ext)
-
-  ;; for `ibuffer-mark-on-buffer'
-  (defun ibuffer-mark-special-buffers-with-ignores ()
-    (interactive)
-    (ibuffer-mark-on-buffer
-     (lambda (buf) (and (string-match "^\\*.+\\*$" (buffer-name buf))
-  		 (not (member
-  		       (buffer-name buf)
-  		       ibuffer-ignore-special-buffers-alist))))))
-
-  (defalias 'ibuffer-mark-special-buffers
-  	#'ibuffer-mark-special-buffers-with-ignores
-  	"Do not mark special buffers specified by
-  `ibuffer-ignore-special-buffers-alist'")
-#+end_src
 * Extras
 #+begin_src emacs-lisp
+  ;; ibuffer customizations for marking buffers 
+  (require 'ibuffer-init)
+
   ;; load interview csv
   (require 'interview-csv)
 
