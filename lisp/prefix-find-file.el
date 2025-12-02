@@ -33,10 +33,10 @@ Eg.
 C-x C-f          Opens the find file in default directory
 
 C-u C-x C-f      Opens the find file in the first
-                 directory from `prefix-directories' etc.
+                 directory from `prefix-directories'
 
 C-u C-u C-x C-f  Opens the find file in the second
-                 directory from `prefix-directories' etc."
+                 directory from `prefix-directories'"
   (interactive "p")
   (let ((dir (assoc-default prefix (prefix--lookup-alist))))
     (if dir
