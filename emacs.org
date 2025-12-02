@@ -1294,15 +1294,20 @@ Exclude ~.el.gz~ buffers when saving the desktop
 * Copy buffer name & path
 #+begin_src emacs-lisp
   (defun copy-buffer-name ()
+    "Copy current buffer name to kill ring"
     (interactive)
     (kill-new (buffer-name)))
 
   (defalias 'cbn #'copy-buffer-name "copy buffer name")
 
   (defun copy-buffer-path ()
+    "Copy current buffer filepath or if in dired buffer the directory path to
+  the kill ring"
     (interactive)
-    (when (buffer-file-name)
-      (kill-new (buffer-file-name))))
+    (kill-new
+     (if (eq 'dired-mode major-mode)
+         default-directory
+       (buffer-file-name))))
 
   (defalias 'cbp #'copy-buffer-path "copy buffer file path")
 
