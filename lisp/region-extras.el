@@ -7,6 +7,12 @@
 
 ;;; Code:
 
+(defconst region-extras-join-separator-default " "
+  "Default separator used for joining strings with `join-lines-in-region'")
+
+(defconst region-extras-join-separator-alt ","
+  "Alternate separator used for joining strings with `join-lines-in-region'")
+
 (defun quote-string (s quote-char)
   "Quote string by escaping `\"' with `\\\"'"
   (concat
@@ -50,13 +56,17 @@ And invoking \\`C-u' \\`C-u' \\[quote-lines-in-region] giving separator as
 	  (insert separator))))))
 
 (defun join-lines-in-region (prefix start end)
-  "Join all lines in region with `,' to override use \\`C-u' prefix"
+  "Join all lines in region with `region-extras-join-separator-default' to
+override use \\`C-u' prefix"
   (interactive "p\nr")
   (when (use-region-p)
-    (let ((separator ",")
+    (let ((separator region-extras-join-separator-default)
 	  (s (buffer-substring-no-properties start end)))
       (when (> prefix 1)
-	(setq separator (read-string "Separator: " nil nil separator)))
+	(setq separator
+	      (read-string "Separator: "
+			   region-extras-join-separator-alt
+			   nil separator)))
       (delete-region start end)
       (insert (string-join
 	       (seq-filter
