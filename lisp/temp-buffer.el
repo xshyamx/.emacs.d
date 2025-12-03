@@ -14,6 +14,7 @@
     ("shell" . sh-mode)
     ("emacs-lisp" . emacs-lisp-mode)
     ("restclient" . restclient-mode)
+    ("html" . html-mode)
     ("org" . org-mode)
     ("xml" . xml-mode)
     ("sql" . sql-mode)
