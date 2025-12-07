@@ -589,14 +589,14 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
 #+begin_src emacs-lisp
   (use-package rg)
 #+end_src
-** disk-usage
-https://gitlab.com/ambrevar/emacs-disk-usage
-#+begin_src emacs-lisp
-  (use-package disk-usage)
-#+end_src
 ** backup-walker
 #+begin_src emacs-lisp
   (use-package backup-walker)
+#+end_src
+** [[https://github.com/magnars/expand-region.el][expand-region]]
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
 #+end_src
 * Packages not in ELPA/MELPA
 Function to install from git repository
