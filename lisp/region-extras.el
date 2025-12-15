@@ -76,7 +76,7 @@ override use \\`C-u' prefix"
       (when (string-suffix-p "\n" s)
 	(insert "\n")))))
 
-(defun genereate-sequence--placeholder-count (template)
+(defun generate-sequence--placeholder-count (template)
   "Returns count of the number of integer placeholders in TEMPLATE looking
 for `%d's"
   (with-temp-buffer
@@ -85,7 +85,7 @@ for `%d's"
     (count-matches "%[0-9]*d")))
 
 (defun generate-sequence--insert (count template indent)
-  (let ((pn (genereate-sequence--placeholder-count template)))
+  (let ((pn (generate-sequence--placeholder-count template)))
     (push-mark)
     (dolist (i (number-sequence 1 count))
       (when (> i 1)
