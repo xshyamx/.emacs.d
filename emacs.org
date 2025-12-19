@@ -585,6 +585,13 @@ Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animat
   (use-package aggressive-indent
     :hook (emacs-lisp-mode . aggressive-indent-mode))
 #+end_src
+To suppress the /Indenting region.../ message
+#+begin_example
+  (setq aggressive-indent-region-function
+        (lambda (start end)
+  	(let ((inhibit-message t))
+  	  (indent-region start end))))
+#+end_example
 ** [[https://github.com/dajva/rg.el][rg.el]]
 #+begin_src emacs-lisp
   (use-package rg)
