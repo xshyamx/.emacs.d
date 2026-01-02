@@ -45,7 +45,7 @@
     "# -*- org-export-use-babel: nil; -*-" \n
     "#+year: " (format-time-string "%Y") \n
     "#+created: " (format-time-string "%Y-%m-%d") \n
-    "#+options:  num:nil broken-links:mark" \n
+    "#+options:  num:nil broken-links:mark ^:{}" \n
     "#+property: header-args :eval never-export" \n
     "#+startup: overview hideblocks logdone" \n
     "#+html_head: <link rel=\"stylesheet\" href=\""
