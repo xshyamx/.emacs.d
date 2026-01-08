@@ -1,3 +1,20 @@
+;;; Following leaves fall on fixed days do not add them here
+;; New Years Day
+;; Republic Day
+;; May Day
+;; Independence Day
+;; Gandhi Jayanthi
+;; Karnataka Rajyotsava
+;; Christmas
+
+(defconst work-holidays-2026
+  '(((3 19 2026) "Gudi Padva / Ugadi")
+    ((5 27 2026) "Id-ul-Zuha (Bakrid)")
+    ((9 4 2026) "Janmashtami")
+    ((9 14 2026) "Vinayaka Chaturthi")
+    ((10 20 2026) "Dussehra"))
+  "List of holidays in 2026")
+
 (defconst work-holidays-2025
   '(((1 14 2025) "Pongal")
     ((3 30 2025) "Gudi Padva / Ugadi")

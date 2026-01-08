@@ -153,7 +153,8 @@
   	(fc/filtered-holidays work-holidays-2022)
   	(fc/filtered-holidays work-holidays-2023)
   	(fc/filtered-holidays work-holidays-2024)
-  	(fc/filtered-holidays work-holidays-2025)))
+  	(fc/filtered-holidays work-holidays-2025)
+  	(fc/filtered-holidays work-holidays-2026)))
 #+end_src
 ** Open emacs sources in readonly view mode
 #+begin_src emacs-lisp
