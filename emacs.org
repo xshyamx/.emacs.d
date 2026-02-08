@@ -548,6 +548,48 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
 #+begin_src emacs-lisp
   (use-package eglot)
 #+end_src
+*** Java
+#+begin_src emacs-lisp
+  (defun m2-jar (groupId artifactId version)
+    (let ((m2-repo (expand-file-name ".m2/repository" (getenv "HOME")))
+  	(groupPath (replace-regexp-in-string "\\." "/" groupId))
+  	(jar))
+      (setq jar
+  	  (expand-file-name
+  	   (format "%s/%s/%s/%s-%s.jar"
+  		   groupPath artifactId version artifactId version)
+  	   m2-repo))
+      (if (file-exists-p jar)
+  	jar
+        (message "%s: Not found" jar)
+        nil)))
+
+  (use-package eglot-java
+    :ensure t
+    :config
+    (setq eglot-java-java-home
+  	(expand-file-name
+  	 ".sdkman/candidates/java/25.0.1-tem"
+  	 (getenv "HOME"))
+  	eglot-java-java-program (expand-file-name "bin/java" eglot-java-java-home)
+  	eglot-java-eclipse-jdt-cache-directory (no-littering-expand-var-file-name "jdtls-cache"))
+    (add-to-list 'eglot-java-eclipse-jdt-args
+  	       (concat "-javaagent:" (m2-jar "org.projectlombok" "lombok" "1.18.42"))))
+
+  (with-eval-after-load 'eglot
+    (defvar eglot--java-map
+      (let ((km (make-sparse-keymap)))
+        (keymap-set km "l" #'eglot-code-action-quickfix)
+        (keymap-set km "o" #'eglot-code-action-organize-imports)
+        (keymap-set km "r" #'eglot-rename)
+        (keymap-set km "c" #'insert-condition-stringbuilder)
+        km)
+      "Eglot keymap for java")
+    (keymap-set java-mode-map "C-c l" eglot--java-map))
+
+  (add-to-list 'auto-mode-alist
+  	     '("\\.jsp\\'" . java-mode) t)
+#+end_src
 ** Avy
 #+begin_src emacs-lisp
   ;;	(define-key global-map (kbd "s-l") nil)
@@ -1346,7 +1388,7 @@ Exclude ~.el.gz~ buffers when saving the desktop
 #+end_src
 * Extras
 #+begin_src emacs-lisp
-  ;; ibuffer customizations for marking buffers 
+  ;; ibuffer customizations for marking buffers
   (require 'ibuffer-init)
 
   ;; load interview csv
