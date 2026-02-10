@@ -539,6 +539,7 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
       ("D" (daily-notes-find-file) "Daily Notes")
       ("e" (find-file (locate-user-emacs-file "emacs.org")) "emacs.org")
       ("i" (find-file (locate-user-emacs-file "init.el")) "init.el")
+      ("f" (find-file (expand-file-name "fne/fne--notes.org" projects-home)))
       ("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
       ("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
       ("p" (project-notes-find-file) "Projects")
@@ -546,7 +547,50 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
 #+end_src
 ** eglot
 #+begin_src emacs-lisp
+  (defvar eglot--java-mode-map
+    (let ((km (make-sparse-keymap)))
+      (keymap-set km "l" #'eglot-code-action-quickfix)
+      (keymap-set km "o" #'eglot-code-action-organize-imports)
+      (keymap-set km "r" #'eglot-rename)
+      km)
+    "Java mode map")
+
   (use-package eglot)
+
+  (add-hook 'eglot-connect-hook
+  	  (lambda () (keymap-local-set "C-c l" eglot--java-mode-map)))
+
+  (defun jsp-file-options ()
+    (when (string-match (rx ".jsp" eol) (buffer-file-name))
+      (setq tab-width 2)))
+
+  (add-hook 'java-mode-hook #'jsp-file-options)
+
+#+end_src
+*** Java
+#+begin_src emacs-lisp
+  (defun m2-jar (groupId artifactId version)
+    (let ((m2-repo (getenv "M2_REPO"))
+  	(groupPath (replace-regexp-in-string (rx ".") "/" groupId))
+  	(jar))
+      (setq jar (expand-file-name
+  	       (format "%s/%s/%s/%s-%s.jar"
+  		       groupPath artifactId version artifactId version)
+  	       m2-repo))
+      (if (file-exists-p jar)
+  	jar
+        (message "%s Not found" jar)
+        nil)))
+
+
+  (use-package eglot-java
+    :ensure t
+    :config
+    (setq eglot-java-java-home (expand-file-name ".sdkman/candidates/java/24-tem" (getenv "HOME"))
+  	eglot-java-java-program (expand-file-name "bin/java" eglot-java-java-home)
+  	egolt-java-eclipse-jdt-cache-directory (no-littering-expand-var-file-name "jdtls-cache"))
+    (add-to-list 'eglot-java-eclipse-jdt-args
+  	       (concat "-javaagent:" (m2-jar "org.projectlombok" "lombok" "1.18.42"))))
 #+end_src
 *** Java
 #+begin_src emacs-lisp
@@ -615,8 +659,7 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
 Some examples of paredit usage [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]]
 #+begin_src emacs-lisp
   (use-package paredit
-    :hook	((emacs-lisp-mode . paredit-mode)
-  	 (json-mode . paredit-mode))
+    :hook	((emacs-lisp-mode . paredit-mode))
     :config
     (keymap-set paredit-mode-map "C-j" nil)
     (keymap-set paredit-mode-map "RET" nil)
