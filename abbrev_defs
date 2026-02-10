@@ -42,7 +42,8 @@
     ("fts" "format-time-string" nil :count 11)
     ("fu" "funcall" nil :count 0)
     ("gbc" "get-buffer-create" nil :count 21)
-    ("gc" "goto-char" nil :count 101)
+    ("gc" "goto-char" nil :count 105)
+    ("gcm" "goto-char (point-min)" nil :count 3)
     ("genv" "getenv" nil :count 5)
     ("ght" "gethash" nil :count 4)
     ("gpm" "goto-char (point-min)" nil :count 3)
@@ -54,9 +55,9 @@
     ("kys" "keymap-set" nil :count 25)
     ("kyu" "keymap-unset" nil :count 5)
     ("lbp" "line-beginning-position" nil :count 15)
-    ("len" "length" nil :count 17)
-    ("lep" "line-end-position" nil :count 8)
-    ("luef" "locate-user-emacs-file" nil :count 5)
+    ("len" "length" nil :count 18)
+    ("lep" "line-end-position" nil :count 10)
+    ("luef" "locate-user-emacs-file" nil :count 7)
     ("mbg" "match-beginning" nil :count 22)
     ("mcr" "mapcar" nil :count 34)
     ("mct" "mapconcat" nil :count 5)
@@ -65,7 +66,7 @@
     ("mhte" "make-hash-table :test #'equal" nil :count 1)
     ("mlv" "make-local-variable" nil :count 1)
     ("msg" "message \"%s\"" nil :count 27)
-    ("msn" "match-string-no-properties" nil :count 32)
+    ("msn" "match-string-no-properties" nil :count 33)
     ("msnp" "match-string-no-properties" nil :count 17)
     ("mst" "match-string 0" nil :count 8)
     ("nlvf" "no-littering-expand-var-file-name" nil :count 4)
@@ -89,14 +90,15 @@
     ("rris" "replace-regexp-in-string" nil :count 7)
     ("rrs" "replace-regexp-in-string" nil :count 2)
     ("rsb" "re-search-backward" nil :count 5)
-    ("rsf" "re-search-forward" nil :count 61)
+    ("rsf" "re-search-forward" nil :count 66)
     ("rxs" "rx-to-string" nil :count 1)
+    ("scts" "shell-command-to-string" nil :count 1)
     ("se" "save-excursion" nil :count 38)
     ("sgb" "seq-group-by" nil :count 3)
     ("smd" "save-match-data" nil :count 5)
     ("spp" "string-prefix-p" nil :count 17)
     ("spst" "split-string" nil :count 2)
-    ("sq" "setq" nil :count 194)
+    ("sq" "setq" nil :count 195)
     ("sqa" "shell-quote-argument" nil :count 4)
     ("sqf" "seq-filter" nil :count 18)
     ("sr" "save-restriction" nil :count 10)
@@ -115,7 +117,7 @@
     ("ttb" "(with-current-buffer \"*temp*\"
 	)" nil :count 1)
     ("ue" "user-error" nil :count 0)
-    ("wcb" "with-current-buffer" nil :count 61)
+    ("wcb" "with-current-buffer" nil :count 62)
     ("weal" "with-eval-after-load" nil :count 4)
     ("whl" "when-let" nil :count 1)
     ("wtb" "with-temp-buffer" nil :count 39)
@@ -136,6 +138,12 @@
 (define-abbrev-table 'graphviz-dot-mode-abbrev-table
   '(
     ("sg" "subgraph cluster_" nil :count 2)
+   ))
+
+(define-abbrev-table 'java-mode-abbrev-table
+  '(
+    ("vsql" "String sql = new StringBuilder()
+.toString();" nil :count 3)
    ))
 
 (define-abbrev-table 'org-mode-abbrev-table
