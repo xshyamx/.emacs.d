@@ -561,7 +561,8 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
   	  (lambda () (keymap-local-set "C-c l" eglot--java-mode-map)))
 
   (defun jsp-file-options ()
-    (when (string-match (rx ".jsp" eol) (buffer-file-name))
+    (when (and (buffer-file-name)
+  	     (string-match (rx ".jsp" eol) (buffer-file-name)))
       (setq tab-width 2)))
 
   (add-hook 'java-mode-hook #'jsp-file-options)
