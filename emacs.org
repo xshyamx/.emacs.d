@@ -627,6 +627,12 @@ To suppress the /Indenting region.../ message
   (use-package expand-region
     :bind ("C-=" . er/expand-region))
 #+end_src
+** [[https://www.passwordstore.org/][password-store]]
+#+begin_src emacs-lisp
+  (use-package password-store)
+  (defalias 'psc #'password-store-copy
+    "Copy from password store")
+#+end_src
 * Packages not in ELPA/MELPA
 Function to install from git repository
 #+begin_src emacs-lisp
