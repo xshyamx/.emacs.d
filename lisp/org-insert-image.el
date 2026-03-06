@@ -20,6 +20,9 @@
 (defvar org-insert-image-dirs '("./img/screenshots/" "./img/")
   "List of directories to search for images")
 
+(defvar org-insert-image-src-extensions '(".plantuml" ".puml" ".gv")
+  "List of file extensions for the image source")
+
 (defun org-insert-image--target-dir (fn projects-home)
   "Return the target directory for the source image file"
   (let* ((bn (file-name-base fn))
@@ -232,7 +235,7 @@ directive for the `cmapx' image map"
       (let ((candidates
 	     (mapcar
 	      (lambda (ext) (concat (file-name-sans-extension img) ext))
-	      '(".plantuml" ".gv"))))
+	      org-insert-image-src-extensions)))
 	(dolist (file candidates)
 	  (when (file-exists-p file)
 	    (find-file file)))))))
