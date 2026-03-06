@@ -182,15 +182,9 @@
 #+begin_src emacs-lisp
   (setq make-pointer-invisible t)
 #+end_src
-** Remap compose-email to switch-to-scratch
+** Remap compose-email to switch to scratch
 #+begin_src emacs-lisp
-  (defun switch-to-scratch ()
-    (interactive)
-    (switch-to-buffer "*scratch*"))
-  (global-remap-key "C-x m" #'switch-to-scratch)
-  ;; (let ((keys "C-x m"))
-  ;; 	(setq old-c-x-m (keymap-lookup global-map keys))
-  ;; 	(define-key global-map (kbd keys) #'switch-to-scratch))
+  (global-remap-key "C-x m" #'scratch-buffer)
 #+end_src
 ** Show messages buffer in other window
 #+begin_src emacs-lisp
@@ -1006,32 +1000,6 @@ From http://xahlee.info/emacs/emacs/emacs_unfill-paragraph.html
   (keymap-set org-mode-map "M-Q" #'unfill-paragraph)
 #+end_src
 * Utility Functions
-** Recreate scratch buffer
-#+begin_src emacs-lisp
-  ;; recreate scratch buffer
-  (defun fc/create-scratch-buffer ()
-    "Create a scratch buffer if one does not already exist"
-    (interactive)
-    (let ((buffer-name "*scratch*"))
-      (unless (get-buffer buffer-name)
-        (with-current-buffer (get-buffer-create buffer-name)
-  	(insert (string-join
-  		 '(";; This buffer is for text that is not saved, and for Lisp evaluation."
-  		   ";; To create a file, visit it with C-x C-f and enter text in its buffer."
-  		   ";; Use C-x C-e to eval expressing and C-j to eval and print\n\n"
-  		   )
-  		 "\n"))
-  	(lisp-interaction-mode))
-        )
-      (switch-to-buffer buffer-name)
-      )
-    )
-
-  (defalias
-    'create-scratch-buffer
-    'fc/create-scratch-buffer
-    "Alias namespaced function to an non-namespaced name")
-#+end_src
 ** Untabify buffer
 From [[http://stackoverflow.com/questions/318553/getting-emacs-to-untabify-when-saving-certain-file-types-and-only-those-file-ty][Untabify certain filetypes in Emacs]]
 #+begin_src emacs-lisp
