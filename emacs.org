@@ -502,7 +502,7 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
       ("d" (find-file (expand-file-name (format-time-string "daily-log-%Y.org") daily-home)) (format-time-string "daily-log-%Y.org"))
       ("D" (daily-notes-find-file) "Daily Notes")
       ("e" (find-file (locate-user-emacs-file "emacs.org")) "emacs.org")
-      ("i" (find-file (locate-user-emacs-file "init.el")) "init.el")
+      ("i" (find-file user-init-file) "init-file")
       ("f" (find-file (expand-file-name "fne/fne--notes.org" projects-home)))
       ("t" (find-file (expand-file-name "today.org" daily-home)) "today.org")
       ("l" (find-file (expand-file-name "laptop-config.org" daily-home)) "laptop-config.org")
