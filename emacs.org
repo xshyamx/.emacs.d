@@ -204,6 +204,12 @@ Always getting triggered by accident
   (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
   (add-hook 'git-commit-mode-hook #'display-fill-column-indicator-mode)
 #+end_src
+** Read GPG passphrase in emacs
+From [[http://yitang.uk/2023/12/28/gpg-in-emacs-first-step-towards-data-security/#EPA%20-%20Emacs%20Interface%20to%20GPG][EPA - Emacs Interface to GPG]]
+#+begin_src emacs-lisp
+  ;;; use emacs to read passphrase instead of pinentry program
+  (setq epg-pinentry-mode 'loopback)
+#+end_src
 * Autosave & Backups
 Change the backup directory to be inside .emacs.d so that it does
 not litter directories with the backup files
