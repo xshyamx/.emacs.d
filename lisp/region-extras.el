@@ -158,6 +158,23 @@ hyphens"
 		  "-")
      "-" "-")))
 
+(defun kebab-file-case (s)
+  "Convert kebab-file case preserving `--'"
+  (save-match-data
+    (string-join
+     (mapcar #'kebab-case (split-string s "--"))
+     "--")))
+
+(defun kebab-file-case-region (begin end)
+  "Convert selected region to kebab-file case preserving `--'"
+  (interactive "r")
+  (when (use-region-p)
+    (let ((repl (kebab-file-case
+		 (buffer-substring-no-properties begin end))))
+      (delete-region begin end)
+      (push-mark)
+      (insert repl))))
+
 (defun kebab-case-region (begin end)
   "Convert selected region to kebab case"
   (interactive "r")
