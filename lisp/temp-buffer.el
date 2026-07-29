@@ -34,7 +34,7 @@ If buffer does not exist, create it first."
 		   "Select mode: " temp-buffer-mode-alist nil t)
 		"temp"))
 	(bufname) (buffer))
-    (setq bufname (format "*%s*" mode))
+    (setq bufname (format "*temp/%s*" mode))
     (when (>= prefix 16)
       (setq bufname (generate-new-buffer-name bufname)))
     (setq buffer (get-buffer-create bufname))

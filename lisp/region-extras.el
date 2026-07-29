@@ -204,9 +204,25 @@ hyphens"
       (push-mark)
       (insert (funcall (if (> prefix 1) #'upcase #'identity) repl)))))
 
+(defun shell-evaluate-region (begin end)
+  "Evaluate the active region in a shell and display the output in a new
+buffer"
+  (interactive "r")
+  (when (use-region-p)
+    (let ((buf (generate-new-buffer
+		(concat "*" (buffer-name (current-buffer))
+			"-output*"))))
+      (shell-command
+       (buffer-substring-no-properties begin end)
+       buf buf)
+      (with-current-buffer buf
+	(view-mode 1)
+	(switch-to-buffer-other-window (current-buffer))))))
+
 (keymap-global-set "C-c j" #'join-lines-in-region)
 (keymap-global-set "C-c \"" #'quote-lines-in-region)
 (keymap-global-set "C-c n" #'generate-sequence)
+(keymap-set sh-mode-map "C-c C-c" #'shell-evaluate-region)
 
 (provide 'region-extras)
 ;;; region-extras.el

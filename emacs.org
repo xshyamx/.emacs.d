@@ -626,8 +626,10 @@ To suppress the /Indenting region.../ message
 #+end_example
 ** [[https://github.com/dajva/rg.el][rg.el]]
 #+begin_src emacs-lisp
-  (use-package rg)
-  (defalias 'rgp #'rg-project)
+  (use-package rg
+    :config
+    (defalias 'rgp 'rg-project
+      "Alias for running ripgrep on project"))
 #+end_src
 ** [[https://github.com/magnars/expand-region.el][expand-region]]
 #+begin_src emacs-lisp
