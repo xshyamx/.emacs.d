@@ -158,6 +158,16 @@ hyphens"
 		  "-")
      "-" "-")))
 
+(defun kebab-case-region (begin end)
+  "Convert selected region to kebab case"
+  (interactive "r")
+  (when (use-region-p)
+    (let ((repl (kebab-case
+		 (buffer-substring-no-properties begin end))))
+      (delete-region begin end)
+      (push-mark)
+      (insert repl))))
+
 (defun kebab-file-case (s)
   "Convert kebab-file case preserving `--'"
   (save-match-data
@@ -175,15 +185,18 @@ hyphens"
       (push-mark)
       (insert repl))))
 
-(defun kebab-case-region (begin end)
-  "Convert selected region to kebab case"
-  (interactive "r")
-  (when (use-region-p)
-    (let ((repl (kebab-case
-		 (buffer-substring-no-properties begin end))))
-      (delete-region begin end)
-      (push-mark)
-      (insert repl))))
+;;; Rename to file to kebab-case in dired
+(defun kebab-case-file (file)
+  "Convert filename case preserving `--' but only on the basename and not
+on the extension"
+  (let ((ban (file-name-base file))
+	(ext (file-name-extension file)))
+    (concat (kebab-file-case ban) "." ext)))
+
+(defun dired-kebab-case (&optional arg)
+  "Rename all marked (or next ARG) files to kebab case."
+  (interactive "P" dired-mode)
+  (dired-rename-non-directory #'kebab-case-file "Rename kebab-case" arg))
 
 (defun snake-case (s)
   "Convert to snake case by splitting on non-word characters"
@@ -223,6 +236,7 @@ buffer"
 (keymap-global-set "C-c \"" #'quote-lines-in-region)
 (keymap-global-set "C-c n" #'generate-sequence)
 (keymap-set sh-mode-map "C-c C-c" #'shell-evaluate-region)
+(keymap-set dired-mode-map "% k" #'dired-kebab-case)
 
 (provide 'region-extras)
 ;;; region-extras.el
