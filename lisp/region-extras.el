@@ -236,7 +236,8 @@ buffer"
 (keymap-global-set "C-c \"" #'quote-lines-in-region)
 (keymap-global-set "C-c n" #'generate-sequence)
 (keymap-set sh-mode-map "C-c C-c" #'shell-evaluate-region)
-(keymap-set dired-mode-map "% k" #'dired-kebab-case)
+(with-eval-after-load "dired"
+  (keymap-set dired-mode-map "% k" #'dired-kebab-case))
 
 (provide 'region-extras)
 ;;; region-extras.el
