@@ -642,6 +642,12 @@ To suppress the /Indenting region.../ message
   (defalias 'psc #'password-store-copy
     "Copy from password store")
 #+end_src
+** [[https://ledger-cli.org][Ledger]]
+#+begin_src emacs-lisp
+  (use-package ledger-mode
+    :config
+    (setq ledger-default-date-format ledger-iso-date-format))
+#+end_src
 * Packages not in ELPA/MELPA
 Function to install from git repository
 #+begin_src emacs-lisp
