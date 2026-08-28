@@ -169,10 +169,10 @@ hyphens"
       (insert repl))))
 
 (defun kebab-file-case (s)
-  "Convert kebab-file case preserving `--'"
+  "Convert kebab-file case preserving `--' and translating `:' to `--'"
   (save-match-data
     (string-join
-     (mapcar #'kebab-case (split-string s "--"))
+     (mapcar #'kebab-case (split-string s (rx (or "--" ":"))))
      "--")))
 
 (defun kebab-file-case-region (begin end)
