@@ -1287,6 +1287,45 @@ Exclude ~.el.gz~ buffers when saving the desktop
 
   (defalias 'wcb #'scratch-with-this-buffer "Scratch with this buffer")
 #+end_src
+* Screenshot basename
+Prompt for description and copy the screenshot basename of the for
+=<yyyy-MM-dd>--<kebab-file-case description>=
+#+begin_src emacs-lisp
+  (defvar screenshot-basename-alist nil
+    "Keep track of next index for sequential inserts")
+
+  (defun screenshot--index (s)
+    (let ((idx (alist-get s screenshot-basename-alist 1 nil #'string=)))
+      (setf (alist-get s screenshot-basename-alist 1 nil #'string=) (1+ idx))
+      (format "-%02d" idx)))
+
+  (defun screenshot-basename (prefix s)
+    "Copy a screenshot basename to the kill ring. Use with a prefix argument
+  to add a counter suffix
+
+  The basename takes the form of `<date>--<slug><counter>'
+
+  date    - is the current date formatted as `yyyy-MM-dd'
+  slug    - is the description in `kebab-file-case'
+  counter - is a self incrementing counter formatted as `-%02d'
+
+  The counter is not persisted across sessions and is simply an
+  alist (`screenshot-basename-alist' to keep track of the next index with
+  entered description as the key. Use the previous completion for the
+  description to keep incrementing.
+  "
+    (interactive "p\nsDescription: ")
+    (unless (string-empty-p s)
+      (let ((basename (format "%s--%s%s"
+  			    (format-time-string "%Y-%m-%d")
+  			    (kebab-file-case s)
+  			    (if (> prefix 1) (screenshot--index s) ""))))
+        (kill-new basename)
+        (message "Copied %s to kill ring" (propertize basename 'face 'xref-match)))))
+
+  (defalias 'sbn #'screenshot-basename
+    "Shorthand for `screenshot-basename'")
+#+end_src
 * Shorthands / aliases
 #+begin_src emacs-lisp
   (defalias 'rb #'revert-buffer-quick
