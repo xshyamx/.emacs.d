@@ -2,6 +2,18 @@
 #+startup: content hideblocks
 #+property: header-args :tangle (locate-user-emacs-file "emacs.el") :results silent
 #+property: org-babel-default-header-args :tangle yes
+* Header
+#+begin_src emacs-lisp
+  ;;; emacs.el --- Emacs configurations -*- lexical-binding: t; -*-
+
+  ;; Author: shyam
+
+  ;;; Commentary:
+
+  ;; Generated org-babel output from emacs.org
+
+  ;;; Code:
+#+end_src
 * Init file
 #+include: "~/dotfiles/emacs/.emacs.d/init.el" src emacs-lisp
 ** [[https://github.com/jwiegley/use-package#getting-started][Use Package Help]]
@@ -1373,4 +1385,9 @@ Also use =M-x emacs-init-time= to find out how long emacs took to load
    original-gc-cons-threshold)
 
   (message "Loaded all from emacs.org")
+#+end_src
+* Footer
+#+begin_src emacs-lisp
+  (provide 'emacs)
+  ;;; emacs.el
 #+end_src
