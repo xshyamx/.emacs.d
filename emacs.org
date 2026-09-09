@@ -961,12 +961,14 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
 #+begin_src emacs-lisp
   (setq diary-file (no-littering-expand-var-file-name "diary"))
 #+end_src
-** Do not split headings & respect content
-#+begin_src emacs-lisp
+** +Do not split headings & respect content+
+Turned out to be not very useful. Mostly when pasting a bunch of text
+and organizing it.
+#+begin_example emacs-lisp
   (setq
    org-M-RET-may-split-line '((default . nil))
    org-insert-heading-respect-content nil)
-#+end_src
+#+end_example
 ** Add project-notes-mode
 #+begin_src emacs-lisp
   (add-hook 'project-notes-file-hook #'project-notes-mode)
