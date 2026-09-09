@@ -21,19 +21,35 @@
 #+begin_src emacs-lisp
   ;; or alternatively use emacs-init-time function
   (defun fc/print-startup-time ()
-  	(message "Emacs loaded in %s seconds with %d garbage collection" (emacs-init-time "%.02f") gcs-done))
+    (message "Emacs loaded in %s seconds with %d garbage collection"
+  	   (emacs-init-time "%.02f") gcs-done))
   (add-hook 'emacs-startup-hook #'fc/print-startup-time)
 #+end_src
 ** Remapped keys
+Sourced keymap-symbol from accepted answer from [[From https://stackoverflow.com/questions/14489848/emacs-name-of-current-local-keymap][Emacs name of current
+local keymap? // 2013-01-23]]
 #+begin_src emacs-lisp
   (defvar remapped-keys nil
     "List of remapped keys from the global-map")
 
-  (defun global-remap-key (keys defn)
-    (when-let ((old (keymap-lookup global-map keys)))
-      (add-to-list 'remapped-keys
-  		 (cons keys old)))
-    (keymap-global-set keys defn))
+  (defun global-remap-key (key defn)
+      (when-let ((old (keymap-lookup global-map key)))
+        (setq remapped-keys
+  	    (append (assoc-delete-all key remapped-keys)
+    		    (list (cons key (if (keymapp old)
+  				  (keymap-symbol old)
+  				old)))))
+        (keymap-set global-map key defn)))
+
+  (defun keymap-symbol (keymap)
+    "Return the symbol to which KEYMAP is bound, or nil if no such symbol
+  exists."
+    (catch 'gotit
+      (mapatoms (lambda (sym)
+                  (and (boundp sym)
+                       (eq (symbol-value sym) keymap)
+                       (not (eq sym 'keymap))
+                       (throw 'gotit sym))))))
 #+end_src
 * Interface Tweaks
 ** Use y/p instead of yes/no
