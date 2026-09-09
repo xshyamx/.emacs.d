@@ -7,8 +7,6 @@
 
 ;;; Code:
 
-
-
 (defvar temp-buffer-mode-alist
   '(("json" .  json-mode)
     ("shell" . sh-mode)
@@ -43,7 +41,9 @@ If buffer does not exist, create it first."
 	(funcall (cdr (assoc-string mode temp-buffer-mode-alist)))))
     (switch-to-buffer buffer)))
 
-(keymap-global-set "C-x t" #'temp-buffer)
+(if (fboundp 'global-remap-key)
+    (global-remap-key "C-x t" #'temp-buffer)
+  (keymap-global-set "C-x t" #'temp-buffer))
 
 (provide 'temp-buffer)
 ;;; temp-buffer.el -- Ends here

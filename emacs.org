@@ -214,6 +214,10 @@ local keymap? // 2013-01-23]]
 #+begin_src emacs-lisp
   (global-remap-key "C-x m" #'scratch-buffer)
 #+end_src
+** Remap set-fill-prefix to ffap
+#+begin_src emacs-lisp
+  (global-remap-key "C-x ." #'find-file-at-point)
+#+end_src
 ** Show messages buffer in other window
 #+begin_src emacs-lisp
   (defun show-messages ()
@@ -221,11 +225,18 @@ local keymap? // 2013-01-23]]
     (display-buffer "*Messages*" 'display-buffer-pop-up-window))
   (keymap-global-set "C-x M" #'show-messages)
 #+end_src
-** Remove keybinding to suspend frame
-Always getting triggered by accident
+** Remove keybindings
+Remove keybindings getting triggered by accident
+- suspend frame
+- kill buffer
 #+begin_src emacs-lisp
-  (dolist (keys '("C-z" "C-x C-z"))
-    (global-remap-key keys nil))
+  ;; suspend frame
+  (dolist (key '("C-z" "C-x C-z"))
+    (global-remap-key key nil))
+
+  ;; kill buffer
+  (dolist (key '("s-&" "s-k"))
+    (global-remap-key key nil))
 #+end_src
 ** Display fill column indicator for prog modes
 #+begin_src emacs-lisp
@@ -520,9 +531,7 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
 #+end_src
 *** Commonly used org files
 #+begin_src emacs-lisp
-  (global-unset-key (kbd "M-g o"))
-  (global-remap-key "M-g o" #'common-org-files/body)
-  ;(global-set-key (kbd "s-g") #'common-org-files/body)
+  (keymap-global-set "M-g o" #'common-org-files/body)
 #+end_src
 *** Setup Hydra
 #+begin_src emacs-lisp

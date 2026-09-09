@@ -1,3 +1,13 @@
+;;; work-holidays.el --- Yearly work holidays  -*- lexical-binding: t; -*-
+
+;; Author: shyam
+
+;;; Commentary:
+
+;;
+
+;;; Code:
+
 ;;; Following leaves fall on fixed days do not add them here
 ;; New Years Day
 ;; Republic Day
@@ -6,6 +16,7 @@
 ;; Gandhi Jayanthi
 ;; Karnataka Rajyotsava
 ;; Christmas
+
 
 (defconst work-holidays-2026
   '(((3 19 2026) "Gudi Padva / Ugadi")
@@ -76,3 +87,5 @@
     ((8 25 2017) "Ganesh Chaturthi")
     ((10 19 2017) "Diwali (Laxmi Puja)"))
   "List of holidays in 2017")
+
+(provide 'work-holidays)
