@@ -383,6 +383,8 @@ Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
   (add-hook
    'json-mode-hook
    (lambda () (keymap-set json-mode-map "C-c f" #'json-format-at-point)))
+
+  (defalias 'jpp #'json-pretty-print "Alias for JSON pretty printing")
 #+end_src
 ** Go
 https://geeksocket.in/posts/emacs-lsp-go/
@@ -428,7 +430,7 @@ Ensure that [[https://daringfireball.net/projects/markdown/][markdown]] is insta
 #+begin_src emacs-lisp
   (use-package adoc-mode
     :init
-    (add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode)))
+    (add-to-list 'auto-mode-alist '("\\.adoc\\'" . adoc-mode)))
 #+end_src
 ** Cypher
 #+begin_src emacs-lisp
@@ -477,7 +479,7 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
 #+begin_src emacs-lisp
   (use-package jq-mode
     :init
-    (add-to-list 'auto-mode-alist '("\\.jq" . jq-mode)))
+    (add-to-list 'auto-mode-alist '("\\.jq\\'" . jq-mode)))
 #+end_src
 ** Ditaa
 #+begin_src emacs-lisp
@@ -496,8 +498,8 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
 ** JSX Support
 #+begin_src emacs-lisp
   (use-package rjsx-mode)
-  (add-to-list 'auto-mode-alist '("\.tsx\\'" . rjsx-mode))
-  (add-to-list 'auto-mode-alist '("\.jsx\\'" . rjsx-mode))
+  (add-to-list 'auto-mode-alist '("\.[jt]sx\\'" . rjsx-mode))
+
 #+end_src
 ** Rust
 #+begin_src emacs-lisp
