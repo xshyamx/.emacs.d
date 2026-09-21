@@ -53,6 +53,16 @@
       (org-element-property :raw-value parent)))))
 
 
+(defun get-job-description (candidate)
+  (save-restriction
+    (widen)
+    (apply #'narrow-to-region (element-bounds candidate))
+    (goto-char (point-min))
+    (when (re-search-forward (org-headline-re 4 ) nil t)
+      (replace-regexp-in-string
+       "[[:space:]]*/[[:space:]]*Interview notes" ""
+       (org-element-property :raw-value (org-element-at-point))))))
+
 (defun get-outcome (candidate)
   (save-restriction
     (widen)
@@ -77,6 +87,7 @@
   (list
    (get-interview-date candidate)
    (org-element-property :raw-value candidate)
+   (get-job-description candidate)
    (get-outcome candidate)))
 
 (defun csv-string (rs &optional header)
