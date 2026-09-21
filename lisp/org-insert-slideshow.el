@@ -74,10 +74,10 @@ invocation and close the opened dired buffer"
 	(target-point (point))
 	(target-indent (current-indentation)))
     (with-current-buffer dbuf
-      (setq-local base-directory base-directory
-		  target-buffer target-buffer
-		  target-point target-point
-		  target-indent target-indent)
+      (set (make-local-variable 'base-directory) base-directory)
+      (set (make-local-variable 'target-buffer) target-buffer)
+      (set (make-local-variable 'target-point) target-point)
+      (set (make-local-variable 'target-indent) target-indent)
       (keymap-local-set "C-c C-c" #'slideshow--insert-marked-files)
       (keymap-local-set "C-c C-k" #'slideshow--abort))
     (switch-to-buffer-other-window  dbuf)
