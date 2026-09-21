@@ -1,4 +1,4 @@
-;;-*-coding: utf-8;-*-
+;; -*- coding: utf-8; lexical-binding: t -*-
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table
   '(
     ("acg" "atomic-change-group" nil :count 9)
@@ -7,6 +7,7 @@
     ("atl" "add-to-list" nil :count 11)
     ("bbf" "bury-buffer" nil :count 0)
     ("bfn" "buffer-file-name" nil :count 37)
+    ("bgl" "beginning-of-line" nil :count 2)
     ("blp" "buffer-live-p" nil :count 2)
     ("blv" "buffer-local-value" nil :count 7)
     ("bn" "buffer-name" nil :count 17)
