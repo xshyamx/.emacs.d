@@ -809,6 +809,22 @@ Requires [[JQ Mode]]
     (use-package git-modes
       :load-path "site-lisp/git-modes"))
 #+end_src
+** SQL JDBC
+Provide JDBC backend for Emacs sql package to connect to database via
+JDBC using H2 Shell
+#+begin_src emacs-lisp
+  (use-package sql-jdbc
+    :load-path "site-lisp/sql-jdbc"
+    :config
+    (setq sql-jdbc-lib-directory
+  	(no-littering-expand-var-file-name "sql-jdbc/lib")
+  	sql-jdbc-provider-jar
+  	(expand-file-name (file-name-nondirectory sql-jdbc-provider-jar)
+  			  sql-jdbc-lib-directory)))
+  (with-eval-after-load 'savehist
+    (add-to-list 'savehist-additional-variables
+  	       'sql-database-history))
+#+end_src
 * Enable advanced flags
 ** Case Sensitive replacements
 #+begin_src emacs-lisp
