@@ -817,10 +817,7 @@ JDBC using H2 Shell
     :load-path "site-lisp/sql-jdbc"
     :config
     (setq sql-jdbc-lib-directory
-  	(no-littering-expand-var-file-name "sql-jdbc/lib")
-  	sql-jdbc-provider-jar
-  	(expand-file-name (file-name-nondirectory sql-jdbc-provider-jar)
-  			  sql-jdbc-lib-directory)))
+  	(no-littering-expand-var-file-name "sql-jdbc/lib")))
   (with-eval-after-load 'savehist
     (add-to-list 'savehist-additional-variables
   	       'sql-database-history))
