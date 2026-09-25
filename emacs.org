@@ -93,6 +93,11 @@ local keymap? // 2013-01-23]]
   (pcase system-type
     (darwin
      (setq dired-use-ls-dired nil)))    ; do not pass --dired flag to ls
+
+  ;;; A - do not show . & ..
+  ;;; t - sort by time descending
+  ;;; h - human readable filesizes
+  (setq dired-listing-switches "-Alth")
 #+end_src
 ** Flash modeline instead of visble bell
 #+begin_src emacs-lisp
