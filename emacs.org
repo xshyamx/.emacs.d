@@ -1234,6 +1234,13 @@ Force indents, offsets and disable tabs
 
   (keymap-set lisp-interaction-mode-map "C-c i" #'insert-format)
   (keymap-set emacs-lisp-mode-map "C-c i" #'insert-format)
+
+  (defun skeleton-inline-insert ()
+    "Force inline insertion of skeletons"
+    (setq-local skeleton-end-newline nil))
+
+  ;;; Force inline insert of skeletons
+  (add-hook 'emacs-lisp-mode-hook #'skeleton-inline-insert)
 #+end_src
 * Auto-insert templates
 From [[https://www.emacswiki.org/emacs/AutoInsertMode][EmacsWiki: Auto Insert Mode]]
