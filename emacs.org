@@ -951,7 +951,7 @@ From [[https://eshelyaron.com/esy.html#org-file-apps-t-emacs][Always open files 
   		     "*** %^{Candidate Name}"
   		     "- %?"
   		     ,(concat
-  		       "**** %\\1 / Interview notes"
+  		       "**** %^{Job Description} / Interview notes"
   		       (make-string 24 ? ) ":noexport:")
   		     "DEADLINE: %^{Interview Time}T")
   		   "\n")
