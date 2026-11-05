@@ -385,6 +385,7 @@ Depends on [[https://github.com/ljos/jq-mode][JQ Mode]]
    (lambda () (keymap-set json-mode-map "C-c f" #'json-format-at-point)))
 
   (defalias 'jpp #'json-pretty-print "Alias for JSON pretty printing")
+  (defalias 'jcp #'json-compact-print "Alias for JSON compact printing")
 #+end_src
 ** Go
 https://geeksocket.in/posts/emacs-lsp-go/
@@ -520,6 +521,8 @@ Install [[https://github.com/jq-lang/jq][jq]] or [[https://github.com/itchyny/go
     "Full path to the directory holding all daily notes")
   (defvar projects-home nil
     "Full path to the top-level directory under which all project directories are present")
+  (defvar sandbox-dir nil
+    "Sandbox directory to create temporary files")
 #+end_src
 *** Setup functions used by the hydra
 #+begin_src emacs-lisp
