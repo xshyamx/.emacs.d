@@ -126,6 +126,59 @@ and meeting notes"
       (org-fold-show-subtree)
       (goto-char p))))
 
+(defun project-notes--selection-day (e)
+  (append (list (format "%s (%d)" (car e) (nth 1 e))) e))
+
+(defun project-notes-meeting-days ()
+  (let ((days) (curr) (p) (mc))
+    (save-excursion
+      (save-restriction
+	(widen)
+	(goto-char (point-min))
+	(when (re-search-forward "^\\* Meetings" nil t)
+	  (org-map-tree
+	   (lambda ()
+	     (let ((level (org-outline-level)))
+	       (cond
+		((eq level 2)
+		 (when curr
+		   (push (list curr mc p) days))
+		 (setq
+		  mc 0
+		  p (point)
+		  curr (string-trim
+			(substring-no-properties
+			 (org-get-heading t t t t))
+			"\\[" "\\]")))
+		((eq level 3)
+		 (setq mc (1+ mc))))))))))
+    days))
+
+(defun project-notes--get-item (p)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char p)
+      (org-copy-subtree)
+      (substring-no-properties (current-kill 0)))))
+
+(defun project-notes-copy-from-date ()
+  "Use `org-read-date' to read the DATE from the calendar and reset"
+  (interactive)
+  (let* ((days (project-notes-meeting-days))
+	 (selection-alist (mapcar #'project-notes--selection-day days))
+	 (selected (completing-read "Copy from date: " selection-alist))
+	 (item (alist-get selected selection-alist nil nil #'string=))
+	 (date))
+    (when item
+      (setq date (format-time-string
+		  "%Y-%m-%d %a"
+		  (project-notes--parse-iso-date (org-read-date))))
+      (goto-char (point-max))
+      (insert (project-notes--reset-day
+	       (project-notes--get-item (car (last item))) date)))))
+
+
 (defvar project-notes--map
   (let ((keymap (make-sparse-keymap)))
     (keymap-set keymap "n" #'project-notes-yank-meeting-number)
@@ -133,6 +186,7 @@ and meeting notes"
     (keymap-set keymap "r" #'project-notes-reset-meeting-dates)
     (keymap-set keymap "d" #'project-notes-delete-meeting-details)
     (keymap-set keymap "i" #'project-notes-add-list-item)
+    (keymap-set keymap "c" #'project-notes-copy-from-date)
     keymap)
   "Project notes keymap without any prefix")
 
